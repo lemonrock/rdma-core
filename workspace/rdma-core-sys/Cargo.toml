@@ -21,6 +21,3 @@ version = "0.0.0"
 
 [dependencies]
 libc = "0.2"
-
-[build-dependencies]
-gcc = "0.3"

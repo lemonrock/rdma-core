@@ -199,13 +199,13 @@ compile_rdma_core_platformSpecificPreparation()
 		Darwin)
 			compile_rdma_core_prepareForMacOSX
 
-			compile_rdma_core_ensureRequiredBinariesArePresent brew cmake
+			compile_rdma_core_ensureRequiredBinariesArePresent brew cmake pkg-config
 
 			export PATH="$(brew --prefix coreutils)"/libexec/gnubin:"$(brew --prefix gnu-sed)"/libexec/gnubin:"$PATH"
 			
 			#ln -s /usr/local/bin/ggrep "$additionalPath"/grep
 			
-			targetSysRootFolderPath="$(brew --prefix musl-cross)"/libexec/x86_64-linux-musl
+			targetSysRootFolderPath="$(brew --prefix musl-cross)"/libexec/"$configureHost"
 
 			if [ $numberOfMakeJobs -eq 0 ]; then
 				compile_rdma_core_ensureRequiredBinariesArePresent sysctl
@@ -214,7 +214,7 @@ compile_rdma_core_platformSpecificPreparation()
 		;;
 
 		Linux)
-			compile_rdma_core_ensureRequiredBinariesArePresent make sed x86_64-linux-musl-gcc x86_64-linux-musl-ar rm mkdir rsync cat cmake
+			compile_rdma_core_ensureRequiredBinariesArePresent make sed x86_64-linux-musl-gcc x86_64-linux-musl-ar rm mkdir rsync cat cmake pkg-config
 			targetSysRootFolderPath='/usr'
 
 			if [ $numberOfMakeJobs -eq 0 ]; then
@@ -235,14 +235,36 @@ compile_rdma_core_makeCopyToAlter()
 	rsync --archive --quiet --exclude=.git "$homeFolderPath"/lib/rdma-core/ "$temporaryFolderPath"/
 }
 
+compile_rdma_core_fixMlx5CMakeListsToCreateAStaticProvider()
+{
+	sed -i \
+		-e 's/rdma_shared_provider(/rdma_provider(/g' \
+		-e '/PACKAGE_VERSION/d' \
+		"$temporaryFolderPath"/providers/mlx5/CMakeLists.txt
+}
+
+compile_rdma_core_fixQedrProviderToWorkWithMusl()
+{
+	sed -i -e '/execinfo\.h/d' "$temporaryFolderPath"/providers/qedr/qelr_verbs.c
+}
+
+compile_rdma_core_fixRdmacmToWorkWithMusl()
+{
+	#NOTE: warning: no previous prototype for '__fxstat' [-Wmissing-prototypes] is true but __fxstat is available in musl; it just isn't in the public headers
+	sed -i \
+		-e 's;#include <unistd\.h>;#include <unistd.h>\n#include <sys/uio.h>\n#define __fstat(fd, buf) __fxstat (_STAT_VER, fd, buf);g' \
+		-e 's;__S_IFSOCK;S_IFSOCK;g' \
+		"$temporaryFolderPath"/librdmacm/preload.c
+}
+
 compile_rdma_core_prepareCMakeToolChainFile()
 {
 	CMAKE_TOOLCHAIN_FILE="$temporaryFolderPath"/toolchain.cmake
 	cat >"$CMAKE_TOOLCHAIN_FILE" <<-EOF
 		SET(CMAKE_SYSTEM_NAME Linux)
 		SET(CMAKE_SYSTEM_VERSION 1)
-		SET(CMAKE_C_COMPILER ${compilerPrefix}-cc)
-		SET(CMAKE_CXX_COMPILER ${compilerPrefix}-c++)
+		SET(CMAKE_C_COMPILER ${compilerPrefix}cc)
+		SET(CMAKE_CXX_COMPILER ${compilerPrefix}c++)
 		SET(CMAKE_FIND_ROOT_PATH ${targetSysRootFolderPath})
 		SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 		SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -255,10 +277,21 @@ compile_rdma_core_build()
 	local buildFolderPath="$temporaryFolderPath"/build
 	mkdir -m 0700 "$buildFolderPath"
 	
+	local destDirFolderPath="$temporaryFolderPath"/DESTDIR
+	mkdir -m 0700 "$destDirFolderPath"
+	
 	cd "$buildFolderPath" 1>/dev/null 2>/dev/null
 		
-		cmake -DCMAKE_TOOLCHAIN_FILE="$CMAKE_TOOLCHAIN_FILE" -DIN_PLACE=1 ..
-		make -j "$numberOfMakeJobs"
+		# Removes need for libnl
+		cmake \
+			-DCMAKE_TOOLCHAIN_FILE="$CMAKE_TOOLCHAIN_FILE" -DCMAKE_BUILD_TYPE=Release \
+			-DCMAKE_INSTALL_PREFIX='/usr' \
+			-DIN_PLACE=0 \
+			-DENABLE_STATIC=1 \
+			-DENABLE_VALGRIND=0 \
+			-DENABLE_RESOLVE_NEIGH=0 \
+			..
+		make -j "$numberOfMakeJobs" DESTDIR="$destDirFolderPath" install
 		
 	cd - 1>/dev/null 2>/dev/null
 }
@@ -288,6 +321,9 @@ compile_rdma_core_main()
 	
 	compile_rdma_core_makeCopyToAlter
 	
+	compile_rdma_core_fixMlx5CMakeListsToCreateAStaticProvider
+	compile_rdma_core_fixQedrProviderToWorkWithMusl
+	compile_rdma_core_fixRdmacmToWorkWithMusl
 	local CMAKE_TOOLCHAIN_FILE
 	compile_rdma_core_prepareCMakeToolChainFile
 	compile_rdma_core_build

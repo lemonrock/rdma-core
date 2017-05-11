@@ -7,12 +7,12 @@ rootIncludeFileName='infiniband/verbs.h'
 macosXHomebrewPackageNames='clang-format'
 alpineLinuxPackageNames='rsync make gcc linux-headers libunwind-dev linux-grsec-dev'
 clangAdditionalArguments=''
-headersFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/usr/include
-libFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/usr/lib
-link='ibverbs'
+headersFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/DESTDIR/usr/include
+libFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/DESTDIR/usr/lib
+link='cxgb3 cxgb4 hfi1verbs hns i40iw ibcm ibumad ibverbs ipathverbs mlx4 mlx5 mthca nes ocrdma qedr rdmacm rxe vmw_pvrdma'
 link_kind='static-nobundle'
 
 final_chance_to_tweak()
 {
-	:
+	sed -i -e 's/#\[derive(Debug, Default, Copy)\]/#[derive(Copy)]/g' "$outputFolderPath"/structs/ibv_values_ex.rs
 }

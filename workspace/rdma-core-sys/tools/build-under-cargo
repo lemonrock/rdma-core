@@ -138,9 +138,9 @@ build_under_cargo_reRunIfAnyChanged()
 	cd - 1>/dev/null 2>/dev/null
 }
 
-build_under_cargo_determineLibfabricRootFolderPath()
+build_under_cargo_determineRdmaCoreRootFolderPath()
 {
-	rdmacoreRootFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary
+	rdmacoreRootFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/DESTDIR
 		
 	if [ ! -d "$rdmacoreRootFolderPath" ]; then
 		needsCompilation='true'
@@ -150,12 +150,12 @@ build_under_cargo_determineLibfabricRootFolderPath()
 build_under_cargo_compileIfRequired()
 {
 	if $needsCompilation; then
-		"$homeFolder"/tools/compile-rdma-core
+		"$homeFolder"/tools/compile-rdma-core 1>&2
 	fi
 }
 
 # This is extremely brittle, mostly because of bindgen being brittle
-build_under_cargo_generatingRustBindingsToLibfabricIfRquired()
+build_under_cargo_generatingRustBindingsToRdmaCoreIfRequired()
 {
 	local rebuildBindings='false'
 	
@@ -178,7 +178,24 @@ build_under_cargo_copyHeadersToKnownLocationForEmbeddedCCodeInRust()
 # temporaryIncludeFolder
 build_under_cargo_outputCargoKeyValuePairs()
 {
-	printf 'cargo:rustc-link-lib=static-nobundle=libfabfic\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=cxgb3\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=cxgb4\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=hfi1verbs\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=hns\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=i40iw\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=ibcm\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=ibumad\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=ibverbs\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=ipathverbs\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=mlx4\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=mlx5\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=mthca\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=nes\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=ocrdma\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=qedr\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=rdmacm\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=rxe\n'
+	printf 'cargo:rustc-link-lib=static-nobundle=vmw_pvrdma\n'
 	
 	# Search path
 	printf 'cargo:rustc-link-search=native=%s\n' "$rdmacoreLibFolderPath"
@@ -193,7 +210,7 @@ build_under_cargo_steps()
 {	
 	local rdmacoreRootFolderPath
 	local needsCompilation='false'
-	build_under_cargo_determineLibfabricRootFolderPath
+	build_under_cargo_determineRdmaCoreRootFolderPath
 	
 	local rdmacoreLibFolderPath="$rdmacoreRootFolderPath"/usr/lib
 	local rdmacoreIncludeFolderPath="$rdmacoreRootFolderPath"/usr/include
@@ -203,9 +220,9 @@ build_under_cargo_steps()
 	
 	build_under_cargo_compileIfRequired
 	
-	build_under_cargo_copyHeadersToKnownLocationForEmbeddedCCodeInRust
+	build_under_cargo_generatingRustBindingsToRdmaCoreIfRequired
 	
-	build_under_cargo_generatingRustBindingsToLibfabricIfRquired
+	build_under_cargo_copyHeadersToKnownLocationForEmbeddedCCodeInRust
 
 	build_under_cargo_outputCargoKeyValuePairs
 }
