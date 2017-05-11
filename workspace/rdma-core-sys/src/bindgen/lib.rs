@@ -11,6 +11,7 @@ use ::core::option::Option;
 use ::libc::c_char;
 use ::libc::c_int;
 use ::libc::c_uint;
+use ::libc::c_ulonglong;
 use ::libc::c_void;
 
 use ::libc::pthread_cond_t;
@@ -43,5 +44,6 @@ include!("bindgen/constants.rs");
 include!("bindgen/enums.rs");
 include!("bindgen/functions.rs");
 include!("bindgen/structs.rs");
+include!("bindgen/types.rs");
 include!("bindgen/unions.rs");
 include!("bindgen/opaques.rs");

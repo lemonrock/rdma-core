@@ -2,3 +2,5 @@ ibv_access_flags
 ibv_qp_attr_mask
 ibv_wc_flags
 ibv_send_flags
+_bindgen_ty_3
+_bindgen_ty_4

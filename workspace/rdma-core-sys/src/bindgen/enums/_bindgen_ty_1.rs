@@ -4,23 +4,9 @@
 
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ibv_create_cq_wc_flags
+pub enum _bindgen_ty_1
 {
-	IBV_WC_EX_WITH_BYTE_LEN = 1,
-	IBV_WC_EX_WITH_IMM = 2,
-	IBV_WC_EX_WITH_QP_NUM = 4,
-	IBV_WC_EX_WITH_SRC_QP = 8,
-	IBV_WC_EX_WITH_SLID = 16,
-	IBV_WC_EX_WITH_SL = 32,
-	IBV_WC_EX_WITH_DLID_PATH_BITS = 64,
-	IBV_WC_EX_WITH_COMPLETION_TIMESTAMP = 128,
-}
-
-impl ::core::ops::BitOr<_bindgen_ty_3> for _bindgen_ty_3
-{
-	type Output = Self;
-	fn bitor(self, other: Self) -> Self
-	{
-		_bindgen_ty_3(self.0 | other.0)
-	}
+	IBV_LINK_LAYER_UNSPECIFIED = 0,
+	IBV_LINK_LAYER_INFINIBAND = 1,
+	IBV_LINK_LAYER_ETHERNET = 2,
 }

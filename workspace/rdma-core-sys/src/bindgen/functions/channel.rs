@@ -2,25 +2,8 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(u32)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ibv_create_cq_wc_flags
+extern "C"
 {
-	IBV_WC_EX_WITH_BYTE_LEN = 1,
-	IBV_WC_EX_WITH_IMM = 2,
-	IBV_WC_EX_WITH_QP_NUM = 4,
-	IBV_WC_EX_WITH_SRC_QP = 8,
-	IBV_WC_EX_WITH_SLID = 16,
-	IBV_WC_EX_WITH_SL = 32,
-	IBV_WC_EX_WITH_DLID_PATH_BITS = 64,
-	IBV_WC_EX_WITH_COMPLETION_TIMESTAMP = 128,
-}
-
-impl ::core::ops::BitOr<_bindgen_ty_3> for _bindgen_ty_3
-{
-	type Output = Self;
-	fn bitor(self, other: Self) -> Self
-	{
-		_bindgen_ty_3(self.0 | other.0)
-	}
+	pub fn ibv_destroy_comp_channel(channel: *mut ibv_comp_channel) -> c_int;
+	pub fn ibv_get_cq_event(channel: *mut ibv_comp_channel, cq: *mut *mut ibv_cq, cq_context: *mut *mut c_void) -> c_int;
 }

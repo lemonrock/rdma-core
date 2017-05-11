@@ -2,6 +2,7 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
+include!("bindgen/enums/_bindgen_ty_1.rs");
 include!("bindgen/enums/ibv_atomic_cap.rs");
 include!("bindgen/enums/ibv_cq_init_attr_mask.rs");
 include!("bindgen/enums/ibv_create_cq_attr_flags.rs");

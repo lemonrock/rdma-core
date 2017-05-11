@@ -1,0 +1,11 @@
+ibv_access_flags_ ibv_access_flags
+ibv_qp_attr_mask_ ibv_qp_attr_mask
+ibv_send_flags_ ibv_send_flags
+ibv_wc_flags_ ibv_wc_flags
+IBV_LINK_LAYER_ LINK_LAYER
+IBV_DEVICE_ DEVICE
+IBV_CREATE_CQ_SUP_WC_FLAGS CREATE_CQ_SUP_WC_FLAGS
+IBV_SYSFS_NAME_MAX Maximum
+IBV_SYSFS_PATH_MAX Maximum
+IBV_WC_IP_CSUM_OK_SHIFT WC_IP_CSUM_OK_SHIFT
+IBV_WC_STANDARD_FLAGS WC_STANDARD_FLAGS
