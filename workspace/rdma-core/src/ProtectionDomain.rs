@@ -2,30 +2,33 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug)]
-pub struct Device<'a>
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ProtectionDomain<'a>
 {
-	pointer: *mut ibv_device,
-	parent: PhantomData<&'a mut DeviceListIterator<'a>>
+	pointer: *mut ibv_pd,
+	lifetime: PhantomData<&'a Context>,
 }
 
-impl<'a> Device<'a>
+impl<'a> Drop for ProtectionDomain<'a>
 {
 	#[inline(always)]
-	pub fn name(&self) -> &'a CStr
+	fn drop(&mut self)
 	{
-		unsafe { CStr::from_ptr(ibv_get_device_name(self.pointer)) }
+		panic_on_errno!(ibv_dealloc_pd, self.pointer);
 	}
-	
+}
+
+impl<'a> ProtectionDomain<'a>
+{
 	#[inline(always)]
-	pub fn nodeGuid(&self) -> GUID
+	fn new(pointer: *mut ibv_pd) -> Self
 	{
-		GUID(unsafe { ibv_get_device_guid(self.pointer) })
-	}
-	
-	#[inline(always)]
-	pub fn openContext(self) -> Context
-	{
-		Context::new(panic_on_null!(ibv_open_device, self.pointer))
+		debug_assert!(!pointer.is_null(), "pointer is null");
+		
+		Self
+		{
+			pointer: pointer,
+			lifetime: PhantomData,
+		}
 	}
 }

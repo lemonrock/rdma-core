@@ -2,30 +2,13 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug)]
-pub struct Device<'a>
-{
-	pointer: *mut ibv_device,
-	parent: PhantomData<&'a mut DeviceListIterator<'a>>
-}
+pub struct AsynchronousEvent(ibv_async_event);
 
-impl<'a> Device<'a>
+impl Drop for AsynchronousEvent
 {
 	#[inline(always)]
-	pub fn name(&self) -> &'a CStr
+	fn drop(&mut self)
 	{
-		unsafe { CStr::from_ptr(ibv_get_device_name(self.pointer)) }
-	}
-	
-	#[inline(always)]
-	pub fn nodeGuid(&self) -> GUID
-	{
-		GUID(unsafe { ibv_get_device_guid(self.pointer) })
-	}
-	
-	#[inline(always)]
-	pub fn openContext(self) -> Context
-	{
-		Context::new(panic_on_null!(ibv_open_device, self.pointer))
+		unsafe { ibv_ack_async_event(&mut self.0) }
 	}
 }

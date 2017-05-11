@@ -2,30 +2,17 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug)]
-pub struct Device<'a>
+macro_rules! panic_on_errno
 {
-	pointer: *mut ibv_device,
-	parent: PhantomData<&'a mut DeviceListIterator<'a>>
-}
-
-impl<'a> Device<'a>
-{
-	#[inline(always)]
-	pub fn name(&self) -> &'a CStr
+	($function: path$(,$argument: expr)*) =>
 	{
-		unsafe { CStr::from_ptr(ibv_get_device_name(self.pointer)) }
-	}
-	
-	#[inline(always)]
-	pub fn nodeGuid(&self) -> GUID
-	{
-		GUID(unsafe { ibv_get_device_guid(self.pointer) })
-	}
-	
-	#[inline(always)]
-	pub fn openContext(self) -> Context
-	{
-		Context::new(panic_on_null!(ibv_open_device, self.pointer))
+		{
+			let okOrErrorNumber = unsafe { $function($($argument),*) };
+			debug_assert!(okOrErrorNumber >= 0, "{} returned a result '{}' which was negative", stringify!($function), okOrErrorNumber);
+			if $crate::rust_extra::unlikely(okOrErrorNumber != 0)
+			{
+				panic!("{} failed with error number '{}'", stringify!($function), okOrErrorNumber);
+			}
+		}
 	}
 }
