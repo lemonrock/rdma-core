@@ -9,9 +9,9 @@ ibv_attach_mcast qp
 ibv_create_ah pd
 ibv_create_ah_from_wc pd
 ibv_create_comp_channel context
-ibv_create_qp context
-ibv_create_srq context
-ibv_dealloc_pd context
+ibv_create_qp pd
+ibv_create_srq pd
+ibv_dealloc_pd pd
 ibv_dereg_mr mr
 ibv_destroy_ah ah
 ibv_destroy_comp_channel channel

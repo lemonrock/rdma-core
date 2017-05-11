@@ -11,6 +11,7 @@
       <w>fclass</w>
       <w>funcs</w>
       <w>getinfo</w>
+      <w>guid</w>
       <w>iovcnt</w>
       <w>iovec</w>
       <w>isystem</w>
@@ -31,6 +32,7 @@
       <w>nbyte</w>
       <w>nonoverlapping</w>
       <w>nvml</w>
+      <w>pkey</w>
       <w>pmem</w>
       <w>pmemblk</w>
       <w>pmemlog</w>
@@ -40,6 +42,7 @@
       <w>pobj</w>
       <w>poolsize</w>
       <w>pthread</w>
+      <w>rdma</w>
       <w>rwlock</w>
       <w>strdup</w>
       <w>werror</w>

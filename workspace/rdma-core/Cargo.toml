@@ -19,6 +19,8 @@ publish = false
 version = "0.0.0"
 
 [dependencies]
+errno = "0.2"
 libc = "0.2"
 rdma-core-sys = { path = "../rdma-core-sys", version = "0.0.0" }
 rust-extra = "0.0.10"
+syscall-alt = "0.0.12"
