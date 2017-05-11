@@ -1,0 +1,9 @@
+[submodule ".cargo"]
+	path = .cargo
+	url = https://github.com/lemonrock/.cargo.git
+[submodule "workspace/rdma-core-sys/lib/rdma-core"]
+	path = workspace/rdma-core-sys/lib/rdma-core
+	url = https://github.com/linux-rdma/rdma-core.git
+[submodule "workspace/rdma-core-sys/tools/bindgen-wrapper"]
+	path = workspace/rdma-core-sys/tools/bindgen-wrapper
+	url = https://github.com/lemonrock/bindgen-wrapper.git
