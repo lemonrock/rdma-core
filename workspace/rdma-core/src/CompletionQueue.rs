@@ -30,4 +30,36 @@ impl<'a> CompletionQueue<'a>
 			lifetime: lifetime,
 		}
 	}
+	
+	#[inline(always)]
+	pub fn resize(&self, atLeastThisNumberOfCompletionQueueEvents: u31)
+	{
+		panic_on_error!(ibv_resize_cq, self.pointer, atLeastThisNumberOfCompletionQueueEvents as i32);
+	}
+	
+//	/// See also <https://linux.die.net/man/3/ibv_get_cq_event>
+//	#[inline(always)]
+//	pub fn getEvent(&self) -> CompletionQueue<'a>
+//	{
+//		let channelPointer = match self.lifetime
+//		{
+//			None => null_mut(),
+//			Some(channel) => channel.pointer,
+//		};
+//
+//		panic_on_error!(ibv_get_cq_event, channelPointer, cq, context);
+//	}
+	
+	/*
+		Missing: ibv_req_notify_cq
+	
+		pub fn ibv_get_cq_event(channel: *mut ibv_comp_channel, cq: *mut *mut ibv_cq, cq_context: *mut *mut c_void) -> c_int;
+	*/
+	
+	/// This is relatively expensive to perform
+	#[inline(always)]
+	pub fn acknowledgeEvents(&self, numberOfEventsToAcknowledge: u32)
+	{
+		unsafe { ibv_ack_cq_events(self.pointer, numberOfEventsToAcknowledge) }
+	}
 }

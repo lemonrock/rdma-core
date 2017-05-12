@@ -36,8 +36,4 @@ impl<'a> CompletionChannel<'a>
 	{
 		self.context.createCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, Some(self))
 	}
-	
-	/*
-		pub fn ibv_create_cq(context: *mut ibv_context, cqe: c_int, cq_context: *mut c_void, channel: *mut ibv_comp_channel, comp_vector: c_int) -> *mut ibv_cq;
-	*/
 }

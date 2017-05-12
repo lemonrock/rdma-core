@@ -2,18 +2,11 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-macro_rules! panic_on_error
+#[derive(Debug)]
+pub struct SharedRequestQueue<'a>
 {
-	($function: path$(,$argument: expr)*) =>
-	{
-		{
-			let result = unsafe { $function($($argument),*) };
-			debug_assert!(result == 0 || result == -1, "{} returned a result '{}' which was not 0 or -1", stringify!($function), result);
-			if $crate::rust_extra::unlikely(result == -1)
-			{
-				let errno = $crate::errno::errno();
-				panic!("{} failed with error number '{}' ('{}')", stringify!($function), errno.0, errno);
-			}
-		}
-	}
+	pointer: *mut ibv_srq,
+	settings: SharedRequestQueueSettings,
+	limit: u32,
+	lifetime: PhantomData<&'a ProtectionDomain<'a>>
 }
