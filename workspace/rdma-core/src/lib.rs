@@ -2,6 +2,9 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
+// TODO: Where are ibv_alloc_mw and ibv_dealloc_mw and ibv_bind_mw defined?
+
+
 #![feature(static_nobundle)]
 #![feature(untagged_unions)]
 
@@ -40,12 +43,15 @@ include!("panic_on_error.rs");
 include!("panic_on_null.rs");
 
 
+include!("AddressHandle.rs");
 include!("AsynchronousEvent.rs");
 include!("CompletionChannel.rs");
 include!("CompletionQueue.rs");
 include!("Context.rs");
 include!("Device.rs");
 include!("DeviceListIterator.rs");
+include!("FileDescriptor.rs");
+include!("GlobalRoutingHeader.rs");
 include!("GUID.rs");
 include!("MemoryRegion.rs");
 include!("MemoryRegionAccess.rs");
@@ -54,3 +60,4 @@ include!("Port.rs");
 include!("ProtectionDomain.rs");
 include!("SharedRequestQueue.rs");
 include!("SharedRequestQueueSettings.rs");
+include!("WorkCompletion.rs");

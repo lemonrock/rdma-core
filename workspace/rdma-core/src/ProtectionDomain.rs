@@ -73,8 +73,23 @@ impl<'a> ProtectionDomain<'a>
 		}
 	}
 	
-//		pub fn ibv_create_ah(pd: *mut ibv_pd, attr: *mut ibv_ah_attr) -> *mut ibv_ah;
-//
-//		pub fn ibv_create_ah_from_wc(pd: *mut ibv_pd, wc: *mut ibv_wc, grh: *mut ibv_grh, port_num: u8) -> *mut ibv_ah;
-//
+	#[inline(always)]
+	pub fn createAddressHandleForPort(&'a self, portNumber: u8, workCompletion: &WorkCompletion, globalRoutingHeader: &GlobalRoutingHeader) -> AddressHandle<'a>
+	{
+		let mut attributes = self.context.port(portNumber).initialiseAddressHandleAttributes(workCompletion, globalRoutingHeader);
+		self.createAddressHandle(&mut attributes)
+	}
+	
+	#[inline(always)]
+	pub fn createAddressHandle(&'a self, attributes: &mut ibv_ah_attr) -> AddressHandle<'a>
+	{
+		debug_assert!(attributes.port_num < self.context.numberOfPhysicalPorts(), "port number '{}' is not less than the maximum '{}'", attributes.port_num, self.context.numberOfPhysicalPorts());
+		
+		let pointer = panic_on_null!(ibv_create_ah, self.pointer, attributes);
+		AddressHandle
+		{
+			pointer: pointer,
+			protectionDomain: self,
+		}
+	}
 }

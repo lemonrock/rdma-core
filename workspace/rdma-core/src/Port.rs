@@ -53,7 +53,11 @@ impl<'a> Port<'a>
 		gid
 	}
 	
-	/*
-		pub fn ibv_init_ah_from_wc(context: *mut ibv_context, port_num: u8, wc: *mut ibv_wc, grh: *mut ibv_grh, ah_attr: *mut ibv_ah_attr) -> c_int;
-	*/
+	#[inline(always)]
+	pub fn initialiseAddressHandleAttributes(&self, workCompletion: &WorkCompletion, globalRoutingHeader: &GlobalRoutingHeader) -> ibv_ah_attr
+	{
+		let mut attributes = unsafe { uninitialized() };
+		panic_on_error!(ibv_init_ah_from_wc, self.context.0, self.portNumber, workCompletion.pointer, globalRoutingHeader.pointer, &mut attributes);
+		attributes
+	}
 }

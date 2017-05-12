@@ -66,6 +66,24 @@ impl Context
 		}
 	}
 	
+	#[inline(always)]
+	pub fn commandFileDescriptor(&self) -> FileDescriptor
+	{
+		self.data().cmd_fd
+	}
+	
+	#[inline(always)]
+	pub fn asyncFileDescriptor(&self) -> FileDescriptor
+	{
+		self.data().async_fd
+	}
+	
+	#[inline(always)]
+	pub fn numberOfPhysicalPorts(&self) -> u8
+	{
+		self.attributes().phys_port_cnt
+	}
+	
 	/// See <https://linux.die.net/man/3/ibv_get_async_event>
 	#[inline(always)]
 	pub fn blockOnAsynchronousEvent(&self) -> AsynchronousEvent
@@ -78,7 +96,7 @@ impl Context
 	#[inline(always)]
 	pub fn port<'a>(&'a self, portNumber: u8) -> Port<'a>
 	{
-		debug_assert!(portNumber < self.1.phys_port_cnt, "portNumber '{}' exceeds maximum number of ports '{}'", portNumber, self.1.phys_port_cnt);
+		debug_assert!(portNumber < self.numberOfPhysicalPorts(), "portNumber '{}' exceeds maximum number of ports '{}'", portNumber, self.numberOfPhysicalPorts());
 		
 		Port::new(self, portNumber)
 	}
