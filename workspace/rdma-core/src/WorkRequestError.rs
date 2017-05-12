@@ -2,39 +2,30 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct WorkCompletion(ibv_wc);
+pub struct WorkRequestError
+{
+	status: ibv_wc_status,
+	vendorErrorCode: u32,
+}
 
-impl WorkCompletion
+impl WorkRequestError
 {
 	#[inline(always)]
-	pub fn workRequestIdentifier(&self) -> WorkRequestIdentifier
+	pub fn is(&self, status: ibv_wc_status) -> bool
 	{
-		self.0.wr_id
+		self.status == status
+	}
+	
+	/// See <http://www.rdmamojo.com/2013/02/15/ibv_poll_cq/> for details of these
+	#[inline(always)]
+	pub fn status(&self) -> ibv_wc_status
+	{
+		self.status
 	}
 	
 	#[inline(always)]
-	pub fn receiveWorkRequestLocalQueuePairNumberForSharedReceiveQueue(&self) -> QueuePairNumber
+	pub fn vendorErrorCode(&self) -> u32
 	{
-		self.0.qp_num
-	}
-	
-	#[inline(always)]
-	pub fn workRequestError<'a>(&'a self) -> Result<ValidWorkCompletion<'a>, WorkRequestError>
-	{
-		if likely(self.0.status == ibv_wc_status::IBV_WC_SUCCESS)
-		{
-			Ok(ValidWorkCompletion
-			{
-				workCompletion: self
-			})
-		}
-		else
-		{
-			Err(WorkRequestError
-			{
-				status: self.0.status,
-				vendorErrorCode: self.0.vendor_err
-			})
-		}
+		self.vendorErrorCode
 	}
 }
