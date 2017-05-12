@@ -2,11 +2,10 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ProtectionDomain<'a>
 {
 	pointer: *mut ibv_pd,
-	lifetime: PhantomData<&'a Context>,
+	context: &'a Context,
 }
 
 impl<'a> Drop for ProtectionDomain<'a>
@@ -21,14 +20,14 @@ impl<'a> Drop for ProtectionDomain<'a>
 impl<'a> ProtectionDomain<'a>
 {
 	#[inline(always)]
-	fn new(pointer: *mut ibv_pd) -> Self
+	fn new(pointer: *mut ibv_pd, context: &'a Context) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
 		Self
 		{
 			pointer: pointer,
-			lifetime: PhantomData,
+			context: context,
 		}
 	}
 	
@@ -55,7 +54,21 @@ impl<'a> ProtectionDomain<'a>
 				maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue: attributes.attr.max_wr,
 				maximumNumberOfScatterElementsPerWorkRequest: attributes.attr.max_sge,
 			},
-			limit: attributes.attr.srq_limit,
+			protectionDomain: self,
+		}
+	}
+	
+	#[inline(always)]
+	pub fn registerMemoryRegion(&'a self, address: *mut c_void, length: usize, access: &MemoryRegionAccess) -> MemoryRegion<'a>
+	{
+		debug_assert!(!address.is_null(), "address can not be null");
+		debug_assert!(length != 0, "length can not be zero");
+		debug_assert!(length as u64 <= self.context.attributes().max_mr_size, "length '{}' exceeds device maximum '{}'", length, self.context.attributes().max_mr_size);
+		
+		let pointer = panic_on_null!(ibv_reg_mr, self.pointer, address, length, access.as_c_int());
+		MemoryRegion
+		{
+			pointer: pointer,
 			lifetime: PhantomData,
 		}
 	}
@@ -64,7 +77,4 @@ impl<'a> ProtectionDomain<'a>
 //
 //		pub fn ibv_create_ah_from_wc(pd: *mut ibv_pd, wc: *mut ibv_wc, grh: *mut ibv_grh, port_num: u8) -> *mut ibv_ah;
 //
-//		pub fn ibv_reg_mr(pd: *mut ibv_pd, addr: *mut c_void, length: usize, access: c_int) -> *mut ibv_mr;
-//		pub fn ibv_dereg_mr(mr: *mut ibv_mr) -> c_int;
-//		pub fn ibv_rereg_mr(mr: *mut ibv_mr, flags: c_int, pd: *mut ibv_pd, addr: *mut c_void, length: usize, access: c_int) -> c_int
 }

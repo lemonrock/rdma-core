@@ -46,6 +46,13 @@ impl Context
 	}
 	
 	#[inline(always)]
+	pub fn deviceHasCapability(&self, capability: ibv_device_cap_flags) -> bool
+	{
+		let bit = capability as i32;
+		self.attributes().device_cap_flags & bit == bit
+	}
+	
+	#[inline(always)]
 	pub fn numberOfCompletionVectors(&self) -> u32
 	{
 		let num_comp_vectors = self.data().num_comp_vectors;
@@ -79,7 +86,7 @@ impl Context
 	#[inline(always)]
 	pub fn allocateProtectionDomain<'a>(&'a self) -> ProtectionDomain<'a>
 	{
-		ProtectionDomain::new(panic_on_null!(ibv_alloc_pd, self.0))
+		ProtectionDomain::new(panic_on_null!(ibv_alloc_pd, self.0), self)
 	}
 	
 	#[inline(always)]

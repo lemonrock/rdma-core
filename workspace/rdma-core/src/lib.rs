@@ -22,8 +22,10 @@ extern crate syscall_alt;
 
 
 use ::errno::errno;
+use ::libc::c_int;
 use ::libc::c_void;
 use ::rdma_core_sys::*;
+use ::rust_extra::likely;
 use ::rust_extra::u31;
 use ::rust_extra::unlikely;
 use ::std::ffi::CStr;
@@ -45,6 +47,9 @@ include!("Context.rs");
 include!("Device.rs");
 include!("DeviceListIterator.rs");
 include!("GUID.rs");
+include!("MemoryRegion.rs");
+include!("MemoryRegionAccess.rs");
+include!("MemoryRegionWriteAccess.rs");
 include!("Port.rs");
 include!("ProtectionDomain.rs");
 include!("SharedRequestQueue.rs");
