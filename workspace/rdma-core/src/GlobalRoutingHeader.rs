@@ -2,7 +2,4 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct GlobalRoutingHeader
-{
-	pointer: *mut ibv_grh,
-}
+pub struct GlobalRoutingHeader(ibv_grh);

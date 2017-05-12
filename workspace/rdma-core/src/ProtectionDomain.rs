@@ -74,7 +74,7 @@ impl<'a> ProtectionDomain<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createAddressHandleForPort(&'a self, portNumber: u8, workCompletion: &WorkCompletion, globalRoutingHeader: &GlobalRoutingHeader) -> AddressHandle<'a>
+	pub fn createAddressHandleForPort(&'a self, portNumber: u8, workCompletion: &mut WorkCompletion, globalRoutingHeader: &mut GlobalRoutingHeader) -> AddressHandle<'a>
 	{
 		let mut attributes = self.context.port(portNumber).initialiseAddressHandleAttributes(workCompletion, globalRoutingHeader);
 		self.createAddressHandle(&mut attributes)

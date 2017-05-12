@@ -54,10 +54,10 @@ impl<'a> Port<'a>
 	}
 	
 	#[inline(always)]
-	pub fn initialiseAddressHandleAttributes(&self, workCompletion: &WorkCompletion, globalRoutingHeader: &GlobalRoutingHeader) -> ibv_ah_attr
+	pub fn initialiseAddressHandleAttributes(&self, workCompletion: &mut WorkCompletion, globalRoutingHeader: &mut GlobalRoutingHeader) -> ibv_ah_attr
 	{
 		let mut attributes = unsafe { uninitialized() };
-		panic_on_error!(ibv_init_ah_from_wc, self.context.0, self.portNumber, workCompletion.pointer, globalRoutingHeader.pointer, &mut attributes);
+		panic_on_error!(ibv_init_ah_from_wc, self.context.0, self.portNumber, &mut workCompletion.0, &mut globalRoutingHeader.0, &mut attributes);
 		attributes
 	}
 }
