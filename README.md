@@ -1,15 +1,16 @@
-[](This file is part of rdma-core. It is subject to the license terms in the COPYRIGHT file found in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT. No part of rdma-core, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the COPYRIGHT file.)
-[](Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.)
-
 # rdma-core
 
-[![Clippy Linting Result](https://clippy.bashy.io/github/lemonrock/rdma-core/master/badge.svg?style=plastic)](https://clippy.bashy.io/github/lemonrock/rdma-core/master/log) [![](https://img.shields.io/badge/Code%20Style-rustfmt-brightgreen.svg?style=plastic)](https://github.com/rust-lang-nursery/rustfmt#configuring-rustfmt)
+rdma-core is a project to develop rust code to wrap the rdma-core C libraries. Currently it provides:-
 
-[rdma-core] is a rust crate.
+* `rdma-core-sys`, a Rust crate that provides a low-level FFI binding of `libibverbs`, as of version `r14-rc1`
+* `rdma-core`, an incomplete mid-level binding that uses `rdma-core-sys`, `rdma`
 
+The `rdma-core-sys` crate will compile on Alpine Linux and Mac OS X, but bindings generation has only been tested on Mac OS X. `rdma-core-sys` also includes generated bindings to static inline functions present in `libiberbs`. Please note that there is another Rust project to provide rdma-core bindings, <https://github.com/jonhoo/rust-ibverbs>.
+
+This project exists currently in an experimental form and primarily is being developed to serve the development needs of StormMQ. It may never stablise or support a development ecosystem that you are using. Eventually, it is planned to incorporate it into [Libertine Linux](https://github.com/libertine-linux), a small, in-memory, secure and built-from-source Linux distribution that is ideal for modern microservice clusters.
+
+Crates are present in the `workspace` folder along with IntelliJ module files.
 
 ## Licensing
 
 The license for this project is MIT.
-
-[rdma-core]: https://github.com/lemonrock/rdma-core "rdma-core GitHub page"
