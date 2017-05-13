@@ -11,6 +11,8 @@ This project exists currently in an experimental form and primarily is being dev
 
 Crates are present in the `workspace` folder along with IntelliJ module files.
 
+Pull requests are not likely to be accepted at this time.
+
 ## Licensing
 
 The license for this project is MIT.
