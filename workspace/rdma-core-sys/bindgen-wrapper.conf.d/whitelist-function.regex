@@ -1,1 +1,2 @@
 ibv_.*
+rust_ibv_.*

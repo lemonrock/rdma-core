@@ -4,19 +4,49 @@
 
 #[repr(C)]
 #[derive(Copy)]
-pub struct ibv_wc
+pub union ibv_wc__bindgen_ty_1
 {
-	pub wr_id: u64,
-	pub status: ibv_wc_status,
-	pub opcode: ibv_wc_opcode,
-	pub vendor_err: u32,
-	pub byte_len: u32,
-	pub __bindgen_anon_1: ibv_wc__bindgen_ty_1,
-	pub qp_num: u32,
-	pub src_qp: u32,
-	pub wc_flags: c_int,
-	pub pkey_index: u16,
-	pub slid: u16,
-	pub sl: u8,
-	pub dlid_path_bits: u8,
+    pub imm_data: __be32,
+    pub invalidated_rkey: u32,
+}
+
+impl Clone for ibv_wc__bindgen_ty_1
+{
+	fn clone(&self) -> Self
+	{
+		*self
+	}
+}
+
+impl Default for ibv_wc__bindgen_ty_1
+{
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Clone for ibv_wc
+{
+	fn clone(&self) -> Self
+	{
+		*self
+	}
+}
+
+impl Default for ibv_wc
+{
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl ::core::ops::BitOr<ibv_access_flags> for ibv_access_flags
+{
+	type Output = Self;
+	fn bitor(self, other: Self) -> Self
+	{
+		ibv_access_flags(self.0 | other.0)
+	}
 }

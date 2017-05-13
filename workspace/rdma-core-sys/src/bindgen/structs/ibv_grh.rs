@@ -6,8 +6,8 @@
 #[derive(Copy)]
 pub struct ibv_grh
 {
-	pub version_tclass_flow: u32,
-	pub paylen: u16,
+	pub version_tclass_flow: __be32,
+	pub paylen: __be16,
 	pub next_hdr: u8,
 	pub hop_limit: u8,
 	pub sgid: ibv_gid,

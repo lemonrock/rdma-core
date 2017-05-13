@@ -6,8 +6,8 @@
 pub struct ibv_device_attr
 {
 	pub fw_ver: [c_char; 64usize],
-	pub node_guid: u64,
-	pub sys_image_guid: u64,
+	pub node_guid: __be64,
+	pub sys_image_guid: __be64,
 	pub max_mr_size: u64,
 	pub page_size_cap: u64,
 	pub vendor_id: u32,

@@ -8,5 +8,6 @@ pub enum ibv_wq_attr_mask
 {
 	IBV_WQ_ATTR_STATE = 1,
 	IBV_WQ_ATTR_CURR_STATE = 2,
-	IBV_WQ_ATTR_RESERVED = 4,
+	IBV_WQ_ATTR_FLAGS = 4,
+	IBV_WQ_ATTR_RESERVED = 8,
 }

@@ -12,4 +12,6 @@ pub union ibv_flow_spec__bindgen_ty_1
     pub tcp_udp: ibv_flow_spec_tcp_udp,
     pub ipv4_ext: ibv_flow_spec_ipv4_ext,
     pub ipv6: ibv_flow_spec_ipv6,
+    pub tunnel: ibv_flow_spec_tunnel,
+    pub flow_tag: ibv_flow_spec_action_tag,
 }

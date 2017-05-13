@@ -4,9 +4,6 @@
 
 include!("bindgen/enums/_bindgen_ty_1.rs");
 include!("bindgen/enums/ibv_atomic_cap.rs");
-include!("bindgen/enums/ibv_cq_init_attr_mask.rs");
-include!("bindgen/enums/ibv_create_cq_attr_flags.rs");
-include!("bindgen/enums/ibv_create_cq_wc_flags.rs");
 include!("bindgen/enums/ibv_device_cap_flags.rs");
 include!("bindgen/enums/ibv_event_type.rs");
 include!("bindgen/enums/ibv_flow_attr_type.rs");
@@ -27,6 +24,7 @@ include!("bindgen/enums/ibv_qp_open_attr_mask.rs");
 include!("bindgen/enums/ibv_qp_state.rs");
 include!("bindgen/enums/ibv_qp_type.rs");
 include!("bindgen/enums/ibv_rate.rs");
+include!("bindgen/enums/ibv_raw_packet_caps.rs");
 include!("bindgen/enums/ibv_rereg_mr_err_code.rs");
 include!("bindgen/enums/ibv_rereg_mr_flags.rs");
 include!("bindgen/enums/ibv_rx_hash_fields.rs");
@@ -39,6 +37,7 @@ include!("bindgen/enums/ibv_values_mask.rs");
 include!("bindgen/enums/ibv_wc_opcode.rs");
 include!("bindgen/enums/ibv_wc_status.rs");
 include!("bindgen/enums/ibv_wq_attr_mask.rs");
+include!("bindgen/enums/ibv_wq_flags.rs");
 include!("bindgen/enums/ibv_wq_init_attr_mask.rs");
 include!("bindgen/enums/ibv_wq_state.rs");
 include!("bindgen/enums/ibv_wq_type.rs");

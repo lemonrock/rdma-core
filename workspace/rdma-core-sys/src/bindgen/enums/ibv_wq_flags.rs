@@ -4,8 +4,9 @@
 
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ibv_create_cq_attr_flags
+pub enum ibv_wq_flags
 {
-	IBV_CREATE_CQ_ATTR_SINGLE_THREADED = 1,
-	IBV_CREATE_CQ_ATTR_RESERVED = 2,
+	IBV_WQ_FLAGS_CVLAN_STRIPPING = 1,
+	IBV_WQ_FLAGS_SCATTER_FCS = 2,
+	IBV_WQ_FLAGS_RESERVED = 4,
 }

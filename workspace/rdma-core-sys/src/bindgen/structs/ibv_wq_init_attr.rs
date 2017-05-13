@@ -13,6 +13,7 @@ pub struct ibv_wq_init_attr
 	pub pd: *mut ibv_pd,
 	pub cq: *mut ibv_cq,
 	pub comp_mask: u32,
+	pub create_flags: u32,
 }
 
 impl Clone for ibv_wq_init_attr

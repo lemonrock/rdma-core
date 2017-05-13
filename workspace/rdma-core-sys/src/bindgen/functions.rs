@@ -9,6 +9,7 @@ include!("bindgen/functions/cq.rs");
 include!("bindgen/functions/device.rs");
 include!("bindgen/functions/event.rs");
 include!("bindgen/functions/fork.rs");
+include!("bindgen/functions/ibv.rs");
 include!("bindgen/functions/mr.rs");
 include!("bindgen/functions/node_type.rs");
 include!("bindgen/functions/pd.rs");

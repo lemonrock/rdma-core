@@ -2,44 +2,50 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct CompletionQueue<'a>
-{
-	pointer: *mut ibv_cq,
-	lifetime: Option<&'a CompletionChannel<'a>>,
-}
+// Causes a compiler ICE
+//impl<'a, T: Sized + CompletionQueue<'a>> Drop for T
+//{
+//	#[inline(always)]
+//	fn drop(&mut self)
+//	{
+//		panic_on_errno!(ibv_destroy_cq, self.pointer());
+//	}
+//}
 
-impl<'a> Drop for CompletionQueue<'a>
+pub trait CompletionQueue<'a>: Drop
 {
+	#[doc(hidden)]
 	#[inline(always)]
-	fn drop(&mut self)
+	fn pointer(&self) -> *mut ibv_cq;
+	
+	#[inline(always)]
+	fn resize(&self, atLeastThisNumberOfCompletionQueueEvents: u31)
 	{
-		panic_on_errno!(ibv_destroy_cq, self.pointer);
+		panic_on_error!(ibv_resize_cq, self.pointer(), atLeastThisNumberOfCompletionQueueEvents as i32);
 	}
-}
-
-impl<'a> CompletionQueue<'a>
-{
+	
+	/// This is relatively expensive to perform
 	#[inline(always)]
-	fn new(pointer: *mut ibv_cq, lifetime: Option<&'a CompletionChannel>) -> Self
+	fn acknowledgeEvents(&self, numberOfEventsToAcknowledge: u32)
 	{
-		debug_assert!(!pointer.is_null(), "pointer is null");
-		
-		Self
-		{
-			pointer: pointer,
-			lifetime: lifetime,
-		}
+		unsafe { ibv_ack_cq_events(self.pointer(), numberOfEventsToAcknowledge) }
 	}
 	
 	#[inline(always)]
-	pub fn resize(&self, atLeastThisNumberOfCompletionQueueEvents: u31)
+	fn requestCompletionNotificationsForSolicitedAndErrorEventsOnly(&self)
 	{
-		panic_on_error!(ibv_resize_cq, self.pointer, atLeastThisNumberOfCompletionQueueEvents as i32);
+		panic_on_errno!(rust_ibv_req_notify_cq, self.pointer(), 1)
+	}
+	
+	#[inline(always)]
+	fn requestCompletionNotificationsForAllEvents(&self)
+	{
+		panic_on_errno!(rust_ibv_req_notify_cq, self.pointer(), 0)
 	}
 	
 //	/// See also <https://linux.die.net/man/3/ibv_get_cq_event>
 //	#[inline(always)]
-//	pub fn getEvent(&self) -> CompletionQueue<'a>
+//	fn getEvent(&self) -> CompletionQueue<'a>
 //	{
 //		let channelPointer = match self.lifetime
 //		{
@@ -49,17 +55,4 @@ impl<'a> CompletionQueue<'a>
 //
 //		panic_on_error!(ibv_get_cq_event, channelPointer, cq, context);
 //	}
-	
-	/*
-		Missing: ibv_req_notify_cq
-	
-		pub fn ibv_get_cq_event(channel: *mut ibv_comp_channel, cq: *mut *mut ibv_cq, cq_context: *mut *mut c_void) -> c_int;
-	*/
-	
-	/// This is relatively expensive to perform
-	#[inline(always)]
-	pub fn acknowledgeEvents(&self, numberOfEventsToAcknowledge: u32)
-	{
-		unsafe { ibv_ack_cq_events(self.pointer, numberOfEventsToAcknowledge) }
-	}
 }

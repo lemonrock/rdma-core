@@ -215,8 +215,8 @@ struct ibv_query_device {
 
 struct ibv_query_device_resp {
 	__u64 fw_ver;
-	__u64 node_guid;
-	__u64 sys_image_guid;
+	__be64 node_guid;
+	__be64 sys_image_guid;
 	__u64 max_mr_size;
 	__u64 page_size_cap;
 	__u32 vendor_id;
@@ -290,7 +290,7 @@ struct ibv_query_device_resp_ex {
 	__u64 device_cap_flags_ex;
 	struct ibv_rss_caps_resp rss_caps;
 	__u32  max_wq_type_rq;
-	__u32 reserved;
+	__u32 raw_packet_caps;
 };
 
 struct ibv_query_port {
@@ -492,7 +492,7 @@ struct ibv_kern_wc {
 	__u32  opcode;
 	__u32  vendor_err;
 	__u32  byte_len;
-	__u32  imm_data;
+	__be32  imm_data;
 	__u32  qp_num;
 	__u32  src_qp;
 	__u32  wc_flags;
@@ -814,7 +814,7 @@ struct ibv_kern_send_wr {
 	__u32 num_sge;
 	__u32 opcode;
 	__u32 send_flags;
-	__u32 imm_data;
+	__be32 imm_data;
 	union {
 		struct {
 			__u64 remote_addr;
@@ -918,6 +918,25 @@ struct ibv_kern_spec_tcp_udp {
 	struct ibv_kern_tcp_udp_filter mask;
 };
 
+struct ibv_kern_spec_action_tag {
+	__u32  type;
+	__u16  size;
+	__u16 reserved;
+	__u32 tag_id;
+	__u32 reserved1;
+};
+
+struct ibv_kern_tunnel_filter {
+	__u32 tunnel_id;
+};
+
+struct ibv_kern_spec_tunnel {
+	__u32  type;
+	__u16  size;
+	__u16 reserved;
+	struct ibv_kern_tunnel_filter val;
+	struct ibv_kern_tunnel_filter mask;
+};
 
 struct ibv_kern_spec {
 	union {
@@ -931,6 +950,8 @@ struct ibv_kern_spec {
 		struct ibv_kern_spec_ipv4_ext ipv4_ext;
 		struct ibv_kern_spec_tcp_udp tcp_udp;
 		struct ibv_kern_spec_ipv6 ipv6;
+		struct ibv_kern_spec_tunnel tunnel;
+		struct ibv_kern_spec_action_tag flow_tag;
 	};
 };
 
@@ -1249,6 +1270,8 @@ struct ibv_create_wq {
 	__u32 cq_handle;
 	__u32 max_wr;
 	__u32 max_sge;
+	__u32 create_flags;
+	__u32 reserved;
 };
 
 struct ibv_create_wq_resp {
@@ -1279,6 +1302,8 @@ struct ibv_modify_wq  {
 	__u32 wq_handle;
 	__u32 wq_state;
 	__u32 curr_wq_state;
+	__u32 flags;
+	__u32 flags_mask;
 };
 
 struct ibv_create_rwq_ind_table {

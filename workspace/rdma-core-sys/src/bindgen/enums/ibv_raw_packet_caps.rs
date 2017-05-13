@@ -2,21 +2,11 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(C)]
-#[derive(Copy)]
-pub struct ibv_wc
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum ibv_raw_packet_caps
 {
-	pub wr_id: u64,
-	pub status: ibv_wc_status,
-	pub opcode: ibv_wc_opcode,
-	pub vendor_err: u32,
-	pub byte_len: u32,
-	pub __bindgen_anon_1: ibv_wc__bindgen_ty_1,
-	pub qp_num: u32,
-	pub src_qp: u32,
-	pub wc_flags: c_int,
-	pub pkey_index: u16,
-	pub slid: u16,
-	pub sl: u8,
-	pub dlid_path_bits: u8,
+	IBV_RAW_PACKET_CAP_CVLAN_STRIPPING = 1,
+	IBV_RAW_PACKET_CAP_SCATTER_FCS = 2,
+	IBV_RAW_PACKET_CAP_IP_CSUM = 4,
 }

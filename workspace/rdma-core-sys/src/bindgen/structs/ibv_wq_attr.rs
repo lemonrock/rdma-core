@@ -9,6 +9,8 @@ pub struct ibv_wq_attr
 	pub attr_mask: u32,
 	pub wq_state: ibv_wq_state,
 	pub curr_wq_state: ibv_wq_state,
+	pub flags: u32,
+	pub flags_mask: u32,
 }
 
 impl Clone for ibv_wq_attr

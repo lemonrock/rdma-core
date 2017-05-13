@@ -33,7 +33,8 @@ impl<'a> ValidWorkCompletion<'a>
 			let workRequestOperation = self.workRequestOperationWas();
 			if likely(workRequestOperation == ibv_wc_opcode::IBV_WC_SEND || workRequestOperation == ibv_wc_opcode::IBV_WC_RDMA_WRITE)
 			{
-				return Some(self.workCompletion.0.imm_data);
+				let union = (self.workCompletion.0).__bindgen_anon_1;
+				return Some(unsafe { union.imm_data });
 			}
 		}
 		None

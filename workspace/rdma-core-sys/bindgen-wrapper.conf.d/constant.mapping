@@ -9,3 +9,6 @@ IBV_SYSFS_NAME_MAX Maximum
 IBV_SYSFS_PATH_MAX Maximum
 IBV_WC_IP_CSUM_OK_SHIFT WC_IP_CSUM_OK_SHIFT
 IBV_WC_STANDARD_FLAGS WC_STANDARD_FLAGS
+ibv_cq_init_attr_mask_ ibv_cq_init_attr_mask
+ibv_create_cq_attr_flags_ ibv_create_cq_attr_flags
+ibv_create_cq_wc_flags_ ibv_create_cq_wc_flags

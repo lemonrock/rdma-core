@@ -6,5 +6,6 @@
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum ibv_wq_init_attr_mask
 {
-	IBV_WQ_INIT_ATTR_RESERVED = 1,
+	IBV_WQ_INIT_ATTR_FLAGS = 1,
+	IBV_WQ_INIT_ATTR_RESERVED = 2,
 }

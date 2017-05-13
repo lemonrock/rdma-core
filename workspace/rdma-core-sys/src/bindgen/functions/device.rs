@@ -5,7 +5,7 @@
 extern "C"
 {
 	pub fn ibv_free_device_list(list: *mut *mut ibv_device);
-	pub fn ibv_get_device_guid(device: *mut ibv_device) -> u64;
+	pub fn ibv_get_device_guid(device: *mut ibv_device) -> __be64;
 	pub fn ibv_get_device_list(num_devices: *mut c_int) -> *mut *mut ibv_device;
 	pub fn ibv_get_device_name(device: *mut ibv_device) -> *const c_char;
 	pub fn ibv_open_device(device: *mut ibv_device) -> *mut ibv_context;

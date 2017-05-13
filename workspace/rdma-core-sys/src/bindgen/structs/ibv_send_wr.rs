@@ -12,7 +12,7 @@ pub struct ibv_send_wr
 	pub num_sge: c_int,
 	pub opcode: ibv_wr_opcode,
 	pub send_flags: c_int,
-	pub imm_data: u32,
+	pub imm_data: __be32,
 	pub wr: ibv_send_wr__bindgen_ty_1,
 	pub qp_type: ibv_send_wr__bindgen_ty_2,
 	pub __bindgen_anon_1: ibv_send_wr__bindgen_ty_3,

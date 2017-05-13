@@ -15,6 +15,7 @@ pub struct ibv_device_attr_ex
 	pub rss_caps: ibv_rss_caps,
 	pub max_wq_type_rq: u32,
 	pub packet_pacing_caps: ibv_packet_pacing_caps,
+	pub raw_packet_caps: u32,
 }
 
 impl Default for ibv_device_attr_ex

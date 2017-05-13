@@ -3,20 +3,15 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
-pub struct ibv_wc
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ibv_cq_init_attr_mask(pub c_uint);
+
+impl ::core::ops::BitOr<ibv_create_cq_attr_flags> for ibv_create_cq_attr_flags
 {
-	pub wr_id: u64,
-	pub status: ibv_wc_status,
-	pub opcode: ibv_wc_opcode,
-	pub vendor_err: u32,
-	pub byte_len: u32,
-	pub __bindgen_anon_1: ibv_wc__bindgen_ty_1,
-	pub qp_num: u32,
-	pub src_qp: u32,
-	pub wc_flags: c_int,
-	pub pkey_index: u16,
-	pub slid: u16,
-	pub sl: u8,
-	pub dlid_path_bits: u8,
+	type Output = Self;
+	#[inline(always)]
+	fn bitor(self, other: Self) -> Self
+	{
+		ibv_create_cq_attr_flags(self.0 | other.0)
+	}
 }

@@ -6,8 +6,8 @@
 #[derive(Debug, Default, Copy)]
 pub struct ibv_gid__bindgen_ty_1
 {
-	pub subnet_prefix: u64,
-	pub interface_id: u64,
+	pub subnet_prefix: __be64,
+	pub interface_id: __be64,
 }
 
 impl Clone for ibv_gid__bindgen_ty_1

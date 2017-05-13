@@ -12,6 +12,8 @@
       <w>funcs</w>
       <w>getinfo</w>
       <w>guid</w>
+      <w>ibverbs</w>
+      <w>infiniband</w>
       <w>iovcnt</w>
       <w>iovec</w>
       <w>isystem</w>
@@ -45,6 +47,7 @@
       <w>rdma</w>
       <w>rwlock</w>
       <w>strdup</w>
+      <w>unextended</w>
       <w>werror</w>
       <w>whitelist</w>
       <w>wrlock</w>

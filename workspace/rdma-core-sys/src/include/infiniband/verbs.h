@@ -41,6 +41,7 @@
 #include <stddef.h>
 #include <errno.h>
 #include <string.h>
+#include <linux/types.h>
 
 #ifdef __cplusplus
 #  define BEGIN_C_DECLS extern "C" {
@@ -61,8 +62,8 @@ BEGIN_C_DECLS
 union ibv_gid {
 	uint8_t			raw[16];
 	struct {
-		uint64_t	subnet_prefix;
-		uint64_t	interface_id;
+		__be64	subnet_prefix;
+		__be64	interface_id;
 	} global;
 };
 
@@ -141,8 +142,8 @@ enum ibv_atomic_cap {
 
 struct ibv_device_attr {
 	char			fw_ver[64];
-	uint64_t		node_guid;
-	uint64_t		sys_image_guid;
+	__be64			node_guid;
+	__be64			sys_image_guid;
 	uint64_t		max_mr_size;
 	uint64_t		page_size_cap;
 	uint32_t		vendor_id;
@@ -252,6 +253,12 @@ struct ibv_packet_pacing_caps {
 	uint32_t supported_qpts;
 };
 
+enum ibv_raw_packet_caps {
+	IBV_RAW_PACKET_CAP_CVLAN_STRIPPING	= 1 << 0,
+	IBV_RAW_PACKET_CAP_SCATTER_FCS		= 1 << 1,
+	IBV_RAW_PACKET_CAP_IP_CSUM		= 1 << 2,
+};
+
 struct ibv_device_attr_ex {
 	struct ibv_device_attr	orig_attr;
 	uint32_t		comp_mask;
@@ -263,6 +270,7 @@ struct ibv_device_attr_ex {
 	struct ibv_rss_caps     rss_caps;
 	uint32_t		max_wq_type_rq;
 	struct ibv_packet_pacing_caps packet_pacing_caps;
+	uint32_t		raw_packet_caps; /* Use ibv_raw_packet_caps */
 };
 
 enum ibv_mtu {
@@ -428,6 +436,8 @@ enum ibv_create_cq_wc_flags {
 	IBV_WC_EX_WITH_SL		= 1 << 5,
 	IBV_WC_EX_WITH_DLID_PATH_BITS	= 1 << 6,
 	IBV_WC_EX_WITH_COMPLETION_TIMESTAMP	= 1 << 7,
+	IBV_WC_EX_WITH_CVLAN		= 1 << 8,
+	IBV_WC_EX_WITH_FLOW_TAG		= 1 << 9,
 };
 
 enum {
@@ -442,7 +452,9 @@ enum {
 
 enum {
 	IBV_CREATE_CQ_SUP_WC_FLAGS = IBV_WC_STANDARD_FLAGS |
-				IBV_WC_EX_WITH_COMPLETION_TIMESTAMP
+				IBV_WC_EX_WITH_COMPLETION_TIMESTAMP |
+				IBV_WC_EX_WITH_CVLAN |
+				IBV_WC_EX_WITH_FLOW_TAG
 };
 
 enum ibv_wc_flags {
@@ -461,7 +473,10 @@ struct ibv_wc {
 	/* When (wc_flags & IBV_WC_WITH_IMM): Immediate data in network byte order.
 	 * When (wc_flags & IBV_WC_WITH_INV): Stores the invalidated rkey.
 	 */
-	uint32_t		imm_data;
+	union {
+		__be32		imm_data;
+		uint32_t	invalidated_rkey;
+	};
 	uint32_t		qp_num;
 	uint32_t		src_qp;
 	int			wc_flags;
@@ -549,8 +564,8 @@ struct ibv_global_route {
 };
 
 struct ibv_grh {
-	uint32_t		version_tclass_flow;
-	uint16_t		paylen;
+	__be32			version_tclass_flow;
+	__be16			paylen;
 	uint8_t			next_hdr;
 	uint8_t			hop_limit;
 	union ibv_gid		sgid;
@@ -584,26 +599,26 @@ enum ibv_rate {
  * converted to 2, since 5 Gbit/sec is 2 * 2.5 Gbit/sec.
  * @rate: rate to convert.
  */
-int ibv_rate_to_mult(enum ibv_rate rate) __attribute_const;
+int  __attribute_const ibv_rate_to_mult(enum ibv_rate rate);
 
 /**
  * mult_to_ibv_rate - Convert a multiple of 2.5 Gbit/sec to an IB rate enum.
  * @mult: multiple to convert.
  */
-enum ibv_rate mult_to_ibv_rate(int mult) __attribute_const;
+enum ibv_rate __attribute_const mult_to_ibv_rate(int mult);
 
 /**
  * ibv_rate_to_mbps - Convert the IB rate enum to Mbit/sec.
  * For example, IBV_RATE_5_GBPS will return the value 5000.
  * @rate: rate to convert.
  */
-int ibv_rate_to_mbps(enum ibv_rate rate) __attribute_const;
+int __attribute_const ibv_rate_to_mbps(enum ibv_rate rate);
 
 /**
  * mbps_to_ibv_rate - Convert a Mbit/sec value to an IB rate enum.
  * @mbps: value to convert.
  */
-enum ibv_rate mbps_to_ibv_rate(int mbps) __attribute_const;
+enum ibv_rate __attribute_const mbps_to_ibv_rate(int mbps) __attribute_const;
 
 struct ibv_ah_attr {
 	struct ibv_global_route	grh;
@@ -660,7 +675,14 @@ enum ibv_wq_type {
 };
 
 enum ibv_wq_init_attr_mask {
-	IBV_WQ_INIT_ATTR_RESERVED	= 1 << 0,
+	IBV_WQ_INIT_ATTR_FLAGS		= 1 << 0,
+	IBV_WQ_INIT_ATTR_RESERVED	= 1 << 1,
+};
+
+enum ibv_wq_flags {
+	IBV_WQ_FLAGS_CVLAN_STRIPPING		= 1 << 0,
+	IBV_WQ_FLAGS_SCATTER_FCS		= 1 << 1,
+	IBV_WQ_FLAGS_RESERVED			= 1 << 2,
 };
 
 struct ibv_wq_init_attr {
@@ -670,7 +692,8 @@ struct ibv_wq_init_attr {
 	uint32_t		max_sge;
 	struct	ibv_pd	       *pd;
 	struct	ibv_cq	       *cq;
-	uint32_t		comp_mask;
+	uint32_t		comp_mask; /* Use ibv_wq_init_attr_mask */
+	uint32_t		create_flags; /* use ibv_wq_flags */
 };
 
 enum ibv_wq_state {
@@ -683,7 +706,8 @@ enum ibv_wq_state {
 enum ibv_wq_attr_mask {
 	IBV_WQ_ATTR_STATE	= 1 << 0,
 	IBV_WQ_ATTR_CURR_STATE	= 1 << 1,
-	IBV_WQ_ATTR_RESERVED	= 1 << 2
+	IBV_WQ_ATTR_FLAGS	= 1 << 2,
+	IBV_WQ_ATTR_RESERVED	= 1 << 3,
 };
 
 struct ibv_wq_attr {
@@ -693,6 +717,8 @@ struct ibv_wq_attr {
 	enum	ibv_wq_state	wq_state;
 	/* Assume this is the current WQ state */
 	enum	ibv_wq_state	curr_wq_state;
+	uint32_t		flags; /* Use ibv_wq_flags */
+	uint32_t		flags_mask; /* Use ibv_wq_flags */
 };
 
 /*
@@ -763,6 +789,7 @@ enum ibv_qp_init_attr_mask {
 enum ibv_qp_create_flags {
 	IBV_QP_CREATE_BLOCK_SELF_MCAST_LB	= 1 << 1,
 	IBV_QP_CREATE_SCATTER_FCS		= 1 << 8,
+	IBV_QP_CREATE_CVLAN_STRIPPING		= 1 << 9,
 };
 
 struct ibv_rx_hash_conf {
@@ -914,7 +941,7 @@ struct ibv_send_wr {
 	int			num_sge;
 	enum ibv_wr_opcode	opcode;
 	int			send_flags;
-	uint32_t		imm_data;	/* in network byte order */
+	__be32			imm_data;
 	union {
 		struct {
 			uint64_t	remote_addr;
@@ -1074,6 +1101,8 @@ struct ibv_cq_ex {
 	uint8_t (*read_sl)(struct ibv_cq_ex *current);
 	uint8_t (*read_dlid_path_bits)(struct ibv_cq_ex *current);
 	uint64_t (*read_completion_ts)(struct ibv_cq_ex *current);
+	uint16_t (*read_cvlan)(struct ibv_cq_ex *current);
+	uint32_t (*read_flow_tag)(struct ibv_cq_ex *current);
 };
 
 static inline struct ibv_cq *ibv_cq_ex_to_cq(struct ibv_cq_ex *cq)
@@ -1152,6 +1181,16 @@ static inline uint64_t ibv_wc_read_completion_ts(struct ibv_cq_ex *cq)
 	return cq->read_completion_ts(cq);
 }
 
+static inline uint16_t ibv_wc_read_cvlan(struct ibv_cq_ex *cq)
+{
+	return cq->read_cvlan(cq);
+}
+
+static inline uint32_t ibv_wc_read_flow_tag(struct ibv_cq_ex *cq)
+{
+	return cq->read_flow_tag(cq);
+}
+
 static inline int ibv_post_wq_recv(struct ibv_wq *wq,
 				   struct ibv_recv_wr *recv_wr,
 				   struct ibv_recv_wr **bad_recv_wr)
@@ -1186,12 +1225,15 @@ enum ibv_flow_attr_type {
 };
 
 enum ibv_flow_spec_type {
-	IBV_FLOW_SPEC_ETH	= 0x20,
-	IBV_FLOW_SPEC_IPV4	= 0x30,
-	IBV_FLOW_SPEC_IPV6	= 0x31,
-	IBV_FLOW_SPEC_IPV4_EXT	= 0x32,
-	IBV_FLOW_SPEC_TCP	= 0x40,
-	IBV_FLOW_SPEC_UDP	= 0x41,
+	IBV_FLOW_SPEC_ETH		= 0x20,
+	IBV_FLOW_SPEC_IPV4		= 0x30,
+	IBV_FLOW_SPEC_IPV6		= 0x31,
+	IBV_FLOW_SPEC_IPV4_EXT		= 0x32,
+	IBV_FLOW_SPEC_TCP		= 0x40,
+	IBV_FLOW_SPEC_UDP		= 0x41,
+	IBV_FLOW_SPEC_VXLAN_TUNNEL	= 0x50,
+	IBV_FLOW_SPEC_INNER		= 0x100,
+	IBV_FLOW_SPEC_ACTION_TAG	= 0x1000
 };
 
 struct ibv_flow_eth_filter {
@@ -1267,6 +1309,23 @@ struct ibv_flow_spec_tcp_udp {
 	struct ibv_flow_tcp_udp_filter mask;
 };
 
+struct ibv_flow_tunnel_filter {
+	uint32_t tunnel_id;
+};
+
+struct ibv_flow_spec_tunnel {
+	enum ibv_flow_spec_type  type;
+	uint16_t  size;
+	struct ibv_flow_tunnel_filter val;
+	struct ibv_flow_tunnel_filter mask;
+};
+
+struct ibv_flow_spec_action_tag {
+	enum ibv_flow_spec_type  type;
+	uint16_t  size;
+	uint32_t  tag_id;
+};
+
 struct ibv_flow_spec {
 	union {
 		struct {
@@ -1278,6 +1337,8 @@ struct ibv_flow_spec {
 		struct ibv_flow_spec_tcp_udp tcp_udp;
 		struct ibv_flow_spec_ipv4_ext ipv4_ext;
 		struct ibv_flow_spec_ipv6 ipv6;
+		struct ibv_flow_spec_tunnel tunnel;
+		struct ibv_flow_spec_action_tag flow_tag;
 	};
 };
 
@@ -1533,7 +1594,7 @@ const char *ibv_get_device_name(struct ibv_device *device);
 /**
  * ibv_get_device_guid - Return device's node GUID
  */
-uint64_t ibv_get_device_guid(struct ibv_device *device);
+__be64 ibv_get_device_guid(struct ibv_device *device);
 
 /**
  * ibv_open_device - Initialize device for use
@@ -1603,7 +1664,7 @@ int ibv_query_gid(struct ibv_context *context, uint8_t port_num,
  * ibv_query_pkey - Get a P_Key table entry
  */
 int ibv_query_pkey(struct ibv_context *context, uint8_t port_num,
-		   int index, uint16_t *pkey);
+		   int index, __be16 *pkey);
 
 /**
  * ibv_alloc_pd - Allocate a protection domain

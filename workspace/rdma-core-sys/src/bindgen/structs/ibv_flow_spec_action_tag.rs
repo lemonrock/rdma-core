@@ -2,10 +2,29 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(u32)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ibv_cq_init_attr_mask
+#[repr(C)]
+#[derive(Debug, Copy)]
+pub struct ibv_flow_spec_action_tag
 {
-	IBV_CQ_INIT_ATTR_MASK_FLAGS = 1,
-	IBV_CQ_INIT_ATTR_MASK_RESERVED = 2,
+	pub type_: ibv_flow_spec_type,
+	pub size: u16,
+	pub tag_id: u32,
+}
+
+impl Clone for ibv_flow_spec_action_tag
+{
+	#[inline(always)]
+	fn clone(&self) -> Self
+	{
+		*self
+	}
+}
+
+impl Default for ibv_flow_spec_action_tag
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
 }

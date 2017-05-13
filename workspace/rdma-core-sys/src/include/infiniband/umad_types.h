@@ -119,6 +119,7 @@ enum {
 enum {
 	UMAD_LEN_DATA			= 232,
 	UMAD_LEN_RMPP_DATA		= 220,
+	UMAD_LEN_DM_DATA		= 192,
 	UMAD_LEN_VENDOR_DATA		= 216,
 };
 
@@ -155,6 +156,12 @@ struct umad_rmpp_packet {
 	uint8_t			data[UMAD_LEN_RMPP_DATA]; /* network-byte order */
 };
 
+struct umad_dm_packet {
+	struct umad_hdr		mad_hdr;
+	uint8_t			reserved[40];
+	uint8_t			data[UMAD_LEN_DM_DATA];	/* network-byte order */
+};
+
 struct umad_vendor_packet {
 	struct umad_hdr		mad_hdr;
 	struct umad_rmpp_hdr	rmpp_hdr;
@@ -175,13 +182,19 @@ struct umad_class_port_info {
 	uint8_t class_ver;
 	__be16  cap_mask;
 	__be32  cap_mask2_resp_time;
-	uint8_t redir_gid[16]; /* network byte order */
+	union {
+		uint8_t redir_gid[16] __attribute__((deprecated)); /* network byte order */
+		union umad_gid redirgid;
+	};
 	__be32  redir_tc_sl_fl;
 	__be16  redir_lid;
 	__be16  redir_pkey;
 	__be32  redir_qp;
 	__be32  redir_qkey;
-	uint8_t trap_gid[16]; /* network byte order */
+	union {
+		uint8_t trap_gid[16] __attribute__((deprecated)); /* network byte order */
+		union umad_gid trapgid;
+	};
 	__be32  trap_tc_sl_fl;
 	__be16  trap_lid;
 	__be16  trap_pkey;

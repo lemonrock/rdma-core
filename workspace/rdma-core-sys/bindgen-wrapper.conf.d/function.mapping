@@ -44,3 +44,4 @@ ibv_resize_cq cq
 ibv_resolve_eth_l2_from_gid context
 ibv_wc_status_str status
 ibv_fork_init fork
+rust_ibv_ ibv

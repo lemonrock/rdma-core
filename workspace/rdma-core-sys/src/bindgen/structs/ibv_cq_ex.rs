@@ -32,6 +32,8 @@ pub struct ibv_cq_ex
 	pub read_sl: Option<unsafe extern "C" fn(current: *mut ibv_cq_ex) -> u8>,
 	pub read_dlid_path_bits: Option<unsafe extern "C" fn(current: *mut ibv_cq_ex) -> u8>,
 	pub read_completion_ts: Option<unsafe extern "C" fn(current: *mut ibv_cq_ex) -> u64>,
+	pub read_cvlan: Option<unsafe extern "C" fn(current: *mut ibv_cq_ex) -> u16>,
+	pub read_flow_tag: Option<unsafe extern "C" fn(current: *mut ibv_cq_ex) -> u32>,
 }
 
 impl Clone for ibv_cq_ex

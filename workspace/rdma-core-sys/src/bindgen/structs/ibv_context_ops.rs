@@ -57,3 +57,13 @@ impl Default for ibv_context_ops
 		unsafe { zeroed() }
 	}
 }
+
+impl ::core::ops::BitOr<ibv_cq_init_attr_mask> for ibv_cq_init_attr_mask
+{
+	type Output = Self;
+	#[inline(always)]
+	fn bitor(self, other: Self) -> Self
+	{
+		ibv_cq_init_attr_mask(self.0 | other.0)
+	}
+}

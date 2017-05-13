@@ -3,6 +3,7 @@
 
 
 // TODO: Where are ibv_alloc_mw and ibv_dealloc_mw and ibv_bind_mw defined?
+// TODO: ibv_poll_cq
 
 
 #![feature(static_nobundle)]
@@ -51,6 +52,7 @@ include!("CompletionQueue.rs");
 include!("Context.rs");
 include!("Device.rs");
 include!("DeviceListIterator.rs");
+include!("ExtendedCompletionQueue.rs");
 include!("FileDescriptor.rs");
 include!("GlobalRoutingHeader.rs");
 include!("GUID.rs");
@@ -65,7 +67,8 @@ include!("QueuePairNumber.rs");
 include!("ServiceLevel.rs");
 include!("SharedRequestQueue.rs");
 include!("SharedRequestQueueSettings.rs");
+include!("UnextendedCompletionQueue.rs");
+include!("ValidWorkCompletion.rs");
 include!("WorkCompletion.rs");
 include!("WorkRequestError.rs");
 include!("WorkRequestIdentifier.rs");
-include!("ValidWorkCompletion.rs");

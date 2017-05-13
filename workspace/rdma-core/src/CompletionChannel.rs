@@ -32,8 +32,14 @@ impl<'a> CompletionChannel<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createCompletionQueue(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> CompletionQueue<'a>
+	pub fn createUnextendedCompletionQueue(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> UnextendedCompletionQueue<'a>
 	{
-		self.context.createCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, Some(self))
+		self.context.createUnextendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, Some(self))
+	}
+	
+	#[inline(always)]
+	pub fn createExtendedCompletionQueueWithoutCompletionChannel(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> ExtendedCompletionQueue<'a>
+	{
+		self.context.createExtendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, Some(self))
 	}
 }
