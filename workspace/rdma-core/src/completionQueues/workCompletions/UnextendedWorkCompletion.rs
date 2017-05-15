@@ -4,22 +4,24 @@
 
 pub struct UnextendedWorkCompletion(pub(crate) ibv_wc);
 
-impl UnextendedWorkCompletion
+impl<'a> WorkCompletion<'a> for UnextendedWorkCompletion
 {
+	type ValidWorkCompletion = UnextendedValidWorkCompletion<'a>;
+	
 	#[inline(always)]
-	pub fn workRequestIdentifier(&self) -> WorkRequestIdentifier
+	fn workRequestIdentifier(&self) -> WorkRequestIdentifier
 	{
 		self.0.wr_id
 	}
 	
 	#[inline(always)]
-	pub fn receiveWorkRequestLocalQueuePairNumberForSharedReceiveQueue(&self) -> QueuePairNumber
+	fn receiveWorkRequestLocalQueuePairNumberForSharedReceiveQueue(&self) -> QueuePairNumber
 	{
 		self.0.qp_num
 	}
 	
 	#[inline(always)]
-	pub fn workRequestError<'a>(&'a self) -> Result<UnextendedValidWorkCompletion<'a>, WorkRequestError>
+	fn workRequestError(&'a self) -> Result<Self::ValidWorkCompletion, WorkRequestError>
 	{
 		if likely(self.0.status == ibv_wc_status::IBV_WC_SUCCESS)
 		{

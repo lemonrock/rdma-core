@@ -8,10 +8,10 @@ pub struct UnextendedValidWorkCompletion<'a>
 	unextendedWorkCompletion: &'a UnextendedWorkCompletion
 }
 
-impl<'a> UnextendedValidWorkCompletion<'a>
+impl<'a> ValidWorkCompletion<'a> for UnextendedValidWorkCompletion<'a>
 {
 	#[inline(always)]
-	pub fn workRequestOperationWas(&self) -> ibv_wc_opcode
+	fn workRequestOperationWas(&self) -> ibv_wc_opcode
 	{
 		self.unextendedWorkCompletion.0.opcode
 	}
@@ -19,13 +19,13 @@ impl<'a> UnextendedValidWorkCompletion<'a>
 	// Only relevant for UD => Unreliable datagram?
 	// AKA source queue pair number
 	#[inline(always)]
-	pub fn receiveWorkRequestRemoteQueuePairNumber(&self) -> QueuePairNumber
+	fn receiveWorkRequestRemoteQueuePairNumber(&self) -> QueuePairNumber
 	{
 		self.unextendedWorkCompletion.0.src_qp
 	}
 	
 	#[inline(always)]
-	pub fn immediateDataInNetworkByteOrder(&self) -> Option<u32>
+	fn immediateDataInNetworkByteOrder(&self) -> Option<u32>
 	{
 		const IBV_WC_WITH_IMM: c_int = 2;
 		if unlikely(self.unextendedWorkCompletion.0.wc_flags & IBV_WC_WITH_IMM == IBV_WC_WITH_IMM)
@@ -42,7 +42,7 @@ impl<'a> UnextendedValidWorkCompletion<'a>
 	
 	// Only relevant for UD; all UD have a 40 byte reserved space at the beginning
 	#[inline(always)]
-	pub fn validGlobalRoutingHeaderPresentInFirst40Bytes(&self) -> bool
+	fn validGlobalRoutingHeaderPresentInFirst40Bytes(&self) -> bool
 	{
 		const IBV_WC_GRH: c_int = 1;
 		self.unextendedWorkCompletion.0.wc_flags & IBV_WC_GRH == IBV_WC_GRH
@@ -50,21 +50,21 @@ impl<'a> UnextendedValidWorkCompletion<'a>
 	
 	// Only relevant for UD
 	#[inline(always)]
-	pub fn receiveWorkRequestSourceLocalIdentifier(&self) -> LocalIdentifier
+	fn receiveWorkRequestSourceLocalIdentifier(&self) -> LocalIdentifier
 	{
 		self.unextendedWorkCompletion.0.slid
 	}
 	
 	// Only relevant for UD
 	#[inline(always)]
-	pub fn receiveWorkRequestServiceLevel(&self) -> ServiceLevel
+	fn receiveWorkRequestServiceLevel(&self) -> ServiceLevel
 	{
 		unsafe { transmute(self.unextendedWorkCompletion.0.sl) }
 	}
 	
 	// Only relevant for UD and only then for unicast messages
 	#[inline(always)]
-	pub fn receiveWorkRequestDestinationLocalIdentifierPath(&self) -> LocalIdentifierPath
+	fn receiveWorkRequestDestinationLocalIdentifierPath(&self) -> LocalIdentifierPath
 	{
 		self.unextendedWorkCompletion.0.dlid_path_bits
 	}
@@ -73,7 +73,7 @@ impl<'a> UnextendedValidWorkCompletion<'a>
 	/// For the Receive Queue of a UD QP that is not associated with an SRQ or for an SRQ that is associated with a UD QP this value equals to the payload of the message plus the 40 bytes reserved for the GRH.
 	/// The number of bytes transferred is the payload of the message plus the 40 bytes reserved for the GRH, whether or not the GRH is present
 	#[inline(always)]
-	pub fn numberOfBytesTransferred(&self) -> u32
+	fn numberOfBytesTransferred(&self) -> u32
 	{
 		self.unextendedWorkCompletion.0.byte_len as u32
 	}

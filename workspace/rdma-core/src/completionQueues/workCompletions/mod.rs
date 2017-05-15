@@ -18,3 +18,4 @@ include!("UnextendedValidWorkCompletion.rs");
 include!("WorkCompletion.rs");
 include!("WorkRequestError.rs");
 include!("WorkRequestIdentifier.rs");
+include!("ValidWorkCompletion.rs");
