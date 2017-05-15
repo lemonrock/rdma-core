@@ -2,9 +2,6 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#![feature(static_nobundle)]
-#![feature(untagged_unions)]
-
 #![allow(missing_copy_implementations)]
 #![allow(missing_debug_implementations)]
 #![allow(non_camel_case_types)]
@@ -36,6 +33,7 @@ use ::std::marker::PhantomData;
 use ::std::mem::uninitialized;
 use ::std::ptr::null_mut;
 use ::syscall_alt::constants::E;
+
 
 include!("panic_on_errno.rs");
 include!("panic_on_error.rs");
