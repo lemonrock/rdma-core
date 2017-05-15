@@ -4,9 +4,9 @@
 
 pub struct SharedRequestQueue<'a>
 {
-	pointer: *mut ibv_srq,
-	settings: SharedRequestQueueSettings,
-	protectionDomain: &'a ProtectionDomain<'a>
+	pub(crate) pointer: *mut ibv_srq,
+	pub(crate) settings: SharedRequestQueueSettings,
+	pub(crate) protectionDomain: &'a ProtectionDomain<'a>
 }
 
 impl<'a> Drop for SharedRequestQueue<'a>

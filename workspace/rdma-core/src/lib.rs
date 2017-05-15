@@ -28,6 +28,8 @@ use ::libc::c_void;
 use ::rdma_core_sys::*;
 use ::rust_extra::likely;
 use ::rust_extra::unlikely;
+use ::sharedRequestQueues::SharedRequestQueue;
+use ::sharedRequestQueues::SharedRequestQueueSettings;
 use ::std::ffi::CStr;
 use ::std::marker::PhantomData;
 use ::std::mem::uninitialized;
@@ -41,6 +43,7 @@ include!("panic_on_null.rs");
 
 
 pub mod completionQueues;
+pub mod sharedRequestQueues;
 
 
 include!("AddressHandle.rs");
@@ -64,5 +67,3 @@ include!("Port.rs");
 include!("ProtectionDomain.rs");
 include!("QueuePairNumber.rs");
 include!("ServiceLevel.rs");
-include!("SharedRequestQueue.rs");
-include!("SharedRequestQueueSettings.rs");
