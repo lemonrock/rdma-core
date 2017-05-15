@@ -66,13 +66,6 @@ impl Context
 		realTimeValues
 	}
 	
-	/*
-	
-pub fn rust_ibv_create_rwq_ind_table(context: *mut ibv_context, init_attr: *mut ibv_rwq_ind_table_init_attr) -> *mut ibv_rwq_ind_table;
-pub fn rust_ibv_create_wq(context: *mut ibv_context, wq_init_attr: *mut ibv_wq_init_attr) -> *mut ibv_wq;
-
-*/
-	
 	#[inline(always)]
 	pub fn deviceHasCapability(&self, capability: ibv_device_cap_flags) -> bool
 	{
@@ -241,4 +234,33 @@ pub fn rust_ibv_create_wq(context: *mut ibv_context, wq_init_attr: *mut ibv_wq_i
 		
 		unsafe { rust_ibv_open_xrcd(self.0, &mut attributes) }
 	}
+	
+	/// The created object should be used as part of ibv_create_qp_ex() to enable dispatching of incoming packets based on some RX hash configuration.
+	#[inline(always)]
+	pub fn createReceiveWorkQueueIndirectionTable<'a>(&'a self, size: PowerOfTwoThirtyTwoBit) -> ReceiveWorkQueueIndirectionTable<'a>
+	{
+		let sizeU32 = size.as_u32();
+		
+		let mut indirectionTable = Vec::with_capacity(sizeU32 as usize);
+		
+		let mut attributes = ibv_rwq_ind_table_init_attr
+		{
+			log_ind_tbl_size: sizeU32,
+			ind_tbl: indirectionTable.as_mut_ptr(),
+			comp_mask: 0,
+		};
+		
+		let pointer = panic_on_null!(rust_ibv_create_rwq_ind_table, self.0, &mut attributes);
+		ReceiveWorkQueueIndirectionTable
+		{
+			pointer: pointer,
+			context: self,
+			indirectionTable: indirectionTable,
+		}
+	}
+	
+	/*
+pub fn rust_ibv_create_wq(context: *mut ibv_context, wq_init_attr: *mut ibv_wq_init_attr) -> *mut ibv_wq;
+
+*/
 }
