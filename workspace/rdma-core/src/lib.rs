@@ -58,6 +58,7 @@ include!("MemoryRegion.rs");
 include!("MemoryRegionAccess.rs");
 include!("MemoryRegionWriteAccess.rs");
 include!("MemoryWindow.rs");
+include!("PartitionKey.rs");
 include!("PartitionKeyIndex.rs");
 include!("Port.rs");
 include!("ProtectionDomain.rs");

@@ -34,7 +34,7 @@ impl<'a> Port<'a>
 	}
 	
 	#[inline(always)]
-	pub fn protectionKey(&self, index: u16) -> u16
+	pub fn partitionKey(&self, index: PartitionKeyIndex) -> PartitionKey
 	{
 		debug_assert!(index < self.attributes.pkey_tbl_len, "index '{}' is too big for table size of '{}'", index, self.attributes.pkey_tbl_len);
 		
