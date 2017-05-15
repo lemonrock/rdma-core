@@ -18,6 +18,7 @@
       <w>iovec</w>
       <w>isystem</w>
       <w>libfabric</w>
+      <w>libibverbs</w>
       <w>mblkpool</w>
       <w>mcond</w>
       <w>memcpy</w>

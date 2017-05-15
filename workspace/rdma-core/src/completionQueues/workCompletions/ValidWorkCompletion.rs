@@ -5,6 +5,15 @@
 pub trait ValidWorkCompletion<'a>
 {
 	#[inline(always)]
+	fn flags(&self) -> c_int;
+	
+	#[inline(always)]
+	fn hasFlag(&self, flag: c_int) -> bool
+	{
+		self.flags() & flag == flag
+	}
+	
+	#[inline(always)]
 	fn workRequestOperationWas(&self) -> ibv_wc_opcode;
 	
 	// Only relevant for UD => Unreliable datagram?
@@ -13,11 +22,31 @@ pub trait ValidWorkCompletion<'a>
 	fn receiveWorkRequestRemoteQueuePairNumber(&self) -> QueuePairNumber;
 	
 	#[inline(always)]
-	fn immediateDataInNetworkByteOrder(&self) -> Option<u32>;
+	fn immediateDataInNetworkByteOrder(&self) -> Option<u32>
+	{
+		const IBV_WC_WITH_IMM: c_int = 2;
+		if unlikely(self.hasFlag(IBV_WC_WITH_IMM))
+		{
+			let workRequestOperation = self.workRequestOperationWas();
+			if likely(workRequestOperation == ibv_wc_opcode::IBV_WC_SEND || workRequestOperation == ibv_wc_opcode::IBV_WC_RDMA_WRITE)
+			{
+				return Some(self.rawImmediateDataInNetworkByteOrder());
+			}
+		}
+		None
+	}
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn rawImmediateDataInNetworkByteOrder(&self) -> u32;
 	
 	// Only relevant for UD; all UD have a 40 byte reserved space at the beginning
 	#[inline(always)]
-	fn validGlobalRoutingHeaderPresentInFirst40Bytes(&self) -> bool;
+	fn validGlobalRoutingHeaderPresentInFirst40Bytes(&self) -> bool
+	{
+		const IBV_WC_GRH: c_int = 1;
+		self.hasFlag(IBV_WC_GRH)
+	}
 	
 	// Only relevant for UD
 	#[inline(always)]
@@ -36,4 +65,7 @@ pub trait ValidWorkCompletion<'a>
 	/// The number of bytes transferred is the payload of the message plus the 40 bytes reserved for the GRH, whether or not the GRH is present
 	#[inline(always)]
 	fn numberOfBytesTransferred(&self) -> u32;
+	
+	#[inline(always)]
+	fn pKeyIndex(&self) -> u16;
 }

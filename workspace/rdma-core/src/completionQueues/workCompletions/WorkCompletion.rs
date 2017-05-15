@@ -13,5 +13,5 @@ pub trait WorkCompletion<'a>
 	fn receiveWorkRequestLocalQueuePairNumberForSharedReceiveQueue(&self) -> QueuePairNumber;
 	
 	#[inline(always)]
-	fn workRequestError(&'a self) -> Result<Self::ValidWorkCompletion, WorkRequestError>;
+	fn workRequestError(self) -> Result<Self::ValidWorkCompletion, WorkRequestError>;
 }

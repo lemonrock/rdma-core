@@ -6,6 +6,7 @@ use ::LocalIdentifier;
 use ::LocalIdentifierPath;
 use ::QueuePairNumber;
 use ::ServiceLevel;
+use ::completionQueues::ExtendedCompletionQueue;
 use ::libc::c_int;
 use ::rdma_core_sys::*;
 use ::rust_extra::unlikely;
@@ -13,9 +14,11 @@ use ::rust_extra::likely;
 use ::std::mem::transmute;
 
 
+include!("ExtendedWorkCompletion.rs");
+include!("ExtendedValidWorkCompletion.rs");
 include!("UnextendedWorkCompletion.rs");
 include!("UnextendedValidWorkCompletion.rs");
+include!("ValidWorkCompletion.rs");
 include!("WorkCompletion.rs");
 include!("WorkRequestError.rs");
 include!("WorkRequestIdentifier.rs");
-include!("ValidWorkCompletion.rs");

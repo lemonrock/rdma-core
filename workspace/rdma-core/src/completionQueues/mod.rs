@@ -4,6 +4,7 @@
 
 use ::CompletionChannel;
 use ::arrayvec::ArrayVec;
+use self::workCompletions::ExtendedWorkCompletion;
 use self::workCompletions::UnextendedWorkCompletion;
 use ::errno::errno;
 use ::rdma_core_sys::*;
@@ -11,6 +12,7 @@ use ::rust_extra::u31;
 use ::rust_extra::unlikely;
 use ::rust_extra::likely;
 use ::std::mem::transmute;
+use ::syscall_alt::constants::E;
 
 
 pub mod workCompletions;

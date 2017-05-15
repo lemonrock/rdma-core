@@ -4,8 +4,9 @@
 
 pub struct ExtendedCompletionQueue<'a>
 {
-	pointer: *mut ibv_cq_ex,
+	pub(crate) pointer: *mut ibv_cq_ex,
 	lifetime: Option<&'a CompletionChannel<'a>>,
+	isCurrentlyBeingPolled: bool,
 }
 
 impl<'a> Drop for ExtendedCompletionQueue<'a>
@@ -13,6 +14,11 @@ impl<'a> Drop for ExtendedCompletionQueue<'a>
 	#[inline(always)]
 	fn drop(&mut self)
 	{
+		if self.isCurrentlyBeingPolled
+		{
+			self.endPolling();
+		}
+		
 		let pointer = self.pointer();
 		panic_on_errno!(ibv_destroy_cq, pointer);
 	}
@@ -39,28 +45,70 @@ impl<'a> ExtendedCompletionQueue<'a>
 		{
 			pointer: pointer,
 			lifetime: lifetime,
+			isCurrentlyBeingPolled: false,
 		}
 	}
 	
-	/*
-		pub fn rust_ibv_end_poll(cq: *mut ibv_cq_ex);
-		pub fn rust_ibv_next_poll(cq: *mut ibv_cq_ex) -> c_int
-		pub fn rust_ibv_start_poll(cq: *mut ibv_cq_ex, attr: *mut ibv_poll_cq_attr) -> c_int;
-		
-		pub fn rust_ibv_wc_read_byte_len(cq: *mut ibv_cq_ex) -> u32;
-		pub fn rust_ibv_wc_read_completion_ts(cq: *mut ibv_cq_ex) -> u64;
-		pub fn rust_ibv_wc_read_cvlan(cq: *mut ibv_cq_ex) -> u16;
-		pub fn rust_ibv_wc_read_dlid_path_bits(cq: *mut ibv_cq_ex) -> u8;
-		pub fn rust_ibv_wc_read_flow_tag(cq: *mut ibv_cq_ex) -> u32;
-		pub fn rust_ibv_wc_read_imm_data(cq: *mut ibv_cq_ex) -> u32;
-		pub fn rust_ibv_wc_read_opcode(cq: *mut ibv_cq_ex) -> ibv_wc_opcode;
-		pub fn rust_ibv_wc_read_qp_num(cq: *mut ibv_cq_ex) -> u32;
-		pub fn rust_ibv_wc_read_sl(cq: *mut ibv_cq_ex) -> u8;
-		pub fn rust_ibv_wc_read_slid(cq: *mut ibv_cq_ex) -> u32;
-		pub fn rust_ibv_wc_read_src_qp(cq: *mut ibv_cq_ex) -> u32;
-		pub fn rust_ibv_wc_read_vendor_err(cq: *mut ibv_cq_ex) -> u32;
-		pub fn rust_ibv_wc_read_wc_flags(cq: *mut ibv_cq_ex) -> c_int;
-	*/
+	/// NOTE WELL: Once poll() is called, the previous item will be invalid
+	#[inline(always)]
+	pub fn poll(&'a mut self) -> Option<ExtendedWorkCompletion<'a>>
+	{
+		if likely(self.isCurrentlyBeingPolled)
+		{
+			let result = unsafe { rust_ibv_next_poll(self.pointer) };
+			debug_assert!(result >= 0, "result was negative '{}'", result);
+			if likely(result == 0)
+			{
+				Some(ExtendedWorkCompletion(self))
+			}
+			else
+			{
+				self.endPolling();
+				self.isCurrentlyBeingPolled = false;
+				
+				if likely(result == E::ENOENT)
+				{
+					None
+				}
+				else
+				{
+					panic!("rust_ibv_next_poll() returned an error number '{}'", result);
+				}
+			}
+		}
+		else
+		{
+			let mut attributes = ibv_poll_cq_attr
+			{
+				comp_mask: 0
+			};
+			
+			let result = unsafe { rust_ibv_start_poll(self.pointer, &mut attributes) };
+			debug_assert!(result >= 0, "result was negative '{}'", result);
+			if likely(result == 0)
+			{
+				self.isCurrentlyBeingPolled = true;
+				Some(ExtendedWorkCompletion(self))
+			}
+			else
+			{
+				// NOTE: We MUST NOT call self.endPolling() here
+				
+				if likely(result == E::ENOENT)
+				{
+					None
+				}
+				else
+				{
+					panic!("rust_ibv_start_poll() returned an error number '{}'", result);
+				}
+			}
+		}
+	}
 	
-	// See https://www.mankier.com/3/ibv_create_cq_ex for other methods
+	#[inline(always)]
+	fn endPolling(&mut self)
+	{
+		unsafe { rust_ibv_end_poll(self.pointer) }
+	}
 }
