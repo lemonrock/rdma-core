@@ -70,7 +70,7 @@ impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
 	}
 	
 	#[inline(always)]
-	fn pKeyIndex(&self) -> u16
+	fn partitionKeyIndex(&self) -> PartitionKeyIndex
 	{
 		panic!("The static inline function ibv_wc_read_pkey_index is documented but not implemented by libibverbs");
 	}

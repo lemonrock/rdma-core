@@ -92,4 +92,27 @@ impl<'a> ProtectionDomain<'a>
 			protectionDomain: self,
 		}
 	}
+	
+	// See: https://www.mankier.com/3/ibv_bind_mw
+	// Needs a queue pair, a memory region, a WorkRequestIdentifier, memory address & length, access flags, send flags
+	#[inline(always)]
+	pub fn allocateType1MemoryWindow(&'a self) -> MemoryWindow
+	{
+		let memoryWindow = self.allocateMemoryWindow(ibv_mw_type::IBV_MW_TYPE_1);
+		unimplemented!();
+	}
+	
+	#[inline(always)]
+	fn allocateMemoryWindow(&'a self, memoryWindowType: ibv_mw_type) -> MemoryWindow
+	{
+		// ibv_post_send should be called for type 2
+		// ibv_bind_mw must be called for type 1 : pub fn rust_ibv_bind_mw(qp: *mut ibv_qp, mw: *mut ibv_mw, mw_bind: *mut ibv_mw_bind) -> c_int;
+		
+		let pointer = panic_on_null!(rust_ibv_alloc_mw, self.pointer, memoryWindowType);
+		MemoryWindow
+		{
+			pointer: pointer,
+			protectionDomain: self,
+		}
+	}
 }

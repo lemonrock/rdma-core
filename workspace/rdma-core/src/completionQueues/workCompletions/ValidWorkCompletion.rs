@@ -67,5 +67,5 @@ pub trait ValidWorkCompletion<'a>
 	fn numberOfBytesTransferred(&self) -> u32;
 	
 	#[inline(always)]
-	fn pKeyIndex(&self) -> u16;
+	fn partitionKeyIndex(&self) -> PartitionKeyIndex;
 }

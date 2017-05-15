@@ -4,6 +4,7 @@
 
 use ::LocalIdentifier;
 use ::LocalIdentifierPath;
+use ::PartitionKeyIndex;
 use ::QueuePairNumber;
 use ::ServiceLevel;
 use ::completionQueues::ExtendedCompletionQueue;

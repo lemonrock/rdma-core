@@ -65,7 +65,7 @@ impl<'a> ValidWorkCompletion<'a> for UnextendedValidWorkCompletion
 	}
 	
 	#[inline(always)]
-	fn pKeyIndex(&self) -> u16
+	fn partitionKeyIndex(&self) -> PartitionKeyIndex
 	{
 		self.0.pkey_index
 	}

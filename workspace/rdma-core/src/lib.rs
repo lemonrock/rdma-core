@@ -57,6 +57,8 @@ include!("LocalIdentifierPath.rs");
 include!("MemoryRegion.rs");
 include!("MemoryRegionAccess.rs");
 include!("MemoryRegionWriteAccess.rs");
+include!("MemoryWindow.rs");
+include!("PartitionKeyIndex.rs");
 include!("Port.rs");
 include!("ProtectionDomain.rs");
 include!("QueuePairNumber.rs");
