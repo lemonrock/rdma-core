@@ -2,9 +2,9 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct WorkCompletion(ibv_wc);
+pub struct UnextendedWorkCompletion(ibv_wc);
 
-impl WorkCompletion
+impl UnextendedWorkCompletion
 {
 	#[inline(always)]
 	pub fn workRequestIdentifier(&self) -> WorkRequestIdentifier
@@ -19,13 +19,13 @@ impl WorkCompletion
 	}
 	
 	#[inline(always)]
-	pub fn workRequestError<'a>(&'a self) -> Result<ValidWorkCompletion<'a>, WorkRequestError>
+	pub fn workRequestError<'a>(&'a self) -> Result<UnextendedValidWorkCompletion<'a>, WorkRequestError>
 	{
 		if likely(self.0.status == ibv_wc_status::IBV_WC_SUCCESS)
 		{
-			Ok(ValidWorkCompletion
+			Ok(UnextendedValidWorkCompletion
 			{
-				workCompletion: self
+				unextendedWorkCompletion: self
 			})
 		}
 		else

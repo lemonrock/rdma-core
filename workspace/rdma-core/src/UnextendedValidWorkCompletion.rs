@@ -3,17 +3,17 @@
 
 
 // This means that all relevant memory buffers are free to use again
-pub struct ValidWorkCompletion<'a>
+pub struct UnextendedValidWorkCompletion<'a>
 {
-	workCompletion: &'a WorkCompletion
+	unextendedWorkCompletion: &'a UnextendedWorkCompletion
 }
 
-impl<'a> ValidWorkCompletion<'a>
+impl<'a> UnextendedValidWorkCompletion<'a>
 {
 	#[inline(always)]
 	pub fn workRequestOperationWas(&self) -> ibv_wc_opcode
 	{
-		self.workCompletion.0.opcode
+		self.unextendedWorkCompletion.0.opcode
 	}
 	
 	// Only relevant for UD => Unreliable datagram?
@@ -21,19 +21,19 @@ impl<'a> ValidWorkCompletion<'a>
 	#[inline(always)]
 	pub fn receiveWorkRequestRemoteQueuePairNumber(&self) -> QueuePairNumber
 	{
-		self.workCompletion.0.src_qp
+		self.unextendedWorkCompletion.0.src_qp
 	}
 	
 	#[inline(always)]
 	pub fn immediateDataInNetworkByteOrder(&self) -> Option<u32>
 	{
 		const IBV_WC_WITH_IMM: c_int = 2;
-		if unlikely(self.workCompletion.0.wc_flags & IBV_WC_WITH_IMM == IBV_WC_WITH_IMM)
+		if unlikely(self.unextendedWorkCompletion.0.wc_flags & IBV_WC_WITH_IMM == IBV_WC_WITH_IMM)
 		{
 			let workRequestOperation = self.workRequestOperationWas();
 			if likely(workRequestOperation == ibv_wc_opcode::IBV_WC_SEND || workRequestOperation == ibv_wc_opcode::IBV_WC_RDMA_WRITE)
 			{
-				let union = (self.workCompletion.0).__bindgen_anon_1;
+				let union = (self.unextendedWorkCompletion.0).__bindgen_anon_1;
 				return Some(unsafe { union.imm_data });
 			}
 		}
@@ -45,28 +45,28 @@ impl<'a> ValidWorkCompletion<'a>
 	pub fn validGlobalRoutingHeaderPresentInFirst40Bytes(&self) -> bool
 	{
 		const IBV_WC_GRH: c_int = 1;
-		self.workCompletion.0.wc_flags & IBV_WC_GRH == IBV_WC_GRH
+		self.unextendedWorkCompletion.0.wc_flags & IBV_WC_GRH == IBV_WC_GRH
 	}
 	
 	// Only relevant for UD
 	#[inline(always)]
 	pub fn receiveWorkRequestSourceLocalIdentifier(&self) -> LocalIdentifier
 	{
-		self.workCompletion.0.slid
+		self.unextendedWorkCompletion.0.slid
 	}
 	
 	// Only relevant for UD
 	#[inline(always)]
 	pub fn receiveWorkRequestServiceLevel(&self) -> ServiceLevel
 	{
-		unsafe { transmute(self.workCompletion.0.sl) }
+		unsafe { transmute(self.unextendedWorkCompletion.0.sl) }
 	}
 	
 	// Only relevant for UD and only then for unicast messages
 	#[inline(always)]
 	pub fn receiveWorkRequestDestinationLocalIdentifierPath(&self) -> LocalIdentifierPath
 	{
-		self.workCompletion.0.dlid_path_bits
+		self.unextendedWorkCompletion.0.dlid_path_bits
 	}
 	
 	/// The number of bytes transferred. Relevant if the Receive Queue for incoming Send or RDMA Write with immediate operations. This value doesn't include the length of the immediate data, if such exists. Relevant in the Send Queue for RDMA Read and Atomic operations.
@@ -75,6 +75,6 @@ impl<'a> ValidWorkCompletion<'a>
 	#[inline(always)]
 	pub fn numberOfBytesTransferred(&self) -> u32
 	{
-		self.workCompletion.0.byte_len as u32
+		self.unextendedWorkCompletion.0.byte_len as u32
 	}
 }

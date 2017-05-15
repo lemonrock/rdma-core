@@ -45,7 +45,7 @@ impl<'a> UnextendedCompletionQueue<'a>
 	
 	/// Returns number of additional work completions added; it is recommended that `into` is empty
 	#[inline(always)]
-	pub fn poll(&self, into: &mut ArrayVec<[WorkCompletion; UnextendedCompletionQueuePollArraySize]>) -> usize
+	pub fn poll(&self, into: &mut ArrayVec<[UnextendedWorkCompletion; UnextendedCompletionQueuePollArraySize]>) -> usize
 	{
 		let length = into.len();
 		
