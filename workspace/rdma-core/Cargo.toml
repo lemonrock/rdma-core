@@ -19,6 +19,7 @@ publish = false
 version = "0.0.0"
 
 [dependencies]
+arrayvec = "0.3.21"
 errno = "0.2"
 libc = "0.2"
 rdma-core-sys = { path = "../rdma-core-sys", version = "0.0.0" }

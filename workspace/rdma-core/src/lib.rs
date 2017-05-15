@@ -2,10 +2,6 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-// TODO: Where are ibv_alloc_mw and ibv_dealloc_mw and ibv_bind_mw defined?
-// TODO: ibv_poll_cq
-
-
 #![feature(static_nobundle)]
 #![feature(untagged_unions)]
 
@@ -18,6 +14,7 @@
 #![warn(unused_import_braces)]
 
 
+extern crate arrayvec;
 extern crate errno;
 extern crate libc;
 extern crate rdma_core_sys;
@@ -25,6 +22,7 @@ extern crate rust_extra;
 extern crate syscall_alt;
 
 
+use ::arrayvec::ArrayVec;
 use ::errno::errno;
 use ::libc::c_int;
 use ::libc::c_void;
