@@ -2,14 +2,13 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct WithCompletionChannelExtendedCompletionQueue<'a>
+pub struct WithCompletionChannelExtendedCompletionQueue
 {
 	pub(crate) pointer: *mut ibv_cq_ex,
-	lifetime: &'a CompletionChannel<'a>,
 	isCurrentlyBeingPolled: bool,
 }
 
-impl<'a> Drop for WithCompletionChannelExtendedCompletionQueue<'a>
+impl Drop for WithCompletionChannelExtendedCompletionQueue
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -18,7 +17,7 @@ impl<'a> Drop for WithCompletionChannelExtendedCompletionQueue<'a>
 	}
 }
 
-impl<'a> ExtendedCompletionQueue<'a> for WithCompletionChannelExtendedCompletionQueue<'a>
+impl<'a> ExtendedCompletionQueue<'a> for WithCompletionChannelExtendedCompletionQueue
 {
 	#[doc(hidden)]
 	#[inline(always)]
@@ -42,17 +41,16 @@ impl<'a> ExtendedCompletionQueue<'a> for WithCompletionChannelExtendedCompletion
 	}
 }
 
-impl<'a> WithCompletionChannelExtendedCompletionQueue<'a>
+impl WithCompletionChannelExtendedCompletionQueue
 {
 	#[inline(always)]
-	pub(crate) fn new(pointer: *mut ibv_cq_ex, lifetime: &'a CompletionChannel<'a>) -> Self
+	pub(crate) fn new(pointer: *mut ibv_cq_ex) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
 		Self
 		{
 			pointer: pointer,
-			lifetime: lifetime,
 			isCurrentlyBeingPolled: false,
 		}
 	}

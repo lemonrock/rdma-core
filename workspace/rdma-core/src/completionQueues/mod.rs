@@ -3,7 +3,6 @@
 
 
 use ::Context;
-use ::CompletionChannel;
 use ::arrayvec::ArrayVec;
 use self::workCompletions::ExtendedWorkCompletion;
 use self::workCompletions::UnextendedWorkCompletion;

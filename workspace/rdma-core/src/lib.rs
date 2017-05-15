@@ -32,6 +32,7 @@ use ::rust_extra::unlikely;
 use ::sharedReceiveQueues::ExtendedSharedReceiveQueue;
 use ::sharedReceiveQueues::SharedReceiveQueueSettings;
 use ::sharedReceiveQueues::UnextendedSharedReceiveQueue;
+use ::std::collections::HashMap;
 use ::std::ffi::CStr;
 use ::std::marker::PhantomData;
 use ::std::mem::uninitialized;
