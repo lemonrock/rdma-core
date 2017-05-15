@@ -16,3 +16,13 @@ impl<'a> Drop for UnextendedQueuePair<'a>
 		panic_on_errno!(ibv_destroy_qp, self.pointer);
 	}
 }
+
+impl<'a> QueuePair<'a> for UnextendedQueuePair<'a>
+{
+	#[doc(hidden)]
+	#[inline(always)]
+	fn pointer(&self) -> * mut ibv_qp
+	{
+		self.pointer
+	}
+}

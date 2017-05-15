@@ -3,6 +3,7 @@
 
 
 use ::ExtendedReliableConnectionDomain;
+use ::LocalIdentifier;
 use ::ProtectionDomain;
 use ::rdma_core_sys::*;
 

@@ -7,3 +7,13 @@ pub struct ExtendedQueuePair<'a>
 	unextendedQueuePair: UnextendedQueuePair<'a>,
 	extendedReliableConnectionDomain: &'a ExtendedReliableConnectionDomain<'a>,
 }
+
+impl<'a> QueuePair<'a> for ExtendedQueuePair<'a>
+{
+	#[doc(hidden)]
+	#[inline(always)]
+	fn pointer(&self) -> * mut ibv_qp
+	{
+		self.unextendedQueuePair.pointer()
+	}
+}
