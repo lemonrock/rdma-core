@@ -2,6 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
+use ::Context;
 use ::CompletionChannel;
 use ::arrayvec::ArrayVec;
 use self::workCompletions::ExtendedWorkCompletion;
@@ -21,3 +22,11 @@ pub mod workCompletions;
 include!("CompletionQueue.rs");
 include!("ExtendedCompletionQueue.rs");
 include!("UnextendedCompletionQueue.rs");
+include!("WithCompletionChannelCompletionQueue.rs");
+include!("WithCompletionChannelExtendedCompletionQueue.rs");
+include!("WithCompletionChannelUnextendedCompletionQueue.rs");
+include!("WithoutCompletionChannelExtendedCompletionQueue.rs");
+include!("WithoutCompletionChannelUnextendedCompletionQueue.rs");
+
+
+pub const UnextendedCompletionQueuePollArraySize: usize = 32;

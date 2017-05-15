@@ -2,50 +2,11 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct UnextendedCompletionQueue<'a>
+pub trait UnextendedCompletionQueue: CompletionQueue
 {
-	pointer: *mut ibv_cq,
-	lifetime: Option<&'a CompletionChannel<'a>>,
-}
-
-impl<'a> Drop for UnextendedCompletionQueue<'a>
-{
-	#[inline(always)]
-	fn drop(&mut self)
-	{
-		panic_on_errno!(ibv_destroy_cq, self.pointer);
-	}
-}
-
-impl<'a> CompletionQueue<'a> for UnextendedCompletionQueue<'a>
-{
-	#[doc(hidden)]
-	#[inline(always)]
-	fn pointer(&self) -> *mut ibv_cq
-	{
-		self.pointer
-	}
-}
-
-pub const UnextendedCompletionQueuePollArraySize: usize = 32;
-
-impl<'a> UnextendedCompletionQueue<'a>
-{
-	#[inline(always)]
-	pub(crate) fn new(pointer: *mut ibv_cq, lifetime: Option<&'a CompletionChannel>) -> Self
-	{
-		debug_assert!(!pointer.is_null(), "pointer is null");
-		
-		Self
-		{
-			pointer: pointer,
-			lifetime: lifetime,
-		}
-	}
-	
 	/// Returns number of additional work completions added; it is recommended that `into` is empty
 	#[inline(always)]
-	pub fn poll(&self, into: &mut ArrayVec<[UnextendedWorkCompletion; UnextendedCompletionQueuePollArraySize]>) -> usize
+	fn poll(&self, into: &mut ArrayVec<[UnextendedWorkCompletion; UnextendedCompletionQueuePollArraySize]>) -> usize
 	{
 		let length = into.len();
 		
@@ -58,7 +19,7 @@ impl<'a> UnextendedCompletionQueue<'a>
 		
 		let fillFrom = unsafe { transmute(into.as_mut_ptr().offset(length as isize)) };
 		
-		let result = unsafe { rust_ibv_poll_cq(self.pointer, space as i32, fillFrom) };
+		let result = unsafe { rust_ibv_poll_cq(self.pointer(), space as i32, fillFrom) };
 		if likely(result >= 0)
 		{
 			debug_assert!(result as usize <= space, "Overfilled; defect in rust_ibv_poll_cq()");

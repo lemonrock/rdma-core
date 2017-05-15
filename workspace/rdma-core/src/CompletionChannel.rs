@@ -32,14 +32,38 @@ impl<'a> CompletionChannel<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createUnextendedCompletionQueue(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> UnextendedCompletionQueue<'a>
+	pub fn createWithCompletionChannelUnextendedCompletionQueue(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> WithCompletionChannelUnextendedCompletionQueue<'a>
 	{
-		self.context.createUnextendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, Some(self))
+		let pointer = self.context.createUnextendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, self.pointer);
+		WithCompletionChannelUnextendedCompletionQueue::new(pointer, self)
 	}
 	
 	#[inline(always)]
-	pub fn createExtendedCompletionQueueWithoutCompletionChannel(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> ExtendedCompletionQueue<'a>
+	pub fn createWithCompletionChannelExtendedCompletionQueue(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> WithCompletionChannelExtendedCompletionQueue<'a>
 	{
-		self.context.createExtendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, Some(self))
+		let pointer = self.context.createExtendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, self.pointer);
+		WithCompletionChannelExtendedCompletionQueue::new(pointer, self)
 	}
 }
+
+//	See https://www.mankier.com/3/ibv_get_cq_event
+//
+//	#[inline(always)]
+//	fn getEvent(&self) -> Option<CompletionQueueEvent<'a>>
+//	{
+//		For the 'global' completion channel, do we pass null_mut() instead of self.pointer?
+//
+//		panic_on_error!(ibv_get_cq_event, self.pointer, cq, context);
+// Now ack with  ibv_ack_cq_events() - expensive...
+// Should we 'own' pointers?
+//	}
+//
+//	pub struct CompletionQueueEvent<'a, C: CompletionQueue<'a>>
+//	where C: 'a
+//	{
+//		completionQueue: C,
+//		context: *mut c_void,
+//	}
+//
+//	The completion channel has a file descriptor which one can use with epoll() for non-blocking polling of events
+//

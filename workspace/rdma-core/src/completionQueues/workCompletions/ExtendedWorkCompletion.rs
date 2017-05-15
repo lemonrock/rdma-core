@@ -2,11 +2,12 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct ExtendedWorkCompletion<'a>(pub(crate) &'a ExtendedCompletionQueue<'a>);
+pub struct ExtendedWorkCompletion<'a, E: ExtendedCompletionQueue<'a>>(pub(crate) &'a E)
+where E: 'a;
 
-impl<'a> WorkCompletion<'a> for ExtendedWorkCompletion<'a>
+impl<'a, E: ExtendedCompletionQueue<'a>> WorkCompletion<'a> for ExtendedWorkCompletion<'a, E>
 {
-	type ValidWorkCompletion = ExtendedValidWorkCompletion<'a>;
+	type ValidWorkCompletion = ExtendedValidWorkCompletion<'a, E>;
 	
 	#[inline(always)]
 	fn workRequestIdentifier(&self) -> WorkRequestIdentifier
@@ -41,7 +42,7 @@ impl<'a> WorkCompletion<'a> for ExtendedWorkCompletion<'a>
 	}
 }
 
-impl<'a> ExtendedWorkCompletion<'a>
+impl<'a, E: ExtendedCompletionQueue<'a>> ExtendedWorkCompletion<'a, E>
 {
 	#[inline(always)]
 	fn data(&self) -> ibv_cq_ex
@@ -52,6 +53,6 @@ impl<'a> ExtendedWorkCompletion<'a>
 	#[inline(always)]
 	fn pointer(&self) -> *mut ibv_cq_ex
 	{
-		self.0.pointer
+		self.0.extendedPointer()
 	}
 }

@@ -19,10 +19,8 @@ extern crate rust_extra;
 extern crate syscall_alt;
 
 
-use ::completionQueues::CompletionQueue;
-use ::completionQueues::ExtendedCompletionQueue;
-use ::completionQueues::UnextendedCompletionQueue;
-use ::completionQueues::workCompletions::UnextendedWorkCompletion;
+use ::completionQueues::*;
+use ::completionQueues::workCompletions::*;
 use ::errno::errno;
 use ::libc::c_int;
 use ::libc::c_void;

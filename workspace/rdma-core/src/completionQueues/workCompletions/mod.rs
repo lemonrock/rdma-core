@@ -12,6 +12,11 @@ use ::libc::c_int;
 use ::rdma_core_sys::*;
 use ::rust_extra::unlikely;
 use ::rust_extra::likely;
+use ::std::ffi::CStr;
+use ::std::fmt;
+use ::std::fmt::Debug;
+use ::std::fmt::Display;
+use ::std::fmt::Formatter;
 use ::std::mem::transmute;
 
 

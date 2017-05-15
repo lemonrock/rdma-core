@@ -2,60 +2,27 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct ExtendedCompletionQueue<'a>
-{
-	pub(crate) pointer: *mut ibv_cq_ex,
-	lifetime: Option<&'a CompletionChannel<'a>>,
-	isCurrentlyBeingPolled: bool,
-}
-
-impl<'a> Drop for ExtendedCompletionQueue<'a>
-{
-	#[inline(always)]
-	fn drop(&mut self)
-	{
-		if self.isCurrentlyBeingPolled
-		{
-			self.endPolling();
-		}
-		
-		let pointer = self.pointer();
-		panic_on_errno!(ibv_destroy_cq, pointer);
-	}
-}
-
-impl<'a> CompletionQueue<'a> for ExtendedCompletionQueue<'a>
+pub trait ExtendedCompletionQueue<'a>: CompletionQueue + Sized
 {
 	#[doc(hidden)]
 	#[inline(always)]
-	fn pointer(&self) -> *mut ibv_cq
-	{
-		unsafe { rust_ibv_cq_ex_to_cq(self.pointer) }
-	}
-}
-
-impl<'a> ExtendedCompletionQueue<'a>
-{
+	fn extendedPointer(&self) -> *mut ibv_cq_ex;
+	
+	#[doc(hidden)]
 	#[inline(always)]
-	pub(crate) fn new(pointer: *mut ibv_cq_ex, lifetime: Option<&'a CompletionChannel>) -> Self
-	{
-		debug_assert!(!pointer.is_null(), "pointer is null");
-		
-		Self
-		{
-			pointer: pointer,
-			lifetime: lifetime,
-			isCurrentlyBeingPolled: false,
-		}
-	}
+	fn isCurrentlyBeingPolled(&self)-> bool;
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn isNoLongerBeingPolled(&mut self);
 	
 	/// NOTE WELL: Once poll() is called, the previous item will be invalid
 	#[inline(always)]
-	pub fn poll(&'a mut self) -> Option<ExtendedWorkCompletion<'a>>
+	fn poll(&'a mut self) -> Option<ExtendedWorkCompletion<'a, Self>>
 	{
-		if likely(self.isCurrentlyBeingPolled)
+		if likely(self.isCurrentlyBeingPolled())
 		{
-			let result = unsafe { rust_ibv_next_poll(self.pointer) };
+			let result = unsafe { rust_ibv_next_poll(self.extendedPointer()) };
 			debug_assert!(result >= 0, "result was negative '{}'", result);
 			if likely(result == 0)
 			{
@@ -64,7 +31,7 @@ impl<'a> ExtendedCompletionQueue<'a>
 			else
 			{
 				self.endPolling();
-				self.isCurrentlyBeingPolled = false;
+				self.isNoLongerBeingPolled();
 				
 				if likely(result == E::ENOENT)
 				{
@@ -83,11 +50,11 @@ impl<'a> ExtendedCompletionQueue<'a>
 				comp_mask: 0
 			};
 			
-			let result = unsafe { rust_ibv_start_poll(self.pointer, &mut attributes) };
+			let result = unsafe { rust_ibv_start_poll(self.extendedPointer(), &mut attributes) };
 			debug_assert!(result >= 0, "result was negative '{}'", result);
 			if likely(result == 0)
 			{
-				self.isCurrentlyBeingPolled = true;
+				self.isNoLongerBeingPolled();
 				Some(ExtendedWorkCompletion(self))
 			}
 			else
@@ -106,9 +73,34 @@ impl<'a> ExtendedCompletionQueue<'a>
 		}
 	}
 	
+	#[doc(hidden)]
 	#[inline(always)]
 	fn endPolling(&mut self)
 	{
-		unsafe { rust_ibv_end_poll(self.pointer) }
+		unsafe { rust_ibv_end_poll(self.extendedPointer()) }
+	}
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn destroy(&mut self)
+	{
+		if self.isCurrentlyBeingPolled()
+		{
+			self.endPolling();
+		}
+		
+		let pointer = self.pointer();
+		panic_on_errno!(ibv_destroy_cq, pointer);
+	}
+}
+
+impl<'a, T> CompletionQueue for T
+where T: ExtendedCompletionQueue<'a>
+{
+	#[doc(hidden)]
+	#[inline(always)]
+	fn pointer(&self) -> *mut ibv_cq
+	{
+		unsafe { rust_ibv_cq_ex_to_cq(self.extendedPointer()) }
 	}
 }

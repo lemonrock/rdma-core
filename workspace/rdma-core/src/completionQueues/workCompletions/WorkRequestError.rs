@@ -8,6 +8,24 @@ pub struct WorkRequestError
 	vendorErrorCode: u32,
 }
 
+impl Debug for WorkRequestError
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> fmt::Result
+	{
+		write!(f, "WorkRequestError({:?}, {})", self.description(), self.vendorErrorCode)
+	}
+}
+
+impl Display for WorkRequestError
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> fmt::Result
+	{
+		write!(f, "{}", self.description().to_string_lossy().into_owned())
+	}
+}
+
 impl WorkRequestError
 {
 	#[inline(always)]
@@ -27,5 +45,11 @@ impl WorkRequestError
 	pub fn vendorErrorCode(&self) -> u32
 	{
 		self.vendorErrorCode
+	}
+	
+	#[inline(always)]
+	pub fn description(&self) -> &'static CStr
+	{
+		unsafe { CStr::from_ptr(ibv_wc_status_str(self.status)) }
 	}
 }

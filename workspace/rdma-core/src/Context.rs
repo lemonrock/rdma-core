@@ -114,42 +114,31 @@ impl Context
 	}
 	
 	#[inline(always)]
-	pub fn createUnextendedCompletionQueueWithoutCompletionChannel<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> UnextendedCompletionQueue<'a>
+	pub fn createUnextendedCompletionQueueWithoutCompletionChannel<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> WithoutCompletionChannelUnextendedCompletionQueue<'a>
 	{
-		self.createUnextendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, None)
+		let pointer = self.createUnextendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, null_mut());
+		WithoutCompletionChannelUnextendedCompletionQueue::new(pointer, self)
 	}
 	
 	#[inline(always)]
-	fn createUnextendedCompletionQueueInternal<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, completionChannel: Option<&'a CompletionChannel<'a>>) -> UnextendedCompletionQueue<'a>
+	fn createUnextendedCompletionQueueInternal<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, potentiallyNullCompletionChannel: *mut ibv_comp_channel) -> *mut ibv_cq
 	{
 		debug_assert!(completionVector < self.numberOfCompletionVectors(), "completionVector '{}' is not less than context numberOfCompletionVectors '{}'", completionVector, self.numberOfCompletionVectors());
 		
-		let potentiallyNullCompletionChannel = match completionChannel
-		{
-			None => null_mut(),
-			Some(value) => value.pointer,
-		};
-		let completionQueuePointer = panic_on_null!(ibv_create_cq, self.0, atLeastThisNumberOfCompletionQueueEvents as i32, completionQueueContext, potentiallyNullCompletionChannel, completionVector as i32);
-		
-		UnextendedCompletionQueue::new(completionQueuePointer, completionChannel)
+		panic_on_null!(ibv_create_cq, self.0, atLeastThisNumberOfCompletionQueueEvents as i32, completionQueueContext, potentiallyNullCompletionChannel, completionVector as i32)
 	}
 	
 	#[inline(always)]
-	pub fn createExtendedCompletionQueueWithoutCompletionChannel<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> ExtendedCompletionQueue<'a>
+	pub fn createExtendedCompletionQueueWithoutCompletionChannel<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> WithoutCompletionChannelExtendedCompletionQueue<'a>
 	{
-		self.createExtendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, None)
+		let pointer = self.createExtendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, null_mut());
+		WithoutCompletionChannelExtendedCompletionQueue::new(pointer, self)
 	}
 	
 	#[inline(always)]
-	fn createExtendedCompletionQueueInternal<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool, completionChannel: Option<&'a CompletionChannel<'a>>) -> ExtendedCompletionQueue<'a>
+	fn createExtendedCompletionQueueInternal<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool, potentiallyNullCompletionChannel: *mut ibv_comp_channel) -> *mut ibv_cq_ex
 	{
 		debug_assert!(completionVector < self.numberOfCompletionVectors(), "completionVector '{}' is not less than context numberOfCompletionVectors '{}'", completionVector, self.numberOfCompletionVectors());
-		
-		let potentiallyNullCompletionChannel = match completionChannel
-		{
-			None => null_mut(),
-			Some(value) => value.pointer,
-		};
 		
 		let mut attributes = ibv_cq_init_attr_ex
 		{
@@ -169,9 +158,7 @@ impl Context
 			},
 		};
 		
-		let completionQueuePointer = panic_on_null!(rust_ibv_create_cq_ex, self.0, &mut attributes);
-		
-		ExtendedCompletionQueue::new(completionQueuePointer, completionChannel)
+		panic_on_null!(rust_ibv_create_cq_ex, self.0, &mut attributes)
 	}
 	
 	#[inline(always)]

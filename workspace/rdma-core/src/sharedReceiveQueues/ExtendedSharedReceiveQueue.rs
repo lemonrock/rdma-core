@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct ExtendedSharedReceiveQueue<'a, C: CompletionQueue<'a>>
+pub struct ExtendedSharedReceiveQueue<'a, C: CompletionQueue>
 where C: 'a
 {
 	pub(crate) unextendedSharedReceiveQueue: UnextendedSharedReceiveQueue<'a>,
@@ -10,7 +10,7 @@ where C: 'a
 	pub(crate) completionQueue: &'a C,
 }
 
-impl<'a, C: CompletionQueue<'a>> SharedReceiveQueue for ExtendedSharedReceiveQueue<'a, C>
+impl<'a, C: CompletionQueue> SharedReceiveQueue for ExtendedSharedReceiveQueue<'a, C>
 {
 	#[doc(hidden)]
 	#[inline(always)]

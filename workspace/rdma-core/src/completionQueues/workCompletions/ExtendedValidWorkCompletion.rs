@@ -2,20 +2,21 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct ExtendedValidWorkCompletion<'a>(&'a ExtendedCompletionQueue<'a>);
+pub struct ExtendedValidWorkCompletion<'a, E: ExtendedCompletionQueue<'a>>(&'a E)
+where E: 'a;
 
-impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
+impl<'a, E: ExtendedCompletionQueue<'a>> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a, E>
 {
 	#[inline(always)]
 	fn flags(&self) -> c_int
 	{
-		unsafe { rust_ibv_wc_read_wc_flags(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_wc_flags(self.extendedPointer()) }
 	}
 	
 	#[inline(always)]
 	fn workRequestOperationWas(&self) -> ibv_wc_opcode
 	{
-		unsafe { rust_ibv_wc_read_opcode(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_opcode(self.extendedPointer()) }
 	}
 	
 	// Only relevant for UD => Unreliable datagram?
@@ -24,7 +25,7 @@ impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
 	#[inline(always)]
 	fn receiveWorkRequestRemoteQueuePairNumber(&self) -> QueuePairNumber
 	{
-		unsafe { rust_ibv_wc_read_src_qp(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_src_qp(self.extendedPointer()) }
 	}
 	
 	/// Not present if the extended completion queue was not created with IBV_WC_EX_WITH_IMM
@@ -32,7 +33,7 @@ impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
 	#[inline(always)]
 	fn rawImmediateDataInNetworkByteOrder(&self) -> u32
 	{
-		unsafe { rust_ibv_wc_read_imm_data(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_imm_data(self.extendedPointer()) }
 	}
 	
 	// Only relevant for UD
@@ -40,7 +41,7 @@ impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
 	#[inline(always)]
 	fn receiveWorkRequestSourceLocalIdentifier(&self) -> LocalIdentifier
 	{
-		(unsafe { rust_ibv_wc_read_slid(self.0.pointer) }) as u16
+		(unsafe { rust_ibv_wc_read_slid(self.extendedPointer()) }) as u16
 	}
 	
 	// Only relevant for UD
@@ -48,7 +49,7 @@ impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
 	#[inline(always)]
 	fn receiveWorkRequestServiceLevel(&self) -> ServiceLevel
 	{
-		unsafe { transmute(rust_ibv_wc_read_sl(self.0.pointer)) }
+		unsafe { transmute(rust_ibv_wc_read_sl(self.extendedPointer())) }
 	}
 	
 	// Only relevant for UD and only then for unicast messages
@@ -56,7 +57,7 @@ impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
 	#[inline(always)]
 	fn receiveWorkRequestDestinationLocalIdentifierPath(&self) -> LocalIdentifierPath
 	{
-		unsafe { rust_ibv_wc_read_dlid_path_bits(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_dlid_path_bits(self.extendedPointer()) }
 	}
 	
 	/// The number of bytes transferred. Relevant if the Receive Queue for incoming Send or RDMA Write with immediate operations. This value doesn't include the length of the immediate data, if such exists. Relevant in the Send Queue for RDMA Read and Atomic operations.
@@ -66,7 +67,7 @@ impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
 	#[inline(always)]
 	fn numberOfBytesTransferred(&self) -> u32
 	{
-		unsafe { rust_ibv_wc_read_byte_len(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_byte_len(self.extendedPointer()) }
 	}
 	
 	#[inline(always)]
@@ -76,27 +77,33 @@ impl<'a> ValidWorkCompletion<'a> for ExtendedValidWorkCompletion<'a>
 	}
 }
 
-impl<'a>  ExtendedValidWorkCompletion<'a>
+impl<'a, E: ExtendedCompletionQueue<'a>>  ExtendedValidWorkCompletion<'a, E>
 {
 	/// Not present if the extended completion queue was not created with IBV_WC_EX_WITH_COMPLETION_TIMESTAMP
 	#[inline(always)]
 	pub fn completionTimeStamp(&self) -> u64
 	{
-		unsafe { rust_ibv_wc_read_completion_ts(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_completion_ts(self.extendedPointer()) }
 	}
 	
 	/// Not present if the extended completion queue was not created with IBV_WC_EX_WITH_CVLAN
 	#[inline(always)]
 	pub fn strippedCvLan(&self) -> u16
 	{
-		unsafe { rust_ibv_wc_read_cvlan(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_cvlan(self.extendedPointer()) }
 	}
 	
 	/// Not present if the extended completion queue was not created with IBV_WC_EX_WITH_FLOW_TAG
 	#[inline(always)]
 	pub fn flowTag(&self) -> u32
 	{
-		unsafe { rust_ibv_wc_read_flow_tag(self.0.pointer) }
+		unsafe { rust_ibv_wc_read_flow_tag(self.extendedPointer()) }
+	}
+	
+	#[inline(always)]
+	fn extendedPointer(&self) -> *mut ibv_cq_ex
+	{
+		self.0.extendedPointer()
 	}
 }
 

@@ -59,7 +59,7 @@ impl<'a> ProtectionDomain<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createExtendedSharedReceiveQueue<C: CompletionQueue<'a>>(&'a self, requestedSettings: SharedReceiveQueueSettings, extendedReliableConnectionDomain: &'a ExtendedReliableConnectionDomain, completionQueue: &'a C) -> ExtendedSharedReceiveQueue<'a, C>
+	pub fn createExtendedSharedReceiveQueue<C: CompletionQueue>(&'a self, requestedSettings: SharedReceiveQueueSettings, extendedReliableConnectionDomain: &'a ExtendedReliableConnectionDomain, completionQueue: &'a C) -> ExtendedSharedReceiveQueue<'a, C>
 	{
 		const IBV_SRQ_INIT_ATTR_TYPE: u32 = 1;
 		const IBV_SRQ_INIT_ATTR_PD: u32 = 2;
