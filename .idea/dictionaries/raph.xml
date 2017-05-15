@@ -4,6 +4,7 @@
       <w>appendv</w>
       <w>bindgen</w>
       <w>chunksize</w>
+      <w>cvlan</w>
       <w>ebusy</w>
       <w>edeadlk</w>
       <w>einval</w>

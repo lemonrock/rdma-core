@@ -32,6 +32,50 @@ impl<'a> ProtectionDomain<'a>
 	}
 	
 	#[inline(always)]
+	pub fn createWorkQueue<C: CompletionQueue>(&'a self, sharedReceiveQueueSettings: SharedReceiveQueueSettings, cvLanStripping: bool, fcsFieldWillBeScatteredToHostMemory: bool, completionQueue: &'a C) -> WorkQueue<'a, C>
+	{
+		const IBV_WQ_INIT_ATTR_FLAGS: u32 = 1;
+		
+		// 'ibv_wq_flags'
+		let mut creationFlags = 0;
+		if cvLanStripping
+		{
+			const IBV_WQ_FLAGS_CVLAN_STRIPPING: u32 = 1 << 0;
+			creationFlags |= IBV_WQ_FLAGS_CVLAN_STRIPPING;
+		}
+		if fcsFieldWillBeScatteredToHostMemory
+		{
+			const IBV_WQ_FLAGS_SCATTER_FCS: u32 = 1 << 1;
+			creationFlags |= IBV_WQ_FLAGS_SCATTER_FCS;
+		}
+		
+		let mut attributes = ibv_wq_init_attr
+		{
+			wq_context: null_mut(),
+			wq_type: ibv_wq_type::IBV_WQT_RQ,
+			max_wr: sharedReceiveQueueSettings.maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue,
+			max_sge: sharedReceiveQueueSettings.maximumNumberOfScatterElementsPerWorkRequest,
+			pd: self.pointer,
+			cq: completionQueue.pointer(),
+			comp_mask: IBV_WQ_INIT_ATTR_FLAGS,
+			create_flags: creationFlags,
+		};
+		
+		let pointer = panic_on_null!(rust_ibv_create_wq, self.context.0, &mut attributes);
+		WorkQueue
+		{
+			pointer: pointer,
+			protectionDomain: self,
+			completionQueue: completionQueue,
+			settings: SharedReceiveQueueSettings
+			{
+				maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue: attributes.max_wr,
+				maximumNumberOfScatterElementsPerWorkRequest: attributes.max_sge,
+			},
+		}
+	}
+	
+	#[inline(always)]
 	pub fn createUnextendedSharedReceiveQueue(&'a self, requestedSettings: SharedReceiveQueueSettings) -> UnextendedSharedReceiveQueue<'a>
 	{
 		let mut attributes = ibv_srq_init_attr

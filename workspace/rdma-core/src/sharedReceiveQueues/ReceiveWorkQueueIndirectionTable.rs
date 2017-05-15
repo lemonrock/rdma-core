@@ -2,19 +2,18 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::Context;
-use ::ExtendedReliableConnectionDomain;
-use ::ProtectionDomain;
-use ::completionQueues::CompletionQueue;
-use ::libc::c_int;
-use ::rdma_core_sys::*;
-use ::std::mem::uninitialized;
+pub struct ReceiveWorkQueueIndirectionTable<'a>
+{
+	pub(crate) pointer: *mut ibv_rwq_ind_table,
+	pub(crate) context: &'a Context,
+	pub(crate) indirectionTable: Vec<*mut ibv_wq>,
+}
 
-
-include!("ExtendedSharedReceiveQueue.rs");
-include!("ReceiveWorkQueueIndirectionTable.rs");
-include!("SharedReceiveQueue.rs");
-include!("SharedReceiveQueueNumber.rs");
-include!("SharedReceiveQueueSettings.rs");
-include!("UnextendedSharedReceiveQueue.rs");
-include!("WorkQueue.rs");
+impl<'a> Drop for ReceiveWorkQueueIndirectionTable<'a>
+{
+	#[inline(always)]
+	fn drop(&mut self)
+	{
+		panic_on_errno!(rust_ibv_destroy_rwq_ind_table, self.pointer)
+	}
+}

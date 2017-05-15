@@ -258,9 +258,4 @@ impl Context
 			indirectionTable: indirectionTable,
 		}
 	}
-	
-	/*
-pub fn rust_ibv_create_wq(context: *mut ibv_context, wq_init_attr: *mut ibv_wq_init_attr) -> *mut ibv_wq;
-
-*/
 }

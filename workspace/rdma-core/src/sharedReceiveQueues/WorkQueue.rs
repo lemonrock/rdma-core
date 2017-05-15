@@ -2,18 +2,29 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct ReceiveWorkQueueIndirectionTable<'a>
+pub struct WorkQueue<'a, C: CompletionQueue>
+where C: 'a
 {
-	pointer: *mut ibv_rwq_ind_table,
-	context: &'a Context,
-	indirectionTable: Vec<*mut ibv_wq>,
+	pub(crate) pointer: *mut ibv_wq,
+	pub(crate) protectionDomain: &'a ProtectionDomain<'a>,
+	pub(crate) completionQueue: &'a C,
+	pub(crate) settings: SharedReceiveQueueSettings,
 }
 
-impl<'a> Drop for ReceiveWorkQueueIndirectionTable<'a>
+impl<'a, C: CompletionQueue> Drop for WorkQueue<'a, C>
 {
 	#[inline(always)]
 	fn drop(&mut self)
 	{
-		panic_on_errno!(rust_ibv_destroy_rwq_ind_table, self.pointer)
+		panic_on_errno!(rust_ibv_destroy_wq, self.pointer)
+	}
+}
+
+impl<'a, C: CompletionQueue> WorkQueue<'a, C>
+{
+	#[inline(always)]
+	pub fn settings(&self) -> &SharedReceiveQueueSettings
+	{
+		&self.settings
 	}
 }
