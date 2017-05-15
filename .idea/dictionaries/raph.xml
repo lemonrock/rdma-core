@@ -14,6 +14,7 @@
       <w>guid</w>
       <w>ibverbs</w>
       <w>infiniband</w>
+      <w>inode</w>
       <w>iovcnt</w>
       <w>iovec</w>
       <w>isystem</w>
@@ -35,6 +36,7 @@
       <w>nbyte</w>
       <w>nonoverlapping</w>
       <w>nvml</w>
+      <w>oflags</w>
       <w>pkey</w>
       <w>pmem</w>
       <w>pmemblk</w>

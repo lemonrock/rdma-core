@@ -173,4 +173,57 @@ impl Context
 		
 		ExtendedCompletionQueue::new(completionQueuePointer, completionChannel)
 	}
+	
+	#[inline(always)]
+	pub fn createExtendedReliableConnectionDomainWithoutInode<'a>(&'a self) -> ExtendedReliableConnectionDomain<'a>
+	{
+		let pointer = self.openExtendedReliableConnectionDomainInternal(-1, true, false);
+		if unlikely(pointer.is_null())
+		{
+			let errno = errno();
+			panic!("{} failed with error number '{}' ('{}')", stringify!($function), errno.0, errno);
+		}
+		ExtendedReliableConnectionDomain
+		{
+			pointer: pointer,
+			context: self,
+		}
+	}
+	
+	#[inline(always)]
+	fn openExtendedReliableConnectionDomainInternal<'a>(&'a self, fileDescriptor: FileDescriptor, create: bool, exclusive: bool) -> *mut ibv_xrcd
+	{
+		const IBV_XRCD_INIT_ATTR_FD: u32 = 1;
+		const IBV_XRCD_INIT_ATTR_OFLAGS: u32 = 2;
+		
+		const AllCurrentFields: u32 = IBV_XRCD_INIT_ATTR_FD | IBV_XRCD_INIT_ATTR_OFLAGS;
+		
+		let mut openFlags = 0;
+		if create
+		{
+			openFlags = openFlags | O_CREAT;
+		}
+		if exclusive
+		{
+			openFlags = openFlags | O_EXCL;
+		}
+		
+		if unlikely(fileDescriptor == -1 && !create)
+		{
+			panic!("create must be true if fileDescriptor is -1");
+		}
+		if unlikely(fileDescriptor == -1 && exclusive)
+		{
+			panic!("exclusive must be false if fileDescriptor is -1");
+		}
+		
+		let mut attributes = ibv_xrcd_init_attr
+		{
+			comp_mask: AllCurrentFields,
+			fd: fileDescriptor,
+			oflags: openFlags,
+		};
+		
+		unsafe { rust_ibv_open_xrcd(self.0, &mut attributes) }
+	}
 }

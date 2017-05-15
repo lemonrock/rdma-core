@@ -16,3 +16,4 @@ include!("bindgen/constants/ibv_qp_attr_mask.rs");
 include!("bindgen/constants/ibv_send_flags.rs");
 include!("bindgen/constants/ibv_srq_init_attr_mask.rs");
 include!("bindgen/constants/ibv_wc_flags.rs");
+include!("bindgen/constants/miscellany.rs");

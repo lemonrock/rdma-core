@@ -32,7 +32,7 @@ impl<'a> ProtectionDomain<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createSharedReceiveQueue(&'a self, requestedSettings: SharedReceiveQueueSettings) -> SharedReceiveQueue<'a>
+	pub fn createUnextendedSharedReceiveQueue(&'a self, requestedSettings: SharedReceiveQueueSettings) -> UnextendedSharedReceiveQueue<'a>
 	{
 		let mut attributes = ibv_srq_init_attr
 		{
@@ -46,7 +46,7 @@ impl<'a> ProtectionDomain<'a>
 		};
 		
 		let pointer = panic_on_null!(ibv_create_srq, self.pointer, &mut attributes);
-		SharedReceiveQueue
+		UnextendedSharedReceiveQueue
 		{
 			pointer: pointer,
 			settings: SharedReceiveQueueSettings
@@ -59,17 +59,14 @@ impl<'a> ProtectionDomain<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createExtendedSharedReceiveQueue(&'a self, requestedSettings: SharedReceiveQueueSettings, xrcDomain: *mut ibv_xrcd, completionQueue: *mut ibv_cq) -> SharedReceiveQueue<'a>
+	pub fn createExtendedSharedReceiveQueue<C: CompletionQueue<'a>>(&'a self, requestedSettings: SharedReceiveQueueSettings, extendedReliableConnectionDomain: &'a ExtendedReliableConnectionDomain, completionQueue: &'a C) -> ExtendedSharedReceiveQueue<'a, C>
 	{
-		const SRQ_INIT_ATTR_TYPE: u32 = 1;
-		const SRQ_INIT_ATTR_PD: u32 = 2;
-		const SRQ_INIT_ATTR_XRCD: u32 = 4;
-		const SRQ_INIT_ATTR_CQ: u32 = 8;
+		const IBV_SRQ_INIT_ATTR_TYPE: u32 = 1;
+		const IBV_SRQ_INIT_ATTR_PD: u32 = 2;
+		const IBV_SRQ_INIT_ATTR_XRCD: u32 = 4;
+		const IBV_SRQ_INIT_ATTR_CQ: u32 = 8;
 		
-		const AllCurrentFields: u32 = SRQ_INIT_ATTR_TYPE | SRQ_INIT_ATTR_PD | SRQ_INIT_ATTR_XRCD | SRQ_INIT_ATTR_CQ;
-		
-		debug_assert!(!xrcDomain.is_null(), "xrcDomain is null");
-		debug_assert!(!completionQueue.is_null(), "completionQueue is null");
+		const AllCurrentFields: u32 = IBV_SRQ_INIT_ATTR_TYPE | IBV_SRQ_INIT_ATTR_PD | IBV_SRQ_INIT_ATTR_XRCD | IBV_SRQ_INIT_ATTR_CQ;
 		
 		let mut attributes = ibv_srq_init_attr_ex
 		{
@@ -83,20 +80,25 @@ impl<'a> ProtectionDomain<'a>
 			comp_mask: AllCurrentFields,
 			srq_type: ibv_srq_type::IBV_SRQT_XRC,
 			pd: self.pointer,
-			xrcd: xrcDomain,
-			cq: completionQueue,
+			xrcd: extendedReliableConnectionDomain.pointer,
+			cq: completionQueue.pointer(),
 		};
 		
 		let pointer = panic_on_null!(rust_ibv_create_srq_ex, self.context.0, &mut attributes);
-		SharedReceiveQueue
+		ExtendedSharedReceiveQueue
 		{
-			pointer: pointer,
-			settings: SharedReceiveQueueSettings
+			unextendedSharedReceiveQueue: UnextendedSharedReceiveQueue
 			{
-				maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue: attributes.attr.max_wr,
-				maximumNumberOfScatterElementsPerWorkRequest: attributes.attr.max_sge,
+				pointer: pointer,
+				settings: SharedReceiveQueueSettings
+				{
+					maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue: attributes.attr.max_wr,
+					maximumNumberOfScatterElementsPerWorkRequest: attributes.attr.max_sge,
+				},
+				protectionDomain: self,
 			},
-			protectionDomain: self,
+			extendedReliableConnectionDomain: extendedReliableConnectionDomain,
+			completionQueue: completionQueue,
 		}
 	}
 	

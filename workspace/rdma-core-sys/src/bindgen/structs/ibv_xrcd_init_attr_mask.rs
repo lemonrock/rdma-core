@@ -3,37 +3,5 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
-pub struct ibv_pd
-{
-	pub context: *mut ibv_context,
-	pub handle: u32,
-}
-
-impl Clone for ibv_pd
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Default for ibv_pd
-{
-	#[inline(always)]
-	fn default() -> Self
-	{
-		unsafe { zeroed() }
-	}
-}
-
-impl ::core::ops::BitOr<ibv_xrcd_init_attr_mask> for ibv_xrcd_init_attr_mask
-{
-	type Output = Self;
-	#[inline(always)]
-	fn bitor(self, other: Self) -> Self
-	{
-		ibv_xrcd_init_attr_mask(self.0 | other.0)
-	}
-}
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ibv_xrcd_init_attr_mask(pub c_uint);

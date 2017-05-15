@@ -41,4 +41,3 @@ include!("bindgen/enums/ibv_wq_init_attr_mask.rs");
 include!("bindgen/enums/ibv_wq_state.rs");
 include!("bindgen/enums/ibv_wq_type.rs");
 include!("bindgen/enums/ibv_wr_opcode.rs");
-include!("bindgen/enums/ibv_xrcd_init_attr_mask.rs");
