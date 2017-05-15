@@ -26,6 +26,7 @@ use ::libc::c_int;
 use ::libc::c_void;
 use ::libc::O_CREAT;
 use ::libc::O_EXCL;
+use ::queuePairs::*;
 use ::rdma_core_sys::*;
 use ::rust_extra::likely;
 use ::rust_extra::unlikely;
@@ -47,6 +48,7 @@ include!("panic_on_null.rs");
 
 
 pub mod completionQueues;
+pub mod queuePairs;
 pub mod sharedReceiveQueues;
 
 
@@ -70,5 +72,4 @@ include!("PartitionKey.rs");
 include!("PartitionKeyIndex.rs");
 include!("Port.rs");
 include!("ProtectionDomain.rs");
-include!("QueuePairNumber.rs");
 include!("ServiceLevel.rs");

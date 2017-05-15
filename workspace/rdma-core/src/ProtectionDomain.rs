@@ -223,7 +223,6 @@ impl<'a> ProtectionDomain<'a>
 		
 		/*
 	pub fn ibv_create_qp(pd: *mut ibv_pd, qp_init_attr: *mut ibv_qp_init_attr) -> *mut ibv_qp;
-	pub fn ibv_destroy_qp(qp: *mut ibv_qp) -> c_int;
 	
 	pub fn ibv_modify_qp(qp: *mut ibv_qp, attr: *mut ibv_qp_attr, attr_mask: c_int) -> c_int;
 	pub fn ibv_query_qp(qp: *mut ibv_qp, attr: *mut ibv_qp_attr, attr_mask: c_int, init_attr: *mut ibv_qp_init_attr) -> c_int;
