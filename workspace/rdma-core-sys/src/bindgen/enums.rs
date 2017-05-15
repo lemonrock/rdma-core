@@ -30,7 +30,6 @@ include!("bindgen/enums/ibv_rereg_mr_flags.rs");
 include!("bindgen/enums/ibv_rx_hash_fields.rs");
 include!("bindgen/enums/ibv_rx_hash_function_flags.rs");
 include!("bindgen/enums/ibv_srq_attr_mask.rs");
-include!("bindgen/enums/ibv_srq_init_attr_mask.rs");
 include!("bindgen/enums/ibv_srq_type.rs");
 include!("bindgen/enums/ibv_transport_type.rs");
 include!("bindgen/enums/ibv_values_mask.rs");

@@ -59,6 +59,48 @@ impl<'a> ProtectionDomain<'a>
 	}
 	
 	#[inline(always)]
+	pub fn createExtendedSharedReceiveQueue(&'a self, requestedSettings: SharedReceiveQueueSettings, xrcDomain: *mut ibv_xrcd, completionQueue: *mut ibv_cq) -> SharedReceiveQueue<'a>
+	{
+		const SRQ_INIT_ATTR_TYPE: u32 = 1;
+		const SRQ_INIT_ATTR_PD: u32 = 2;
+		const SRQ_INIT_ATTR_XRCD: u32 = 4;
+		const SRQ_INIT_ATTR_CQ: u32 = 8;
+		
+		const AllCurrentFields: u32 = SRQ_INIT_ATTR_TYPE | SRQ_INIT_ATTR_PD | SRQ_INIT_ATTR_XRCD | SRQ_INIT_ATTR_CQ;
+		
+		debug_assert!(!xrcDomain.is_null(), "xrcDomain is null");
+		debug_assert!(!completionQueue.is_null(), "completionQueue is null");
+		
+		let mut attributes = ibv_srq_init_attr_ex
+		{
+			srq_context: null_mut(),
+			attr: ibv_srq_attr
+			{
+				max_wr: requestedSettings.maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue,
+				max_sge: requestedSettings.maximumNumberOfScatterElementsPerWorkRequest,
+				srq_limit: 0,
+			},
+			comp_mask: AllCurrentFields,
+			srq_type: ibv_srq_type::IBV_SRQT_XRC,
+			pd: self.pointer,
+			xrcd: xrcDomain,
+			cq: completionQueue,
+		};
+		
+		let pointer = panic_on_null!(rust_ibv_create_srq_ex, self.context.0, &mut attributes);
+		SharedReceiveQueue
+		{
+			pointer: pointer,
+			settings: SharedReceiveQueueSettings
+			{
+				maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue: attributes.attr.max_wr,
+				maximumNumberOfScatterElementsPerWorkRequest: attributes.attr.max_sge,
+			},
+			protectionDomain: self,
+		}
+	}
+	
+	#[inline(always)]
 	pub fn registerMemoryRegion(&'a self, address: *mut c_void, length: usize, access: &MemoryRegionAccess) -> MemoryRegion<'a>
 	{
 		debug_assert!(!address.is_null(), "address can not be null");

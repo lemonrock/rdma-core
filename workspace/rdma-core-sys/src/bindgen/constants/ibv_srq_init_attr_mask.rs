@@ -2,19 +2,8 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(u32)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ibv_srq_type
-{
-	IBV_SRQT_BASIC = 0,
-	IBV_SRQT_XRC = 1,
-}
-
-impl ::core::ops::BitOr<ibv_srq_init_attr_mask> for ibv_srq_init_attr_mask
-{
-	type Output = Self;
-	fn bitor(self, other: Self) -> Self
-	{
-		ibv_srq_init_attr_mask(self.0 | other.0)
-	}
-}
+pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_CQ: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(8);
+pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_PD: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(2);
+pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_RESERVED: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(16);
+pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_TYPE: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(1);
+pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_XRCD: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(4);

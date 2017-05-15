@@ -7,3 +7,4 @@ _bindgen_ty_4
 ibv_create_cq_wc_flags
 ibv_cq_init_attr_mask
 ibv_create_cq_attr_flags
+ibv_srq_init_attr_mask

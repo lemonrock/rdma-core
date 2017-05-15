@@ -2,13 +2,6 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(u32)]
+#[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ibv_srq_init_attr_mask
-{
-	IBV_SRQ_INIT_ATTR_TYPE = 1,
-	IBV_SRQ_INIT_ATTR_PD = 2,
-	IBV_SRQ_INIT_ATTR_XRCD = 4,
-	IBV_SRQ_INIT_ATTR_CQ = 8,
-	IBV_SRQ_INIT_ATTR_RESERVED = 16,
-}
+pub struct ibv_srq_init_attr_mask(pub c_uint);

@@ -77,6 +77,7 @@ include!("bindgen/structs/ibv_srq.rs");
 include!("bindgen/structs/ibv_srq_attr.rs");
 include!("bindgen/structs/ibv_srq_init_attr.rs");
 include!("bindgen/structs/ibv_srq_init_attr_ex.rs");
+include!("bindgen/structs/ibv_srq_init_attr_mask.rs");
 include!("bindgen/structs/ibv_tso_caps.rs");
 include!("bindgen/structs/ibv_values_ex.rs");
 include!("bindgen/structs/ibv_wc.rs");

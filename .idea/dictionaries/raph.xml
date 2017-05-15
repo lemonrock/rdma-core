@@ -52,6 +52,7 @@
       <w>werror</w>
       <w>whitelist</w>
       <w>wrlock</w>
+      <w>xrcd</w>
     </words>
   </dictionary>
 </component>
