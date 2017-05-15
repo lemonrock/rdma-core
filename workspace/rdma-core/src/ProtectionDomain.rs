@@ -118,13 +118,6 @@ impl<'a> ProtectionDomain<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createAddressHandleForPort(&'a self, portNumber: u8, unextendedWorkCompletion: &mut UnextendedWorkCompletion, globalRoutingHeader: &mut GlobalRoutingHeader) -> AddressHandle<'a>
-	{
-		let mut attributes = self.context.port(portNumber).initialiseAddressHandleAttributes(unextendedWorkCompletion, globalRoutingHeader);
-		self.createAddressHandle(&mut attributes)
-	}
-	
-	#[inline(always)]
 	pub fn createAddressHandle(&'a self, attributes: &mut ibv_ah_attr) -> AddressHandle<'a>
 	{
 		debug_assert!(attributes.port_num < self.context.numberOfPhysicalPorts(), "port number '{}' is not less than the maximum '{}'", attributes.port_num, self.context.numberOfPhysicalPorts());
@@ -133,6 +126,26 @@ impl<'a> ProtectionDomain<'a>
 		AddressHandle
 		{
 			pointer: pointer,
+			protectionDomain: self,
+		}
+	}
+	
+	#[inline(always)]
+	pub fn populateAddressHandleForPortAttributes(&'a self, portNumber: u8, unextendedWorkCompletion: &mut UnextendedWorkCompletion, globalRoutingHeader: &mut GlobalRoutingHeader) -> ibv_ah_attr
+	{
+		debug_assert!(portNumber < self.context.numberOfPhysicalPorts(), "port number '{}' is not less than the maximum '{}'", portNumber, self.context.numberOfPhysicalPorts());
+		
+		self.context.port(portNumber).initialiseAddressHandleAttributes(unextendedWorkCompletion, globalRoutingHeader)
+	}
+	
+	#[inline(always)]
+	pub fn createAddressHandleForPort(&'a self, portNumber: u8, unextendedWorkCompletion: &mut UnextendedWorkCompletion, globalRoutingHeader: &mut GlobalRoutingHeader) -> AddressHandle<'a>
+	{
+		debug_assert!(portNumber < self.context.numberOfPhysicalPorts(), "port number '{}' is not less than the maximum '{}'", portNumber, self.context.numberOfPhysicalPorts());
+		
+		AddressHandle
+		{
+			pointer: panic_on_null!(ibv_create_ah_from_wc, self.pointer, &mut unextendedWorkCompletion.0, &mut globalRoutingHeader.0, portNumber),
 			protectionDomain: self,
 		}
 	}

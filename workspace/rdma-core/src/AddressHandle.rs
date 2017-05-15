@@ -16,5 +16,3 @@ impl<'a> Drop for AddressHandle<'a>
 		panic_on_errno!(ibv_destroy_ah, self.pointer);
 	}
 }
-
-//		pub fn ibv_create_ah_from_wc(pd: *mut ibv_pd, wc: *mut ibv_wc, grh: *mut ibv_grh, port_num: u8) -> *mut ibv_ah;
