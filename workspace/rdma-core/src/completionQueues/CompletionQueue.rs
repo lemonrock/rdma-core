@@ -2,16 +2,6 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-// Causes a compiler ICE
-//impl<'a, T: Sized + CompletionQueue<'a>> Drop for T
-//{
-//	#[inline(always)]
-//	fn drop(&mut self)
-//	{
-//		panic_on_errno!(ibv_destroy_cq, self.pointer());
-//	}
-//}
-
 pub trait CompletionQueue<'a>: Drop
 {
 	#[doc(hidden)]

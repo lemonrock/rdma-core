@@ -31,7 +31,7 @@ impl<'a> CompletionQueue<'a> for ExtendedCompletionQueue<'a>
 impl<'a> ExtendedCompletionQueue<'a>
 {
 	#[inline(always)]
-	fn new(pointer: *mut ibv_cq_ex, lifetime: Option<&'a CompletionChannel>) -> Self
+	pub(crate) fn new(pointer: *mut ibv_cq_ex, lifetime: Option<&'a CompletionChannel>) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		

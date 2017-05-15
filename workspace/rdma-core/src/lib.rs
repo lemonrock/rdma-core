@@ -22,35 +22,35 @@ extern crate rust_extra;
 extern crate syscall_alt;
 
 
-use ::arrayvec::ArrayVec;
+use ::completionQueues::ExtendedCompletionQueue;
+use ::completionQueues::UnextendedCompletionQueue;
+use ::completionQueues::workCompletions::UnextendedWorkCompletion;
 use ::errno::errno;
 use ::libc::c_int;
 use ::libc::c_void;
 use ::rdma_core_sys::*;
 use ::rust_extra::likely;
-use ::rust_extra::u31;
 use ::rust_extra::unlikely;
 use ::std::ffi::CStr;
 use ::std::marker::PhantomData;
-use ::std::mem::transmute;
 use ::std::mem::uninitialized;
 use ::std::ptr::null_mut;
 use ::syscall_alt::constants::E;
-
 
 include!("panic_on_errno.rs");
 include!("panic_on_error.rs");
 include!("panic_on_null.rs");
 
 
+pub mod completionQueues;
+
+
 include!("AddressHandle.rs");
 include!("AsynchronousEvent.rs");
 include!("CompletionChannel.rs");
-include!("CompletionQueue.rs");
 include!("Context.rs");
 include!("Device.rs");
 include!("DeviceListIterator.rs");
-include!("ExtendedCompletionQueue.rs");
 include!("FileDescriptor.rs");
 include!("GlobalRoutingHeader.rs");
 include!("GUID.rs");
@@ -65,8 +65,3 @@ include!("QueuePairNumber.rs");
 include!("ServiceLevel.rs");
 include!("SharedRequestQueue.rs");
 include!("SharedRequestQueueSettings.rs");
-include!("UnextendedCompletionQueue.rs");
-include!("UnextendedWorkCompletion.rs");
-include!("UnextendedValidWorkCompletion.rs");
-include!("WorkRequestError.rs");
-include!("WorkRequestIdentifier.rs");

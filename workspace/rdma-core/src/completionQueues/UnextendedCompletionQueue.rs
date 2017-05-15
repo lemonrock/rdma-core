@@ -32,7 +32,7 @@ pub const UnextendedCompletionQueuePollArraySize: usize = 32;
 impl<'a> UnextendedCompletionQueue<'a>
 {
 	#[inline(always)]
-	fn new(pointer: *mut ibv_cq, lifetime: Option<&'a CompletionChannel>) -> Self
+	pub(crate) fn new(pointer: *mut ibv_cq, lifetime: Option<&'a CompletionChannel>) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		

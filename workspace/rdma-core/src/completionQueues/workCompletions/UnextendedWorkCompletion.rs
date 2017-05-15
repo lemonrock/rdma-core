@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct UnextendedWorkCompletion(ibv_wc);
+pub struct UnextendedWorkCompletion(pub(crate) ibv_wc);
 
 impl UnextendedWorkCompletion
 {
