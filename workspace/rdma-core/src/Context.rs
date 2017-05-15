@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct Context(*mut ibv_context, ibv_device_attr);
+pub struct Context(*mut ibv_context, ibv_device_attr_ex);
 
 impl Drop for Context
 {
@@ -26,9 +26,9 @@ impl Context
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
-		let mut attributes = unsafe { uninitialized() };
-		panic_on_error!(ibv_query_device, pointer, &mut attributes);
-		
+		//let mut attributes = unsafe { uninitialized() };
+		let mut attributes = unsafe { zeroed() };
+		panic_on_error!(rust_ibv_query_device_ex, pointer, null_mut(), &mut attributes);
 		Context(pointer, attributes)
 	}
 	
@@ -42,8 +42,36 @@ impl Context
 	#[inline(always)]
 	pub fn attributes(&self) -> &ibv_device_attr
 	{
+		&self.1.orig_attr
+	}
+	
+	#[inline(always)]
+	pub fn extendedAttributes(&self) -> &ibv_device_attr_ex
+	{
 		&self.1
 	}
+	
+	#[inline(always)]
+	pub fn queryRealTimeValues(&self) -> ibv_values_ex
+	{
+		const IBV_VALUES_MASK_RAW_CLOCK: u32 = 1;
+		
+		let mut realTimeValues = ibv_values_ex
+		{
+			comp_mask: IBV_VALUES_MASK_RAW_CLOCK,
+			raw_clock: unsafe { zeroed() },
+		};
+		
+		panic_on_errno!(rust_ibv_query_rt_values_ex, self.0, &mut realTimeValues);
+		realTimeValues
+	}
+	
+	/*
+	
+pub fn rust_ibv_create_rwq_ind_table(context: *mut ibv_context, init_attr: *mut ibv_rwq_ind_table_init_attr) -> *mut ibv_rwq_ind_table;
+pub fn rust_ibv_create_wq(context: *mut ibv_context, wq_init_attr: *mut ibv_wq_init_attr) -> *mut ibv_wq;
+
+*/
 	
 	#[inline(always)]
 	pub fn deviceHasCapability(&self, capability: ibv_device_cap_flags) -> bool

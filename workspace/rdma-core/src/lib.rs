@@ -36,6 +36,7 @@ use ::std::collections::HashMap;
 use ::std::ffi::CStr;
 use ::std::marker::PhantomData;
 use ::std::mem::uninitialized;
+use ::std::mem::zeroed;
 use ::std::ptr::null_mut;
 use ::syscall_alt::constants::E;
 
