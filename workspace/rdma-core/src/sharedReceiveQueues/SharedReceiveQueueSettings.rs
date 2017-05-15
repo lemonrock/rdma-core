@@ -3,7 +3,7 @@
 
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct SharedRequestQueueSettings
+pub struct SharedReceiveQueueSettings
 {
 	pub maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue: u32,
 	pub maximumNumberOfScatterElementsPerWorkRequest: u32

@@ -2,14 +2,14 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct SharedRequestQueue<'a>
+pub struct SharedReceiveQueue<'a>
 {
 	pub(crate) pointer: *mut ibv_srq,
-	pub(crate) settings: SharedRequestQueueSettings,
+	pub(crate) settings: SharedReceiveQueueSettings,
 	pub(crate) protectionDomain: &'a ProtectionDomain<'a>
 }
 
-impl<'a> Drop for SharedRequestQueue<'a>
+impl<'a> Drop for SharedReceiveQueue<'a>
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -18,7 +18,11 @@ impl<'a> Drop for SharedRequestQueue<'a>
 	}
 }
 
-impl<'a> SharedRequestQueue<'a>
+//pub fn rust_ibv_create_srq_ex(context: *mut ibv_context, srq_init_attr_ex: *mut ibv_srq_init_attr_ex) -> *mut ibv_srq;
+//pub fn rust_ibv_get_srq_num(srq: *mut ibv_srq, srq_num: *mut u32) -> c_int;
+//pub fn rust_ibv_post_srq_recv(srq: *mut ibv_srq, recv_wr: *mut ibv_recv_wr, bad_recv_wr: *mut *mut ibv_recv_wr) -> c_int;
+
+impl<'a> SharedReceiveQueue<'a>
 {
 	#[inline(always)]
 	pub fn modifyLimit(&mut self, limit: u32)
@@ -64,45 +68,12 @@ impl<'a> SharedRequestQueue<'a>
 	{
 		self.currentLimit() == 0
 	}
-}
-
-/*
-
-static inline struct ibv_srq* ibv_create_srq_ex(struct ibv_context* context, struct ibv_srq_init_attr_ex* srq_init_attr_ex)
-{
-	struct verbs_context* vctx;
-	uint32_t mask = srq_init_attr_ex->comp_mask;
-
-	if (!(mask & ~(IBV_SRQ_INIT_ATTR_PD | IBV_SRQ_INIT_ATTR_TYPE)) && (mask & IBV_SRQ_INIT_ATTR_PD) && (!(mask & IBV_SRQ_INIT_ATTR_TYPE) || (srq_init_attr_ex->srq_type == IBV_SRQT_BASIC)))
-	{
-		return ibv_create_srq(srq_init_attr_ex->pd, (struct ibv_srq_init_attr*)srq_init_attr_ex);
-	}
 	
-	vctx = verbs_get_ctx_op(context, create_srq_ex);
-	if (!vctx)
+	#[inline(always)]
+	pub fn number(&self) -> SharedReceiveQueueNumber
 	{
-		errno = ENOSYS;
-		return NULL;
+		let mut number = unsafe { uninitialized() };
+		panic_on_errno!(rust_ibv_get_srq_num, self.pointer, &mut number);
+		number
 	}
-
-	return vctx->create_srq_ex(context, srq_init_attr_ex);
 }
-
-static inline int ibv_get_srq_num(struct ibv_srq* srq, uint32_t* srq_num)
-{
-	struct verbs_context* vctx = verbs_get_ctx_op(srq->context, get_srq_num);
-
-	if (!vctx)
-	{
-		return ENOSYS;
-	}
-	
-	return vctx->get_srq_num(srq, srq_num);
-}
-
-static inline int ibv_post_srq_recv(struct ibv_srq* srq, struct ibv_recv_wr* recv_wr, struct ibv_recv_wr** bad_recv_wr)
-{
-	return srq->context->ops.post_srq_recv(srq, recv_wr, bad_recv_wr);
-}
-
-*/

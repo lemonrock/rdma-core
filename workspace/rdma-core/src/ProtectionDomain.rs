@@ -32,7 +32,7 @@ impl<'a> ProtectionDomain<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createSharedRequestQueue(&'a self, requestedSettings: SharedRequestQueueSettings) -> SharedRequestQueue<'a>
+	pub fn createSharedReceiveQueue(&'a self, requestedSettings: SharedReceiveQueueSettings) -> SharedReceiveQueue<'a>
 	{
 		let mut attributes = ibv_srq_init_attr
 		{
@@ -46,10 +46,10 @@ impl<'a> ProtectionDomain<'a>
 		};
 		
 		let pointer = panic_on_null!(ibv_create_srq, self.pointer, &mut attributes);
-		SharedRequestQueue
+		SharedReceiveQueue
 		{
 			pointer: pointer,
-			settings: SharedRequestQueueSettings
+			settings: SharedReceiveQueueSettings
 			{
 				maximumNumberOfOutstandingWorkRequestsInInTheSharedRequestQueue: attributes.attr.max_wr,
 				maximumNumberOfScatterElementsPerWorkRequest: attributes.attr.max_sge,

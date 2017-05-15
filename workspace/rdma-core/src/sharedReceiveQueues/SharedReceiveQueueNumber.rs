@@ -2,11 +2,4 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::ProtectionDomain;
-use ::libc::c_int;
-use ::rdma_core_sys::*;
-use ::std::mem::uninitialized;
-
-
-include!("SharedRequestQueue.rs");
-include!("SharedRequestQueueSettings.rs");
+pub type SharedReceiveQueueNumber = u32;
