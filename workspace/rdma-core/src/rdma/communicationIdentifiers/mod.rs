@@ -2,6 +2,11 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct ConnectionManagerId;
+use ::libc::c_void;
+use ::rdma_core_sys::*;
+use ::std::cell::RefCell;
+use ::std::marker::PhantomData;
+use ::std::rc::Rc;
 
-// 'Owned' by an event channel
+
+include!("AsynchronousCommunicationIdentifier.rs");
