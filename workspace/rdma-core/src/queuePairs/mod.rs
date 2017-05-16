@@ -6,9 +6,16 @@ use ::ExtendedReliableConnectionDomain;
 use ::LocalIdentifier;
 use ::ProtectionDomain;
 use ::rdma_core_sys::*;
+use ::rust_extra::likely;
+use ::std::cmp::Eq;
+use ::std::cmp::PartialEq;
+use ::std::collections::HashSet;
+use ::std::hash::Hash;
+use ::std::hash::Hasher;
 
 
 include!("ExtendedQueuePair.rs");
+include!("MultiCastGroupIdentifier.rs");
 include!("QueuePair.rs");
 include!("QueuePairNumber.rs");
 include!("UnextendedQueuePair.rs");

@@ -10,10 +10,15 @@ pub struct ExtendedQueuePair<'a>
 
 impl<'a> QueuePair<'a> for ExtendedQueuePair<'a>
 {
-	#[doc(hidden)]
 	#[inline(always)]
-	fn pointer(&self) -> * mut ibv_qp
+	fn joinMultiCastGroup(&mut self, multiCastGroupIdentifier: MultiCastGroupIdentifier) -> bool
 	{
-		self.unextendedQueuePair.pointer()
+		self.unextendedQueuePair.joinMultiCastGroup(multiCastGroupIdentifier)
+	}
+	
+	#[inline(always)]
+	fn leaveMultiCastGroup(&mut self, multiCastGroupIdentifier: MultiCastGroupIdentifier) -> bool
+	{
+		self.unextendedQueuePair.leaveMultiCastGroup(multiCastGroupIdentifier)
 	}
 }
