@@ -52,6 +52,21 @@ impl<'a> QueuePair<'a> for UnextendedQueuePair<'a>
 			false
 		}
 	}
+	
+	#[inline(always)]
+	fn modify(&self, attributeMask: AttributeFlags::Flags, attributes: &mut ibv_qp_attr)
+	{
+		panic_on_error!(ibv_modify_qp, self.pointer, attributes, attributeMask.bits());
+	}
+	
+	#[inline(always)]
+	fn attributes(&self) -> (ibv_qp_attr, ibv_qp_init_attr)
+	{
+		let mut attributes = unsafe { zeroed() };
+		let mut initAttributes = unsafe { zeroed() };
+		panic_on_error!(ibv_query_qp, self.pointer, &mut attributes, AttributeFlags::All.bits(), &mut initAttributes);
+		(attributes, initAttributes)
+	}
 }
 
 impl<'a> UnextendedQueuePair<'a>

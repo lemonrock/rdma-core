@@ -10,10 +10,15 @@ pub trait QueuePair<'a>
 	#[inline(always)]
 	fn leaveMultiCastGroup(&mut self, multiCastGroupIdentifier: MultiCastGroupIdentifier) -> bool;
 	
-	/*
+	/// See also <https://www.mankier.com/3/ibv_modify_qp>
+	#[inline(always)]
+	fn modify(&self, attributeMask: AttributeFlags::Flags, attributes: &mut ibv_qp_attr);
 	
-	pub fn ibv_modify_qp(qp: *mut ibv_qp, attr: *mut ibv_qp_attr, attr_mask: c_int) -> c_int;
-	pub fn ibv_query_qp(qp: *mut ibv_qp, attr: *mut ibv_qp_attr, attr_mask: c_int, init_attr: *mut ibv_qp_init_attr) -> c_int;
+	/// See also <https://www.mankier.com/3/ibv_query_qp>
+	#[inline(always)]
+	fn attributes(&self) -> (ibv_qp_attr, ibv_qp_init_attr);
+	
+	/*
 	
 	pub fn rust_ibv_post_recv(qp: *mut ibv_qp, wr: *mut ibv_recv_wr, bad_wr: *mut *mut ibv_recv_wr) -> c_int;
 	pub fn rust_ibv_post_send(qp: *mut ibv_qp, wr: *mut ibv_send_wr, bad_wr: *mut *mut ibv_send_wr) -> c_int;

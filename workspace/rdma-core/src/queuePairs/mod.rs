@@ -12,8 +12,10 @@ use ::std::cmp::PartialEq;
 use ::std::collections::HashSet;
 use ::std::hash::Hash;
 use ::std::hash::Hasher;
+use ::std::mem::zeroed;
 
 
+include!("AttributeFlags.rs");
 include!("ExtendedQueuePair.rs");
 include!("MultiCastGroupIdentifier.rs");
 include!("QueuePair.rs");

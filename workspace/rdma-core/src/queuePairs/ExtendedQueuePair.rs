@@ -21,4 +21,16 @@ impl<'a> QueuePair<'a> for ExtendedQueuePair<'a>
 	{
 		self.unextendedQueuePair.leaveMultiCastGroup(multiCastGroupIdentifier)
 	}
+	
+	#[inline(always)]
+	fn modify(&self, attributeMask: AttributeFlags::Flags, attributes: &mut ibv_qp_attr)
+	{
+		self.unextendedQueuePair.modify(attributeMask, attributes)
+	}
+	
+	#[inline(always)]
+	fn attributes(&self) -> (ibv_qp_attr, ibv_qp_init_attr)
+	{
+		self.unextendedQueuePair.attributes()
+	}
 }

@@ -2,6 +2,9 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
+#![feature(associated_consts)]
+
+
 #![allow(missing_copy_implementations)]
 #![allow(missing_debug_implementations)]
 #![allow(non_camel_case_types)]
@@ -12,6 +15,7 @@
 
 
 extern crate arrayvec;
+#[macro_use] extern crate bitflags;
 extern crate errno;
 extern crate libc;
 extern crate rdma_core_sys;
