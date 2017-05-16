@@ -26,6 +26,7 @@ impl<'a> CompletionQueue for WithoutCompletionChannelUnextendedCompletionQueue<'
 		self.pointer
 	}
 	
+	#[allow(trivial_casts)]
 	#[doc(hidden)]
 	#[inline(always)]
 	fn isValidForContext(&self, context: &Context) -> bool

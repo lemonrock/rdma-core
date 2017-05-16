@@ -2,18 +2,14 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[allow(dead_code)]
-pub struct MemoryWindow<'a>
-{
-	pointer: *mut ibv_mw,
-	protectionDomain: &'a ProtectionDomain<'a>,
-}
+#[derive(Debug)]
+pub struct EventChannel(*mut rdma_event_channel);
 
-impl<'a> Drop for MemoryWindow<'a>
+impl EventChannel
 {
 	#[inline(always)]
-	fn drop(&mut self)
+	pub fn new() -> Self
 	{
-		panic_on_errno!(rust_ibv_dealloc_mw, self.pointer);
+		EventChannel(panic_on_null!(rdma_create_event_channel))
 	}
 }

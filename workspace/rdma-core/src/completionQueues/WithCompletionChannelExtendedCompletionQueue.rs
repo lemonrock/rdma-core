@@ -27,6 +27,7 @@ impl<'a> CompletionQueue for WithCompletionChannelExtendedCompletionQueue<'a>
 		unsafe { rust_ibv_cq_ex_to_cq(self.extendedPointer()) }
 	}
 	
+	#[allow(trivial_casts)]
 	#[doc(hidden)]
 	#[inline(always)]
 	fn isValidForContext(&self, context: &Context) -> bool

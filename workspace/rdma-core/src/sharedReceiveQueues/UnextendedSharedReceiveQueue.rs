@@ -41,6 +41,7 @@ impl<'a> SharedReceiveQueue for UnextendedSharedReceiveQueue<'a>
 		self.protectionDomain.context
 	}
 	
+	#[allow(trivial_casts)]
 	#[doc(hidden)]
 	#[inline(always)]
 	fn isValidForProtectionDomain<'b>(&self, protectionDomain: &ProtectionDomain<'b>) -> bool

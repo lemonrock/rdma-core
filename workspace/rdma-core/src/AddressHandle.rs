@@ -2,6 +2,7 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
+#[allow(dead_code)]
 pub struct AddressHandle<'a>
 {
 	pointer: *mut ibv_ah,

@@ -37,7 +37,6 @@ use ::rust_extra::unlikely;
 use ::rust_extra::powersOfTwo::AsU32;
 use ::rust_extra::powersOfTwo::PowerOfTwoThirtyTwoBit;
 use ::sharedReceiveQueues::*;
-use ::std::collections::HashMap;
 use ::std::ffi::CStr;
 use ::std::marker::PhantomData;
 use ::std::mem::uninitialized;
@@ -53,6 +52,7 @@ include!("panic_on_null.rs");
 
 pub mod completionQueues;
 pub mod queuePairs;
+pub mod rdma;
 pub mod sharedReceiveQueues;
 
 

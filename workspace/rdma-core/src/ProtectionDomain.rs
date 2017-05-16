@@ -199,7 +199,7 @@ impl<'a> ProtectionDomain<'a>
 	#[inline(always)]
 	pub fn allocateType1MemoryWindow(&'a self) -> MemoryWindow
 	{
-		let memoryWindow = self.allocateMemoryWindow(ibv_mw_type::IBV_MW_TYPE_1);
+		self.allocateMemoryWindow(ibv_mw_type::IBV_MW_TYPE_1);
 		unimplemented!();
 	}
 	

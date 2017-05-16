@@ -4,6 +4,7 @@
 
 // extendedReliableConnectionDomain: &'a ExtendedReliableConnectionDomain<'a>,
 
+#[allow(dead_code)]
 pub struct UnextendedQueuePair<'a, SendC: CompletionQueue, ReceiveC: CompletionQueue, SharedReceive: SharedReceiveQueue>
 where SendC: 'a, ReceiveC: 'a, SharedReceive: 'a
 {

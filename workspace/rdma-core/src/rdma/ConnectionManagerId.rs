@@ -2,18 +2,6 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[allow(dead_code)]
-pub struct MemoryWindow<'a>
-{
-	pointer: *mut ibv_mw,
-	protectionDomain: &'a ProtectionDomain<'a>,
-}
+pub struct ConnectionManagerId;
 
-impl<'a> Drop for MemoryWindow<'a>
-{
-	#[inline(always)]
-	fn drop(&mut self)
-	{
-		panic_on_errno!(rust_ibv_dealloc_mw, self.pointer);
-	}
-}
+// 'Owned' by an event channel
