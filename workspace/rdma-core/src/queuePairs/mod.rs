@@ -5,6 +5,8 @@
 use ::ExtendedReliableConnectionDomain;
 use ::LocalIdentifier;
 use ::ProtectionDomain;
+use ::completionQueues::*;
+use ::sharedReceiveQueues::*;
 use ::rdma_core_sys::*;
 use ::rust_extra::likely;
 use ::std::cmp::Eq;
@@ -16,7 +18,6 @@ use ::std::mem::zeroed;
 
 
 include!("AttributeFlags.rs");
-include!("ExtendedQueuePair.rs");
 include!("MultiCastGroupIdentifier.rs");
 include!("QueuePair.rs");
 include!("QueuePairNumber.rs");

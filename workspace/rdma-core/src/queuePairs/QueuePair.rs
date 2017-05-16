@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait QueuePair<'a>
+pub trait QueuePair
 {
 	#[inline(always)]
 	fn joinMultiCastGroup(&mut self, multiCastGroupIdentifier: MultiCastGroupIdentifier) -> bool;
@@ -17,6 +17,9 @@ pub trait QueuePair<'a>
 	/// See also <https://www.mankier.com/3/ibv_query_qp>
 	#[inline(always)]
 	fn attributes(&self) -> (ibv_qp_attr, ibv_qp_init_attr);
+	
+	#[inline(always)]
+	fn capabilities(&self) -> &ibv_qp_cap;
 	
 	/*
 	

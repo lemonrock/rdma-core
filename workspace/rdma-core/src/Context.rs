@@ -235,6 +235,7 @@ impl Context
 		unsafe { rust_ibv_open_xrcd(self.0, &mut attributes) }
 	}
 	
+	/// NOTE: This implementation is almost certainly currently broken
 	/// The created object should be used as part of ibv_create_qp_ex() to enable dispatching of incoming packets based on some RX hash configuration.
 	#[inline(always)]
 	pub fn createReceiveWorkQueueIndirectionTable<'a>(&'a self, size: PowerOfTwoThirtyTwoBit) -> ReceiveWorkQueueIndirectionTable<'a>

@@ -2,14 +2,18 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct UnextendedQueuePair<'a>
+// extendedReliableConnectionDomain: &'a ExtendedReliableConnectionDomain<'a>,
+
+pub struct UnextendedQueuePair<'a, SendC: CompletionQueue, ReceiveC: CompletionQueue, SharedReceive: SharedReceiveQueue>
+where SendC: 'a, ReceiveC: 'a, SharedReceive: 'a
 {
 	pointer: *mut ibv_qp,
-	lifetime: &'a ProtectionDomain<'a>,
+	capabilities: ibv_qp_cap,
 	multicastGroupMemberships: HashSet<MultiCastGroupIdentifier>,
+	lifetime: (&'a ProtectionDomain<'a>, &'a SendC, &'a ReceiveC, Option<&'a SharedReceive>),
 }
 
-impl<'a> Drop for UnextendedQueuePair<'a>
+impl<'a, SendC: CompletionQueue, ReceiveC: CompletionQueue, SharedReceive: SharedReceiveQueue> Drop for UnextendedQueuePair<'a, SendC, ReceiveC, SharedReceive>
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -23,7 +27,7 @@ impl<'a> Drop for UnextendedQueuePair<'a>
 	}
 }
 
-impl<'a> QueuePair<'a> for UnextendedQueuePair<'a>
+impl<'a, SendC: CompletionQueue, ReceiveC: CompletionQueue, SharedReceive: SharedReceiveQueue> QueuePair for UnextendedQueuePair<'a, SendC, ReceiveC, SharedReceive>
 {
 	#[inline(always)]
 	fn joinMultiCastGroup(&mut self, multiCastGroupIdentifier: MultiCastGroupIdentifier) -> bool
@@ -67,18 +71,25 @@ impl<'a> QueuePair<'a> for UnextendedQueuePair<'a>
 		panic_on_error!(ibv_query_qp, self.pointer, &mut attributes, AttributeFlags::All.bits(), &mut initAttributes);
 		(attributes, initAttributes)
 	}
+	
+	#[inline(always)]
+	fn capabilities(&self) -> &ibv_qp_cap
+	{
+		&self.capabilities
+	}
 }
 
-impl<'a> UnextendedQueuePair<'a>
+impl<'a, SendC: CompletionQueue, ReceiveC: CompletionQueue, SharedReceive: SharedReceiveQueue> UnextendedQueuePair<'a, SendC, ReceiveC, SharedReceive>
 {
 	#[inline(always)]
-	fn new(&self, pointer: *mut ibv_qp, lifetime: &'a ProtectionDomain<'a>) -> UnextendedQueuePair<'a>
+	pub(crate) fn new(pointer: *mut ibv_qp, capabilities: ibv_qp_cap, lifetime: (&'a ProtectionDomain<'a>, &'a SendC, &'a ReceiveC, Option<&'a SharedReceive>)) -> Self
 	{
 		UnextendedQueuePair
 		{
 			pointer: pointer,
-			lifetime: lifetime,
+			capabilities: capabilities,
 			multicastGroupMemberships: HashSet::with_capacity(1),
+			lifetime: lifetime,
 		}
 	}
 }
