@@ -9,3 +9,7 @@ include!("bindgen/unions/ibv_send_wr__bindgen_ty_1.rs");
 include!("bindgen/unions/ibv_send_wr__bindgen_ty_2.rs");
 include!("bindgen/unions/ibv_send_wr__bindgen_ty_3.rs");
 include!("bindgen/unions/ibv_wc__bindgen_ty_1.rs");
+include!("bindgen/unions/rdma_addr__bindgen_ty_1.rs");
+include!("bindgen/unions/rdma_addr__bindgen_ty_2.rs");
+include!("bindgen/unions/rdma_addr__bindgen_ty_3.rs");
+include!("bindgen/unions/rdma_cm_event__bindgen_ty_1.rs");

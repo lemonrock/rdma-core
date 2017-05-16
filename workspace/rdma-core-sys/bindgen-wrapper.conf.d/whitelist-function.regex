@@ -1,2 +1,4 @@
 ibv_.*
 rust_ibv_.*
+rdma_.*
+rust_rdma_.*

@@ -16,6 +16,11 @@ use ::libc::c_void;
 
 use ::libc::pthread_cond_t;
 use ::libc::pthread_mutex_t;
+use ::libc::sockaddr;
+use ::libc::sockaddr_in;
+use ::libc::sockaddr_in6;
+use ::libc::sockaddr_storage;
+use ::libc::socklen_t;
 use ::libc::timespec;
 
 
@@ -29,7 +34,6 @@ pub type __be64 = u64;
 #[link(name = "hfi1verbs", kind = "static-nobundle")]
 #[link(name = "hns", kind = "static-nobundle")]
 #[link(name = "i40iw", kind = "static-nobundle")]
-#[link(name = "ibcm", kind = "static-nobundle")]
 #[link(name = "ibumad", kind = "static-nobundle")]
 #[link(name = "ibverbs", kind = "static-nobundle")]
 #[link(name = "ipathverbs", kind = "static-nobundle")]

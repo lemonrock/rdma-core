@@ -1,5 +1,5 @@
 #include <infiniband/verbs.h>
-#include "static-inline.h"
+#include "infiniband-verbs-static-inline.h"
 
 struct ibv_cq * rust_ibv_cq_ex_to_cq(struct ibv_cq_ex * cq)
 {

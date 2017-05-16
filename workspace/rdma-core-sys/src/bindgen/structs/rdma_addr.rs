@@ -1,6 +1,11 @@
 // This file is part of rdma-core. It is subject to the license terms in the COPYRIGHT file found in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT. No part of rdma-core, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the COPYRIGHT file.
-// Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
+// Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#include "infiniband-verbs-static-inline.h"
-#include "rdma-verbs-static-inline.h"
+#[repr(C)]
+pub struct rdma_addr
+{
+	pub __bindgen_anon_1: rdma_addr__bindgen_ty_1,
+	pub __bindgen_anon_2: rdma_addr__bindgen_ty_2,
+	pub addr: rdma_addr__bindgen_ty_3,
+}

@@ -3,6 +3,9 @@
 
 
 include!("bindgen/enums/_bindgen_ty_1.rs");
+include!("bindgen/enums/_bindgen_ty_6.rs");
+include!("bindgen/enums/_bindgen_ty_7.rs");
+include!("bindgen/enums/_bindgen_ty_8.rs");
 include!("bindgen/enums/ibv_atomic_cap.rs");
 include!("bindgen/enums/ibv_device_cap_flags.rs");
 include!("bindgen/enums/ibv_event_type.rs");
@@ -41,3 +44,5 @@ include!("bindgen/enums/ibv_wq_init_attr_mask.rs");
 include!("bindgen/enums/ibv_wq_state.rs");
 include!("bindgen/enums/ibv_wq_type.rs");
 include!("bindgen/enums/ibv_wr_opcode.rs");
+include!("bindgen/enums/rdma_cm_event_type.rs");
+include!("bindgen/enums/rdma_port_space.rs");

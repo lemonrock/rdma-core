@@ -10,7 +10,7 @@ alpineLinuxPackageNames='rsync make gcc linux-headers libunwind-dev linux-grsec-
 clangAdditionalArguments=''
 headersFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/DESTDIR/usr/include
 libFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/DESTDIR/usr/lib
-link='cxgb3 cxgb4 hfi1verbs hns i40iw ibcm ibumad ibverbs ipathverbs mlx4 mlx5 mthca nes ocrdma qedr rdmacm rxe vmw_pvrdma'
+link='cxgb3 cxgb4 hfi1verbs hns i40iw ibumad ibverbs ipathverbs mlx4 mlx5 mthca nes ocrdma qedr rdmacm rxe vmw_pvrdma'
 link_kind='static-nobundle'
 
 
@@ -32,7 +32,7 @@ bindgen_wrapper_generateStaticFunctions()
 		-e 's/(/,/g' >"$temporaryFolderPath"/$outputFileBaseName.functions
 
 	{
-		printf '#include <infiniband/verbs.h>\n' >"$temporaryFolderPath"/includes/$outputFileBaseName.h
+		printf '#include <%s>\n' "$relativeHeaderFile" >"$temporaryFolderPath"/includes/$outputFileBaseName.h
 
 		cat <<-EOF
 			#include <${relativeHeaderFile}>
@@ -90,7 +90,8 @@ bindgen_wrapper_generateStaticFunctions()
 
 preprocess_before_headersFolderPath()
 {
-	bindgen_wrapper_generateStaticFunctions 'infiniband/verbs.h' 'static-inline'
+	bindgen_wrapper_generateStaticFunctions 'infiniband/verbs.h' 'infiniband-verbs-static-inline'
+	bindgen_wrapper_generateStaticFunctions 'rdma/rdma_verbs.h' 'rdma-verbs-static-inline'
 }
 
 final_chance_to_tweak()

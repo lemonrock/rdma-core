@@ -65,7 +65,8 @@ fn compileEmbeddedCCode(absoluteHomeFolderPath: &str)
 	let includeFolderPath = format!("{}/src/include", absoluteHomeFolderPath.to_owned());
 	
 	gcc::Config::new()
-	.file(format!("{}/static-inline.c", includeFolderPath))
+	.file(format!("{}/infiniband-verbs-static-inline.c", includeFolderPath))
+	.file(format!("{}/rdma-verbs-static-inline.c", includeFolderPath))
 	.flag("-Werror")
 	.flag(&format!("-isystem{}", includeFolderPath)) // can't use .include() as warnings then occur in system headers
 	.define("_GNU_SOURCE", None)
