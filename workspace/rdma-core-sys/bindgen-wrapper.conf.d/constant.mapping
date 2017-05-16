@@ -13,3 +13,12 @@ ibv_cq_init_attr_mask_ ibv_cq_init_attr_mask
 ibv_srq_init_attr_mask_ ibv_srq_init_attr_mask
 ibv_create_cq_attr_flags_ ibv_create_cq_attr_flags
 ibv_create_cq_wc_flags_ ibv_create_cq_wc_flags
+IBV_PATH_FLAG_ IBV_PATH_FLAG
+IBV_PATH_RECORD_REVERSIBLE IBV_PATH_RECORD
+RAI_ RAI
+RDMA_MAX_ RDMA_MAX
+RDMA_OPTION_ID RDMA_OPTION_ID
+RDMA_OPTION_IB RDMA_OPTION_IB
+RDMA_UDP_ RDMA_UDP
+ibv_xrcd_init_attr_mask_IBV_XRCD_INIT_ATTR_ ibv_xrcd_init_attr_mask
+RDMA_IB_ RDMA_IB
