@@ -58,7 +58,6 @@ pub mod sharedReceiveQueues;
 
 include!("AddressHandle.rs");
 include!("AsynchronousEvent.rs");
-include!("CompletionChannel.rs");
 include!("Context.rs");
 include!("Device.rs");
 include!("DeviceListIterator.rs");

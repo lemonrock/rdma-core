@@ -22,3 +22,11 @@ include!("MultiCastGroupIdentifier.rs");
 include!("QueuePair.rs");
 include!("QueuePairNumber.rs");
 include!("UnextendedQueuePair.rs");
+
+include!("ExtendedReliableConnectionReceiveQueuePair.rs");
+include!("ExtendedReliableConnectionSendQueuePair.rs");
+include!("QueuePair2.rs");
+include!("RawPacketQueuePair.rs");
+include!("ReliableConnectionQueuePair.rs");
+include!("UnreliableConnectionQueuePair.rs");
+include!("UnreliableDatagramQueuePair.rs");

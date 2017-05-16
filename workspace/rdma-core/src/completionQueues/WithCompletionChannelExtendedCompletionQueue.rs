@@ -2,13 +2,14 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct WithCompletionChannelExtendedCompletionQueue
+pub struct WithCompletionChannelExtendedCompletionQueue<'a>
 {
 	pub(crate) pointer: *mut ibv_cq_ex,
+	context: &'a Context,
 	isCurrentlyBeingPolled: bool,
 }
 
-impl Drop for WithCompletionChannelExtendedCompletionQueue
+impl<'a> Drop for WithCompletionChannelExtendedCompletionQueue<'a>
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -17,7 +18,24 @@ impl Drop for WithCompletionChannelExtendedCompletionQueue
 	}
 }
 
-impl<'a> ExtendedCompletionQueue<'a> for WithCompletionChannelExtendedCompletionQueue
+impl<'a> CompletionQueue for WithCompletionChannelExtendedCompletionQueue<'a>
+{
+	#[doc(hidden)]
+	#[inline(always)]
+	fn pointer(&self) -> *mut ibv_cq
+	{
+		unsafe { rust_ibv_cq_ex_to_cq(self.extendedPointer()) }
+	}
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn isValidForContext(&self, context: &Context) -> bool
+	{
+		self.context as *const _ == context as *const _
+	}
+}
+
+impl<'a> ExtendedCompletionQueue<'a> for WithCompletionChannelExtendedCompletionQueue<'a>
 {
 	#[doc(hidden)]
 	#[inline(always)]
@@ -41,16 +59,17 @@ impl<'a> ExtendedCompletionQueue<'a> for WithCompletionChannelExtendedCompletion
 	}
 }
 
-impl WithCompletionChannelExtendedCompletionQueue
+impl<'a> WithCompletionChannelExtendedCompletionQueue<'a>
 {
 	#[inline(always)]
-	pub(crate) fn new(pointer: *mut ibv_cq_ex) -> Self
+	pub(crate) fn new(pointer: *mut ibv_cq_ex, context: &'a Context) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
 		Self
 		{
 			pointer: pointer,
+			context: context,
 			isCurrentlyBeingPolled: false,
 		}
 	}

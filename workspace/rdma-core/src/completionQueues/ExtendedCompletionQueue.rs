@@ -94,13 +94,3 @@ pub trait ExtendedCompletionQueue<'a>: CompletionQueue + Sized
 	}
 }
 
-impl<'a, T> CompletionQueue for T
-where T: ExtendedCompletionQueue<'a>
-{
-	#[doc(hidden)]
-	#[inline(always)]
-	fn pointer(&self) -> *mut ibv_cq
-	{
-		unsafe { rust_ibv_cq_ex_to_cq(self.extendedPointer()) }
-	}
-}

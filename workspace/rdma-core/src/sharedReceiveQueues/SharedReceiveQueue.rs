@@ -16,6 +16,10 @@ pub trait SharedReceiveQueue
 	#[inline(always)]
 	fn context(&self) -> &Context;
 	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn isValidForProtectionDomain<'b>(&self, protectionDomain: &ProtectionDomain<'b>) -> bool;
+	
 	#[inline(always)]
 	fn modifyLimit(&mut self, limit: u32)
 	{

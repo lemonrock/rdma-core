@@ -2,12 +2,13 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct WithCompletionChannelUnextendedCompletionQueue
+pub struct WithCompletionChannelUnextendedCompletionQueue<'a>
 {
 	pointer: *mut ibv_cq,
+	context: &'a Context,
 }
 
-impl Drop for WithCompletionChannelUnextendedCompletionQueue
+impl<'a> Drop for WithCompletionChannelUnextendedCompletionQueue<'a>
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -16,7 +17,7 @@ impl Drop for WithCompletionChannelUnextendedCompletionQueue
 	}
 }
 
-impl CompletionQueue for WithCompletionChannelUnextendedCompletionQueue
+impl<'a> CompletionQueue for WithCompletionChannelUnextendedCompletionQueue<'a>
 {
 	#[doc(hidden)]
 	#[inline(always)]
@@ -24,22 +25,30 @@ impl CompletionQueue for WithCompletionChannelUnextendedCompletionQueue
 	{
 		self.pointer
 	}
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn isValidForContext(&self, context: &Context) -> bool
+	{
+		self.context as *const _ == context as *const _
+	}
 }
 
-impl UnextendedCompletionQueue for WithCompletionChannelUnextendedCompletionQueue
+impl<'a> UnextendedCompletionQueue for WithCompletionChannelUnextendedCompletionQueue<'a>
 {
 }
 
-impl WithCompletionChannelUnextendedCompletionQueue
+impl<'a> WithCompletionChannelUnextendedCompletionQueue<'a>
 {
 	#[inline(always)]
-	pub(crate) fn new(pointer: *mut ibv_cq) -> Self
+	pub(crate) fn new(pointer: *mut ibv_cq, context: &'a Context) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
 		Self
 		{
 			pointer: pointer,
+			context: context,
 		}
 	}
 }

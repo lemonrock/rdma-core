@@ -6,8 +6,8 @@ pub struct CompletionChannel<'a>
 {
 	pointer: *mut ibv_comp_channel,
 	context: &'a Context,
-	unextendedCompletionQueues: HashMap<usize, WithCompletionChannelUnextendedCompletionQueue>,
-	extendedCompletionQueues: HashMap<usize, WithCompletionChannelExtendedCompletionQueue>,
+	unextendedCompletionQueues: HashMap<usize, WithCompletionChannelUnextendedCompletionQueue<'a>>,
+	extendedCompletionQueues: HashMap<usize, WithCompletionChannelExtendedCompletionQueue<'a>>,
 }
 
 impl<'a> Drop for CompletionChannel<'a>
@@ -22,7 +22,7 @@ impl<'a> Drop for CompletionChannel<'a>
 impl<'a> CompletionChannel<'a>
 {
 	#[inline(always)]
-	fn new(pointer: *mut ibv_comp_channel, context: &'a Context) -> Self
+	pub(crate) fn new(pointer: *mut ibv_comp_channel, context: &'a Context) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
@@ -42,25 +42,25 @@ impl<'a> CompletionChannel<'a>
 	}
 	
 	#[inline(always)]
-	pub fn createWithCompletionChannelUnextendedCompletionQueue(&'a mut self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> &'a WithCompletionChannelUnextendedCompletionQueue
+	pub fn createWithCompletionChannelUnextendedCompletionQueue(&'a mut self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> &'a WithCompletionChannelUnextendedCompletionQueue<'a>
 	{
 		let pointer = self.context.createUnextendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, self.pointer);
 		let key = pointer as usize;
-		self.unextendedCompletionQueues.insert(key, WithCompletionChannelUnextendedCompletionQueue::new(pointer));
+		self.unextendedCompletionQueues.insert(key, WithCompletionChannelUnextendedCompletionQueue::new(pointer, self.context));
 		self.unextendedCompletionQueues.get(&key).unwrap()
 	}
 	
 	#[inline(always)]
-	pub fn createWithCompletionChannelExtendedCompletionQueue(&'a mut self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> &'a WithCompletionChannelExtendedCompletionQueue
+	pub fn createWithCompletionChannelExtendedCompletionQueue(&'a mut self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> &'a WithCompletionChannelExtendedCompletionQueue<'a>
 	{
 		let pointer = self.context.createExtendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, self.pointer);
 		let key = pointer as usize;
-		self.extendedCompletionQueues.insert(key, WithCompletionChannelExtendedCompletionQueue::new(pointer));
+		self.extendedCompletionQueues.insert(key, WithCompletionChannelExtendedCompletionQueue::new(pointer, self.context));
 		self.extendedCompletionQueues.get(&key).unwrap()
 	}
 	
 	#[inline(always)]
-	pub fn waitForCompletionEvent<R, Unextended: Fn(&WithCompletionChannelUnextendedCompletionQueue, *mut c_void) -> R, Extended: Fn(&WithCompletionChannelExtendedCompletionQueue, *mut c_void) -> R>(&self, handleUnextendedEventAndContext: Unextended, handleExtendedEventAndContext: Extended) -> R
+	pub fn waitForCompletionEvent<R, Unextended: Fn(&WithCompletionChannelUnextendedCompletionQueue<'a>, *mut c_void) -> R, Extended: Fn(&WithCompletionChannelExtendedCompletionQueue<'a>, *mut c_void) -> R>(&self, handleUnextendedEventAndContext: Unextended, handleExtendedEventAndContext: Extended) -> R
 	{
 		let mut cq = null_mut();
 		let mut context = null_mut();

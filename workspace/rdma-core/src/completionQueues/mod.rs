@@ -3,21 +3,26 @@
 
 
 use ::Context;
+use ::FileDescriptor;
 use ::arrayvec::ArrayVec;
 use self::workCompletions::ExtendedWorkCompletion;
 use self::workCompletions::UnextendedWorkCompletion;
 use ::errno::errno;
+use ::libc::c_void;
 use ::rdma_core_sys::*;
 use ::rust_extra::u31;
 use ::rust_extra::unlikely;
 use ::rust_extra::likely;
+use ::std::collections::HashMap;
 use ::std::mem::transmute;
+use ::std::ptr::null_mut;
 use ::syscall_alt::constants::E;
 
 
 pub mod workCompletions;
 
 
+include!("CompletionChannel.rs");
 include!("CompletionQueue.rs");
 include!("ExtendedCompletionQueue.rs");
 include!("UnextendedCompletionQueue.rs");

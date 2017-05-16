@@ -5,7 +5,7 @@
 pub struct WithoutCompletionChannelExtendedCompletionQueue<'a>
 {
 	pub(crate) pointer: *mut ibv_cq_ex,
-	lifetime: &'a Context,
+	context: &'a Context,
 	isCurrentlyBeingPolled: bool,
 }
 
@@ -15,6 +15,23 @@ impl<'a> Drop for WithoutCompletionChannelExtendedCompletionQueue<'a>
 	fn drop(&mut self)
 	{
 		self.destroy();
+	}
+}
+
+impl<'a> CompletionQueue for WithoutCompletionChannelExtendedCompletionQueue<'a>
+{
+	#[doc(hidden)]
+	#[inline(always)]
+	fn pointer(&self) -> *mut ibv_cq
+	{
+		unsafe { rust_ibv_cq_ex_to_cq(self.extendedPointer()) }
+	}
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn isValidForContext(&self, context: &Context) -> bool
+	{
+		self.context as *const _ == context as *const _
 	}
 }
 
@@ -45,14 +62,14 @@ impl<'a> ExtendedCompletionQueue<'a> for WithoutCompletionChannelExtendedComplet
 impl<'a> WithoutCompletionChannelExtendedCompletionQueue<'a>
 {
 	#[inline(always)]
-	pub(crate) fn new(pointer: *mut ibv_cq_ex, lifetime: &'a Context) -> Self
+	pub(crate) fn new(pointer: *mut ibv_cq_ex, context: &'a Context) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
 		Self
 		{
 			pointer: pointer,
-			lifetime: lifetime,
+			context: context,
 			isCurrentlyBeingPolled: false,
 		}
 	}

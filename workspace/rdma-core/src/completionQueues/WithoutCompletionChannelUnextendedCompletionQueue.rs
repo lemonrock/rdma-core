@@ -5,7 +5,7 @@
 pub struct WithoutCompletionChannelUnextendedCompletionQueue<'a>
 {
 	pointer: *mut ibv_cq,
-	lifetime: &'a Context,
+	context: &'a Context,
 }
 
 impl<'a> Drop for WithoutCompletionChannelUnextendedCompletionQueue<'a>
@@ -25,6 +25,13 @@ impl<'a> CompletionQueue for WithoutCompletionChannelUnextendedCompletionQueue<'
 	{
 		self.pointer
 	}
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn isValidForContext(&self, context: &Context) -> bool
+	{
+		self.context as *const _ == context as *const _
+	}
 }
 
 impl<'a> UnextendedCompletionQueue for WithoutCompletionChannelUnextendedCompletionQueue<'a>
@@ -34,14 +41,14 @@ impl<'a> UnextendedCompletionQueue for WithoutCompletionChannelUnextendedComplet
 impl<'a> WithoutCompletionChannelUnextendedCompletionQueue<'a>
 {
 	#[inline(always)]
-	pub(crate) fn new(pointer: *mut ibv_cq, lifetime: &'a Context) -> Self
+	pub(crate) fn new(pointer: *mut ibv_cq, context: &'a Context) -> Self
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
 		Self
 		{
 			pointer: pointer,
-			lifetime: lifetime,
+			context: context,
 		}
 	}
 }

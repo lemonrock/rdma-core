@@ -40,4 +40,11 @@ impl<'a> SharedReceiveQueue for UnextendedSharedReceiveQueue<'a>
 	{
 		self.protectionDomain.context
 	}
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn isValidForProtectionDomain<'b>(&self, protectionDomain: &ProtectionDomain<'b>) -> bool
+	{
+		self.protectionDomain as *const _ == protectionDomain as *const _
+	}
 }

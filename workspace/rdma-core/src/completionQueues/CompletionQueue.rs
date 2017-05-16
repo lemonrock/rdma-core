@@ -8,6 +8,10 @@ pub trait CompletionQueue: Drop
 	#[inline(always)]
 	fn pointer(&self) -> *mut ibv_cq;
 	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn isValidForContext(&self, context: &Context) -> bool;
+	
 	#[inline(always)]
 	fn resize(&self, atLeastThisNumberOfCompletionQueueEvents: u31)
 	{

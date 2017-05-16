@@ -217,9 +217,16 @@ impl<'a> ProtectionDomain<'a>
 		}
 	}
 	
+	// TODO: An extended shared recv queue also has a completion queue, and is only for valid for XRC queue pairs I suspect
+	
+	
 	#[inline(always)]
 	pub fn createUnextendedQueuePair<SendC: CompletionQueue, ReceiveC: CompletionQueue, SharedReceive: SharedReceiveQueue>(&'a self, sendCompletionQueue: &'a SendC, receiveCompletionQueue: &'a ReceiveC, sharedReceiveQueue: Option<&'a SharedReceive>, capabilities: ibv_qp_cap, eachWorkRequestSubmittedToTheSendCompletionQueueGeneratesACompletionEntry: bool) -> UnextendedQueuePair<'a, SendC, ReceiveC, SharedReceive>
 	{
+		let context = self.context;
+		assert!(sendCompletionQueue.isValidForContext(context), "sendCompletionQueue is not valid for this protection domain's context");
+		assert!(receiveCompletionQueue.isValidForContext(context), "receiveCompletionQueue is not valid for this protection domain's context");
+		
 		let mut attributes = ibv_qp_init_attr
 		{
 			qp_context: null_mut(),
@@ -228,7 +235,12 @@ impl<'a> ProtectionDomain<'a>
 			srq: match sharedReceiveQueue
 			{
 				None => null_mut(),
-				Some(sharedReceiveQueue) => sharedReceiveQueue.pointer(),
+				Some(sharedReceiveQueue) =>
+				{
+					assert!(sharedReceiveQueue.isValidForProtectionDomain(self), "shared receive queue is not valid for this protection domain");
+					
+					sharedReceiveQueue.pointer()
+				},
 			},
 			cap: capabilities,
 			qp_type: ibv_qp_type::IBV_QPT_RC,
