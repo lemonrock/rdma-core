@@ -5,7 +5,7 @@
 #[derive(Debug)]
 pub struct EventChannel<C: CommunicationEventHandler>
 {
-	pointer: *mut rdma_event_channel,
+	pub(crate) pointer: *mut rdma_event_channel,
 	communicationEventHandler: C,
 }
 
@@ -31,11 +31,10 @@ impl<C: CommunicationEventHandler> EventChannel<C>
 	}
 	
 	#[inline(always)]
-	pub fn createAsynchronousCommunicationIdentifier<Context>(&self, portSpace: rdma_port_space, context: Rc<RefCell<Context>>) -> AsynchronousCommunicationIdentifier<Context, C>
+	pub fn newListeningAsynchronousCommunicationIdentifier<Context>(&self, context: Rc<RefCell<Context>>, addressing: Addressing, backLog: u32) -> AsynchronousCommunicationIdentifier<Context, C>
 	{
-		let mut communicationIdentifierPointer = unsafe { uninitialized() };
-		panic_on_error!(rdma_create_id, self.pointer, &mut communicationIdentifierPointer, Rc::into_raw(context) as *mut RefCell<Context> as *mut c_void, portSpace);
-		AsynchronousCommunicationIdentifier::new(communicationIdentifierPointer, self)
+		// Put this is a hash map using Box<?>
+		AsynchronousCommunicationIdentifier::newListening(context, addressing, backLog, self)
 	}
 	
 	#[inline(always)]

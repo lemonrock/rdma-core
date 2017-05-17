@@ -2,8 +2,9 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
+use self::addresses::*;
+use self::communicationEventHandlers::*;
 use self::communicationIdentifiers::*;
-use ::libc::c_void;
 use ::rdma_core_sys::*;
 use ::std::cell::RefCell;
 use ::std::mem::uninitialized;
@@ -11,8 +12,8 @@ use ::std::rc::Rc;
 
 
 pub mod addresses;
+pub mod communicationEventHandlers;
 pub mod communicationIdentifiers;
 
 
-include!("CommunicationEventHandler.rs");
 include!("EventChannel.rs");

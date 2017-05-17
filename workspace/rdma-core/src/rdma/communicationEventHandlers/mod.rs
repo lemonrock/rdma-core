@@ -2,18 +2,4 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::libc::c_int;
-use ::libc::c_void;
-use ::rdma::addresses::*;
-use ::rdma::CommunicationEventHandler;
-use ::rdma::EventChannel;
-use ::rdma_core_sys::*;
-use ::std::cell::RefCell;
-use ::std::marker::PhantomData;
-use ::std::mem::uninitialized;
-use ::std::ptr::null_mut;
-use ::std::rc::Rc;
-
-
-include!("AsynchronousCommunicationIdentifier.rs");
-include!("CommunicationIdentifier.rs");
+include!("CommunicationEventHandler.rs");
