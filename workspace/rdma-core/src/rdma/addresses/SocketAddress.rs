@@ -2,18 +2,23 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::libc::c_void;
-use ::rdma::addresses::Addressing;
-use ::rdma::CommunicationEventHandler;
-use ::rdma::EventChannel;
-use ::rdma_core_sys::*;
-use ::rust_extra::unlikely;
-use ::std::cell::RefCell;
-use ::std::marker::PhantomData;
-use ::std::mem::uninitialized;
-use ::std::ptr::null_mut;
-use ::std::rc::Rc;
-
-
-include!("AsynchronousCommunicationIdentifier.rs");
-include!("ListeningSynchronousCommunicationIdentifier.rs");
+pub trait SocketAddress: Sized
+{
+	#[inline(always)]
+	fn as_sockaddr_ptr(&self) -> *const sockaddr;
+	
+	#[inline(always)]
+	fn as_sockaddr_mut_ptr(&mut self) -> *mut sockaddr;
+	
+	#[inline(always)]
+	fn as_sockaddr_storage_clone(&self) -> sockaddr_storage;
+	
+	#[inline(always)]
+	fn family(&self) -> sa_family_t;
+	
+	#[inline(always)]
+	fn toRdmaSocketAddress(self) -> RdmaSocketAddress;
+	
+	#[inline(always)]
+	fn port(&self) -> Port;
+}

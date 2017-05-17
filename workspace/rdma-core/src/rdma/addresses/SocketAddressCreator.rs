@@ -2,18 +2,14 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::libc::c_void;
-use ::rdma::addresses::Addressing;
-use ::rdma::CommunicationEventHandler;
-use ::rdma::EventChannel;
-use ::rdma_core_sys::*;
-use ::rust_extra::unlikely;
-use ::std::cell::RefCell;
-use ::std::marker::PhantomData;
-use ::std::mem::uninitialized;
-use ::std::ptr::null_mut;
-use ::std::rc::Rc;
-
-
-include!("AsynchronousCommunicationIdentifier.rs");
-include!("ListeningSynchronousCommunicationIdentifier.rs");
+pub trait SocketAddressCreator: SocketAddress
+{
+	#[inline(always)]
+	fn localWithRandomPort() -> Self;
+	
+	#[inline(always)]
+	fn newRdmaSocketAddress() -> RdmaSocketAddress
+	{
+		Self::localWithRandomPort().toRdmaSocketAddress()
+	}
+}

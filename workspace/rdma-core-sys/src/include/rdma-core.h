@@ -4,3 +4,4 @@
 
 #include "infiniband-verbs-static-inline.h"
 #include "rdma-verbs-static-inline.h"
+#include "infiniband/ib.h"

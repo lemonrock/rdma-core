@@ -1,3 +1,5 @@
 ibv_.*
 _ibv_.*
 rdma_.*
+ib_addr
+sockaddr_ib

@@ -2,6 +2,7 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
+include!("bindgen/constants/AF.rs");
 include!("bindgen/constants/CREATE_CQ_SUP_WC_FLAGS.rs");
 include!("bindgen/constants/DEVICE.rs");
 include!("bindgen/constants/IBV_PATH_FLAG.rs");

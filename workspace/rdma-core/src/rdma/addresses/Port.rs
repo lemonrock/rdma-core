@@ -2,18 +2,32 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::libc::c_void;
-use ::rdma::addresses::Addressing;
-use ::rdma::CommunicationEventHandler;
-use ::rdma::EventChannel;
-use ::rdma_core_sys::*;
-use ::rust_extra::unlikely;
-use ::std::cell::RefCell;
-use ::std::marker::PhantomData;
-use ::std::mem::uninitialized;
-use ::std::ptr::null_mut;
-use ::std::rc::Rc;
+#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Port(__be16);
 
-
-include!("AsynchronousCommunicationIdentifier.rs");
-include!("ListeningSynchronousCommunicationIdentifier.rs");
+impl Port
+{
+	#[inline(always)]
+	pub fn as_network_endian(&self) -> __be16
+	{
+		self.0
+	}
+	
+	#[inline(always)]
+	pub fn as_host_endian(&self) -> u16
+	{
+		u16::from_be(self.0)
+	}
+	
+	#[inline(always)]
+	pub fn from_network_endian(port: __be16) -> Self
+	{
+		Port(port)
+	}
+	
+	#[inline(always)]
+	pub fn from_host_endian(port: u16) -> Self
+	{
+		Port(port.to_be())
+	}
+}

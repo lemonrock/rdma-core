@@ -2,17 +2,15 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-// 'Owned' by an event channel
-// Can 'come into being'
-
-
-pub struct AsynchronousCommunicationIdentifier<Context>
+pub struct AsynchronousCommunicationIdentifier<'a, Context, C: CommunicationEventHandler>
+where C: 'a
 {
 	pointer: *mut rdma_cm_id,
-	phantomData: PhantomData<Rc<RefCell<Context>>>
+	context: PhantomData<Rc<RefCell<Context>>>,
+	#[allow(dead_code)] eventChannel: &'a EventChannel<C>
 }
 
-impl<Context> Drop for AsynchronousCommunicationIdentifier<Context>
+impl<'a, Context, C: CommunicationEventHandler> Drop for AsynchronousCommunicationIdentifier<'a, Context, C>
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -26,15 +24,16 @@ impl<Context> Drop for AsynchronousCommunicationIdentifier<Context>
 	}
 }
 
-impl<Context> AsynchronousCommunicationIdentifier<Context>
+impl<'a, Context, C: CommunicationEventHandler> AsynchronousCommunicationIdentifier<'a, Context, C>
 {
 	#[inline(always)]
-	pub(crate) fn new(pointer: *mut rdma_cm_id) -> Self
+	pub(crate) fn new(pointer: *mut rdma_cm_id, eventChannel: &'a EventChannel<C>) -> Self
 	{
 		Self
 		{
 			pointer: pointer,
-			phantomData: PhantomData,
+			context: PhantomData,
+			eventChannel: eventChannel,
 		}
 	}
 	

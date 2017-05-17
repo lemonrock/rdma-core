@@ -10,6 +10,7 @@ use ::std::mem::uninitialized;
 use ::std::rc::Rc;
 
 
+pub mod addresses;
 pub mod communicationIdentifiers;
 
 

@@ -5,6 +5,7 @@
 include!("bindgen/structs/_bindgen_ty_3.rs");
 include!("bindgen/structs/_bindgen_ty_4.rs");
 include!("bindgen/structs/_ibv_device_ops.rs");
+include!("bindgen/structs/ib_addr.rs");
 include!("bindgen/structs/ibv_access_flags.rs");
 include!("bindgen/structs/ibv_ah.rs");
 include!("bindgen/structs/ibv_ah_attr.rs");
@@ -102,3 +103,4 @@ include!("bindgen/structs/rdma_event_channel.rs");
 include!("bindgen/structs/rdma_ib_addr.rs");
 include!("bindgen/structs/rdma_route.rs");
 include!("bindgen/structs/rdma_ud_param.rs");
+include!("bindgen/structs/sockaddr_ib.rs");

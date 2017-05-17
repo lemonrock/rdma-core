@@ -31,11 +31,11 @@ impl<C: CommunicationEventHandler> EventChannel<C>
 	}
 	
 	#[inline(always)]
-	pub fn createAsynchronousCommunicationIdentifier<Context>(&self, portSpace: rdma_port_space, context: Rc<RefCell<Context>>) -> AsynchronousCommunicationIdentifier<Context>
+	pub fn createAsynchronousCommunicationIdentifier<Context>(&self, portSpace: rdma_port_space, context: Rc<RefCell<Context>>) -> AsynchronousCommunicationIdentifier<Context, C>
 	{
 		let mut communicationIdentifierPointer = unsafe { uninitialized() };
 		panic_on_error!(rdma_create_id, self.pointer, &mut communicationIdentifierPointer, Rc::into_raw(context) as *mut RefCell<Context> as *mut c_void, portSpace);
-		AsynchronousCommunicationIdentifier::new(communicationIdentifierPointer)
+		AsynchronousCommunicationIdentifier::new(communicationIdentifierPointer, self)
 	}
 	
 	#[inline(always)]

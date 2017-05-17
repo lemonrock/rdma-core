@@ -2,6 +2,7 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
+include!("bindgen/unions/ib_addr__bindgen_ty_1.rs");
 include!("bindgen/unions/ibv_async_event__bindgen_ty_1.rs");
 include!("bindgen/unions/ibv_flow_spec__bindgen_ty_1.rs");
 include!("bindgen/unions/ibv_gid.rs");

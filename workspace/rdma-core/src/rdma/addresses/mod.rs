@@ -2,18 +2,26 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::libc::c_void;
-use ::rdma::addresses::Addressing;
-use ::rdma::CommunicationEventHandler;
-use ::rdma::EventChannel;
+use ::libc::AF_INET;
+use ::libc::AF_INET6;
+use ::libc::c_uint;
+use ::libc::sa_family_t;
+use ::libc::sockaddr;
+use ::libc::sockaddr_in;
+use ::libc::sockaddr_in6;
+use ::libc::sockaddr_storage;
 use ::rdma_core_sys::*;
-use ::rust_extra::unlikely;
-use ::std::cell::RefCell;
-use ::std::marker::PhantomData;
-use ::std::mem::uninitialized;
-use ::std::ptr::null_mut;
-use ::std::rc::Rc;
+use ::std::mem::zeroed;
+use ::std::mem::size_of;
+use ::std::ptr::copy_nonoverlapping;
 
 
-include!("AsynchronousCommunicationIdentifier.rs");
-include!("ListeningSynchronousCommunicationIdentifier.rs");
+include!("Addressing.rs");
+include!("InfinibandSocketAddress.rs");
+include!("InfinibandSid.rs");
+include!("IpV4SocketAddress.rs");
+include!("IpV6SocketAddress.rs");
+include!("Port.rs");
+include!("RdmaSocketAddress.rs");
+include!("SocketAddress.rs");
+include!("SocketAddressCreator.rs");
