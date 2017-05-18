@@ -75,4 +75,5 @@ include!("PartitionKey.rs");
 include!("PartitionKeyIndex.rs");
 include!("Port.rs");
 include!("ProtectionDomain.rs");
+include!("QueuePairNumber.rs");
 include!("ServiceLevel.rs");

@@ -5,7 +5,7 @@
 use self::addresses::*;
 use self::communicationIdentifierContexts::*;
 use self::eventData::*;
-use super::queuePairs::*;
+use super::QueuePairNumber;
 use ::libc::c_int;
 use ::libc::c_void;
 use ::rdma_core_sys::*;

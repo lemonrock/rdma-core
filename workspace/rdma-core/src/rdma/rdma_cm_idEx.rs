@@ -24,6 +24,9 @@ pub trait rdma_cm_idEx
 	
 	#[inline(always)]
 	fn accept(self, parameter: &mut rdma_conn_param);
+	
+	#[inline(always)]
+	fn disconnect(self);
 }
 
 impl rdma_cm_idEx for *mut rdma_cm_id
@@ -87,5 +90,13 @@ impl rdma_cm_idEx for *mut rdma_cm_id
 		debug_assert!(!self.is_null(), "self is null");
 		
 		panic_on_error!(rdma_accept, self, parameter);
+	}
+	
+	#[inline(always)]
+	fn disconnect(self)
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		panic_on_error!(rdma_disconnect, self);
 	}
 }

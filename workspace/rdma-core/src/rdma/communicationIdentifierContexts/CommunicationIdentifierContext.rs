@@ -9,7 +9,7 @@ pub trait CommunicationIdentifierContext: Drop
 	{
 	}
 	
-	/// It is strongly believed that statusCode is non-zero; this is checked by the caller
+	/// It is strongly believed that statusCode is non-zero
 	#[allow(unused_variables)]
 	#[inline(always)]
 	fn addressResolutionFailed(&self, statusCode: i32)
@@ -21,7 +21,7 @@ pub trait CommunicationIdentifierContext: Drop
 	{
 	}
 	
-	/// It is strongly believed that statusCode is non-zero; this is checked by the caller
+	/// It is strongly believed that statusCode is non-zero
 	#[allow(unused_variables)]
 	#[inline(always)]
 	fn routeResolutionFailed(&self, statusCode: i32)
@@ -38,6 +38,25 @@ pub trait CommunicationIdentifierContext: Drop
 	fn reliableConnectionRequest(&mut self, newCommunicationIdentifierWithNoContextYet: *mut rdma_cm_id, eventData: RequestedConnectionEventData, privateDataBuffer: &mut [u8; 256]) -> (u8, Result<ConnectionAcceptance, ()>)
 	{
 		// rdma_create_qp before rdma_accept!
+		/*
+		void register_memory(struct connection *conn)
+{
+  conn->send_region = malloc(BUFFER_SIZE);
+  conn->recv_region = malloc(BUFFER_SIZE);
+
+  TEST_Z(conn->send_mr = ibv_reg_mr(
+    s_ctx->pd,
+    conn->send_region,
+    BUFFER_SIZE,
+    IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_WRITE));
+
+  TEST_Z(conn->recv_mr = ibv_reg_mr(
+    s_ctx->pd,
+    conn->recv_region,
+    BUFFER_SIZE,
+    IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_WRITE));
+}
+		*/
 		
 		(0, Err(()))
 	}
@@ -82,6 +101,7 @@ pub trait CommunicationIdentifierContext: Drop
 	#[inline(always)]
 	fn connectionEstablished(&self, eventData: EstablishedConnectionEventData)
 	{
+		// eg post some data
 	}
 	
 	#[allow(unused_variables)]
@@ -93,6 +113,11 @@ pub trait CommunicationIdentifierContext: Drop
 	#[inline(always)]
 	fn disconnected(&self)
 	{
+		// destroy queue pair: rdma_destroy_qp
+//		ibv_dereg_mr(conn->send_mr);
+//		ibv_dereg_mr(conn->recv_mr);
+//		free(conn->send_region);
+//		free(conn->recv_region);
 	}
 	
 	/// "Upon receiving this event, the user must destroy the related rdma_cm_id."

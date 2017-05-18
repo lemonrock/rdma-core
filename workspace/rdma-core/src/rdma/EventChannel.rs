@@ -112,6 +112,7 @@ impl EventChannel
 						newCommunicationIdentifierWithNoContextYet.rejectWithPrivateData(&privateDataBuffer, privateDataLength);
 					}
 					event.acknowledge();
+					newCommunicationIdentifierWithNoContextYet.destroy();
 				}
 				else
 				{
@@ -181,6 +182,8 @@ impl EventChannel
 				communicationIdentifierContext.disconnected();
 				event.acknowledge();
 				forget(communicationIdentifierContext);
+				
+				event.communicationIdentifier().destroy();
 			},
 			
 			RDMA_CM_EVENT_DEVICE_REMOVAL =>

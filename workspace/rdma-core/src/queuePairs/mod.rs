@@ -19,7 +19,6 @@ use ::std::mem::zeroed;
 include!("AttributeFlags.rs");
 include!("MultiCastGroupIdentifier.rs");
 include!("QueuePair.rs");
-include!("QueuePairNumber.rs");
 include!("UnextendedQueuePair.rs");
 
 include!("ExtendedReliableConnectionReceiveQueuePair.rs");
