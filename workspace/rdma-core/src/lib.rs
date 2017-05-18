@@ -23,26 +23,10 @@ extern crate rust_extra;
 extern crate syscall_alt;
 
 
-use ::completionQueues::*;
-use ::completionQueues::workCompletions::*;
-use ::errno::errno;
 use ::libc::c_int;
-use ::libc::c_void;
-use ::libc::O_CREAT;
-use ::libc::O_EXCL;
-use ::queuePairs::*;
 use ::rdma_core_sys::*;
 use ::rust_extra::likely;
 use ::rust_extra::unlikely;
-use ::rust_extra::powersOfTwo::AsU32;
-use ::rust_extra::powersOfTwo::PowerOfTwoThirtyTwoBit;
-use ::sharedReceiveQueues::*;
-use ::std::ffi::CStr;
-use ::std::marker::PhantomData;
-use ::std::mem::uninitialized;
-use ::std::mem::zeroed;
-use ::std::ptr::null_mut;
-use ::syscall_alt::constants::E;
 
 
 include!("panic_on_errno.rs");
@@ -50,30 +34,18 @@ include!("panic_on_error.rs");
 include!("panic_on_null.rs");
 
 
-pub mod completionQueues;
-pub mod queuePairs;
 pub mod rdma;
-pub mod sharedReceiveQueues;
+pub mod verbs;
 
 
-include!("AddressHandle.rs");
-include!("AsynchronousEvent.rs");
-include!("Context.rs");
-include!("Device.rs");
-include!("DeviceListIterator.rs");
-include!("ExtendedReliableConnectionDomain.rs");
 include!("FileDescriptor.rs");
 include!("GlobalRoutingHeader.rs");
 include!("GUID.rs");
 include!("LocalIdentifier.rs");
 include!("LocalIdentifierPath.rs");
-include!("MemoryRegion.rs");
 include!("MemoryRegionAccess.rs");
 include!("MemoryRegionWriteAccess.rs");
-include!("MemoryWindow.rs");
 include!("PartitionKey.rs");
 include!("PartitionKeyIndex.rs");
-include!("Port.rs");
-include!("ProtectionDomain.rs");
 include!("QueuePairNumber.rs");
 include!("ServiceLevel.rs");

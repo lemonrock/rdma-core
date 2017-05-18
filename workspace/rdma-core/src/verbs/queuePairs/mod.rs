@@ -2,11 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::LocalIdentifier;
-use ::ProtectionDomain;
-use ::completionQueues::*;
-use ::sharedReceiveQueues::*;
-use ::rdma_core_sys::*;
+use super::*;
 use ::rust_extra::likely;
 use ::std::cmp::Eq;
 use ::std::cmp::PartialEq;
