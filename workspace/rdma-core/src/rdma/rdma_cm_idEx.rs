@@ -15,6 +15,15 @@ pub trait rdma_cm_idEx
 	
 	#[inline(always)]
 	fn portSpace(self) -> rdma_port_space;
+	
+	#[inline(always)]
+	fn rejectWithPrivateData(self, privateData: &[u8; 256], privateDataLength: u8);
+	
+	#[inline(always)]
+	fn rejectWithoutPrivateData(self);
+	
+	#[inline(always)]
+	fn accept(self, parameter: &mut rdma_conn_param);
 }
 
 impl rdma_cm_idEx for *mut rdma_cm_id
@@ -22,6 +31,8 @@ impl rdma_cm_idEx for *mut rdma_cm_id
 	#[inline(always)]
 	fn contextIsNotNull(self) -> bool
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		!unsafe { (*self).context }.is_null()
 	}
 	
@@ -36,6 +47,8 @@ impl rdma_cm_idEx for *mut rdma_cm_id
 	#[inline(always)]
 	fn destroy(self)
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		if likely(self.contextIsNotNull())
 		{
 			drop(self.reconstituteContext());
@@ -47,6 +60,32 @@ impl rdma_cm_idEx for *mut rdma_cm_id
 	#[inline(always)]
 	fn portSpace(self) -> rdma_port_space
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self).ps }
+	}
+	
+	#[inline(always)]
+	fn rejectWithPrivateData(self, privateData: &[u8; 256], privateDataLength: u8)
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		panic_on_error!(rdma_reject, self, privateData as *const u8 as *const _, privateDataLength);
+	}
+	
+	#[inline(always)]
+	fn rejectWithoutPrivateData(self)
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		panic_on_error!(rdma_reject, self, null(), 0);
+	}
+	
+	#[inline(always)]
+	fn accept(self, parameter: &mut rdma_conn_param)
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		panic_on_error!(rdma_accept, self, parameter);
 	}
 }

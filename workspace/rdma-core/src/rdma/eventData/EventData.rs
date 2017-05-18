@@ -9,6 +9,8 @@ pub trait EventData
 	fn pointer(&self) -> *mut rdma_cm_event;
 	
 	/// .len() may be greater than the amount of data sent by the remote side, but all excess bytes are g'teed to be zero
+	/// .len() will be between 1 and 255 inclusive, but "The length of the private data provided by the user is limited to 196 bytes for RDMA_PS_TCP, or 136 bytes for RDMA_PS_UDP." (rdma_accept man page)
+	/// Note that private data of length zero is not transmitted on rejection; it is impossible to distinguish no private data from null
 	#[inline(always)]
 	fn privateData<'a>(&'a self) -> Option<&'a [u8]>;
 	

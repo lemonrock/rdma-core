@@ -4,6 +4,7 @@
 
 use ::rdma_core_sys::*;
 use super::eventData::*;
+use super::ConnectionAcceptance;
 
 
 include!("CommunicationIdentifierContext.rs");

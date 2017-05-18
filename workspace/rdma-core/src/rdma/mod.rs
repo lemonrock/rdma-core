@@ -5,6 +5,7 @@
 use self::addresses::*;
 use self::communicationIdentifierContexts::*;
 use self::eventData::*;
+use super::queuePairs::*;
 use ::libc::c_int;
 use ::libc::c_void;
 use ::rdma_core_sys::*;
@@ -15,6 +16,7 @@ use ::rust_extra::unlikely;
 use ::std::collections::HashSet;
 use ::std::mem::forget;
 use ::std::mem::uninitialized;
+use ::std::ptr::null;
 
 
 pub mod addresses;
@@ -26,3 +28,4 @@ include!("EventChannel.rs");
 include!("rdma_cm_eventEx.rs");
 include!("rdma_cm_idEx.rs");
 include!("rdma_event_channelEx.rs");
+include!("ConnectionAcceptance.rs");

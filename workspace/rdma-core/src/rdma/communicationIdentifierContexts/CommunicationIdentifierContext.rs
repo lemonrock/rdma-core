@@ -28,12 +28,29 @@ pub trait CommunicationIdentifierContext: Drop
 	{
 	}
 	
-	/// Return true if this connection request should be destroyed
+	/// u8 => Length of private data written
+	/// Return Ok if the request should be accepted
+	/// Return Err if the connection should be rejected
+	/// Note that private data of length zero will not be transmitted
+	/// Note that the supplied buffer is NOT zero'd and information CAN LEAK in. Never do anything other than write to it.
 	#[allow(unused_variables)]
 	#[inline(always)]
-	fn connectionRequest(&self, newCommunicationIdentifierWithNoContextYet: *mut rdma_cm_id, eventData: RequestedConnectionEventData) -> bool
+	fn reliableConnectionRequest(&mut self, newCommunicationIdentifierWithNoContextYet: *mut rdma_cm_id, eventData: RequestedConnectionEventData, privateDataBuffer: &mut [u8; 256]) -> (u8, Result<ConnectionAcceptance, ()>)
 	{
-		true
+		// rdma_create_qp before rdma_accept!
+		
+		(0, Err(()))
+	}
+	
+	/// Return Ok if the request should be accepted
+	/// Return Err, with the length of private data supplied, if the connection should be rejected
+	/// Note that private data of length zero will not be transmitted
+	/// Note that the supplied buffer is NOT zero'd and information CAN LEAK in. Never do anything other than write to it.
+	#[allow(unused_variables)]
+	#[inline(always)]
+	fn unreliableDatagramConnectionRequest(&mut self, newCommunicationIdentifierWithNoContextYet: *mut rdma_cm_id, privateDataBuffer: &mut [u8; 256]) -> (u8, Result<ConnectionAcceptance, ()>)
+	{
+		(0, Err(()))
 	}
 	
 	#[inline(always)]

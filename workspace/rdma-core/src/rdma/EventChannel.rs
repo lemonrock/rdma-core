@@ -84,24 +84,49 @@ impl EventChannel
 			{
 				let listenerCommunicationIdentifier = event.listenerCommunicationIdentifier();
 				debug_assert!(!listenerCommunicationIdentifier.is_null(), "listenerCommunicationIdentifier is null for a connect request");
-				let listenerCommunicationIdentifierContext = listenerCommunicationIdentifier.reconstituteContext();
+				let mut listenerCommunicationIdentifierContext = listenerCommunicationIdentifier.reconstituteContext();
 				
 				let newCommunicationIdentifierWithNoContextYet = event.communicationIdentifier();
 				debug_assert!(!newCommunicationIdentifierWithNoContextYet.is_null(), "newCommunicationIdentifierWithNoContextYet is null for a connect request");
 				
-				if unlikely(listenerCommunicationIdentifierContext.connectionRequest(newCommunicationIdentifierWithNoContextYet, RequestedConnectionEventData(event)))
+				let mut privateDataBuffer = unsafe { uninitialized() };
+				let (privateDataLength, result) = match event.portSpace()
 				{
+					RDMA_PS_TCP | RDMA_PS_IB =>
+					{
+						listenerCommunicationIdentifierContext.reliableConnectionRequest(newCommunicationIdentifierWithNoContextYet, RequestedConnectionEventData(event), &mut privateDataBuffer)
+					},
+					RDMA_PS_IPOIB | RDMA_PS_UDP =>
+					{
+						listenerCommunicationIdentifierContext.unreliableDatagramConnectionRequest(newCommunicationIdentifierWithNoContextYet, &mut privateDataBuffer)
+					},
+				};
+				if unlikely(result.is_err())
+				{
+					if privateDataLength == 0
+					{
+						newCommunicationIdentifierWithNoContextYet.rejectWithoutPrivateData();
+					}
+					else
+					{
+						newCommunicationIdentifierWithNoContextYet.rejectWithPrivateData(&privateDataBuffer, privateDataLength);
+					}
 					event.acknowledge();
-					newCommunicationIdentifierWithNoContextYet.destroy();
 				}
 				else
 				{
+					let connectionAcceptance = result.unwrap();
+					let mut parameter = unsafe { uninitialized() };
+					connectionAcceptance.populate(&privateDataBuffer, privateDataLength, &mut parameter);
+					newCommunicationIdentifierWithNoContextYet.accept(&mut parameter);
 					event.acknowledge();
 				}
 				
+				forget(privateDataBuffer);
 				forget(listenerCommunicationIdentifierContext)
 			},
 			
+			// Client side
 			RDMA_CM_EVENT_CONNECT_RESPONSE =>
 			{
 				let communicationIdentifierContext = event.reconstituteContext();
@@ -110,6 +135,7 @@ impl EventChannel
 				forget(communicationIdentifierContext);
 			},
 			
+			// Client or Server side
 			RDMA_CM_EVENT_CONNECT_ERROR =>
 			{
 				let communicationIdentifierContext = event.reconstituteContext();
@@ -118,6 +144,7 @@ impl EventChannel
 				forget(communicationIdentifierContext);
 			},
 			
+			// ?Client side
 			RDMA_CM_EVENT_UNREACHABLE =>
 			{
 				let communicationIdentifierContext = event.reconstituteContext();
@@ -126,6 +153,7 @@ impl EventChannel
 				forget(communicationIdentifierContext);
 			},
 			
+			// ?Client side
 			RDMA_CM_EVENT_REJECTED =>
 			{
 				let communicationIdentifierContext = event.reconstituteContext();
@@ -134,6 +162,7 @@ impl EventChannel
 				forget(communicationIdentifierContext);
 			},
 			
+			// Until this occurs, a server can not assume a connection has been established
 			RDMA_CM_EVENT_ESTABLISHED =>
 			{
 				let communicationIdentifierContext = event.reconstituteContext();
