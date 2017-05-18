@@ -5,6 +5,7 @@
 use self::addresses::*;
 use self::communicationIdentifierContexts::*;
 use self::eventData::*;
+use super::FileDescriptor;
 use super::QueuePairNumber;
 use ::libc::c_int;
 use ::libc::c_void;
@@ -15,6 +16,7 @@ use ::rust_extra::likely;
 use ::rust_extra::unlikely;
 use ::std::collections::HashSet;
 use ::std::mem::forget;
+use ::std::mem::size_of;
 use ::std::mem::uninitialized;
 use ::std::ptr::null;
 

@@ -27,6 +27,9 @@ pub trait rdma_cm_idEx
 	
 	#[inline(always)]
 	fn disconnect(self);
+	
+	#[inline(always)]
+	fn setTypeOfService(self, toS: u8);
 }
 
 impl rdma_cm_idEx for *mut rdma_cm_id
@@ -98,5 +101,14 @@ impl rdma_cm_idEx for *mut rdma_cm_id
 		debug_assert!(!self.is_null(), "self is null");
 		
 		panic_on_error!(rdma_disconnect, self);
+	}
+	
+	#[allow(trivial_casts)]
+	#[inline(always)]
+	fn setTypeOfService(self, mut typeOfService: u8)
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		panic_on_error!(rdma_set_option, self, RDMA_OPTION_ID as i32, RDMA_OPTION_ID_TOS as i32, &mut typeOfService as *mut _ as *mut c_void, size_of::<u8>());
 	}
 }

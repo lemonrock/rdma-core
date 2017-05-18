@@ -5,15 +5,34 @@
 pub trait CommunicationIdentifierContext: Drop
 {
 	#[inline(always)]
-	fn addressResolutionSucceeded(&self)
+	fn typeOfService(&self) -> Option<u8>;
+	
+	#[inline(always)]
+	fn addressResolutionSucceeded(&self, communicationIdentifier: *mut rdma_cm_id)
 	{
+		let typeOfService = self.typeOfService();
+		if let Some(typeOfService) = typeOfService
+		{
+			communicationIdentifier.setTypeOfService(typeOfService);
+		}
+		
+		// It looks like a CommunicationIdentifierContext really should own a protection domain, or, the context does
+		// Lifetime management becomes interesting, as an event channel can have multiple devices/contexts (aka verbs)
+		// We only need multiple PDs if dealing with different memory regions
+		
+		// actually rdma_create_qp_ex
+		// rdma_create_qp(id, s_ctx->pd, &qp_attr)
+		
+		// Call rdma_resolve_route(node->cma_id, 2000);
 	}
 	
+	/// Return true to tear down this context and associated resources
 	/// It is strongly believed that statusCode is non-zero
 	#[allow(unused_variables)]
 	#[inline(always)]
-	fn addressResolutionFailed(&self, statusCode: i32)
+	fn addressResolutionFailed(&self, statusCode: i32) -> bool
 	{
+		true
 	}
 	
 	#[inline(always)]
@@ -37,6 +56,7 @@ pub trait CommunicationIdentifierContext: Drop
 	#[inline(always)]
 	fn reliableConnectionRequest(&mut self, newCommunicationIdentifierWithNoContextYet: *mut rdma_cm_id, eventData: RequestedConnectionEventData, privateDataBuffer: &mut [u8; 256]) -> (u8, Result<ConnectionAcceptance, ()>)
 	{
+		// actually rdma_create_qp_ex
 		// rdma_create_qp before rdma_accept!
 		/*
 		void register_memory(struct connection *conn)

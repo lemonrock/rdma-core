@@ -2,6 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
+/// Recommendation: One per core
 #[derive(Debug)]
 pub struct EventChannel
 {
@@ -52,16 +53,24 @@ impl EventChannel
 			RDMA_CM_EVENT_ADDR_RESOLVED =>
 			{
 				let communicationIdentifierContext = event.reconstituteContext();
-				communicationIdentifierContext.addressResolutionSucceeded();
+				communicationIdentifierContext.addressResolutionSucceeded(event.communicationIdentifier());
 				event.acknowledge();
 				forget(communicationIdentifierContext);
 			},
 			RDMA_CM_EVENT_ADDR_ERROR =>
 			{
 				let communicationIdentifierContext = event.reconstituteContext();
-				communicationIdentifierContext.addressResolutionFailed(event.nonZeroStatusCode());
+				let statusCode = event.nonZeroStatusCode();
 				event.acknowledge();
-				forget(communicationIdentifierContext);
+				if likely(communicationIdentifierContext.addressResolutionFailed(statusCode))
+				{
+					forget(communicationIdentifierContext);
+					event.communicationIdentifier().destroy();
+				}
+				else
+				{
+					forget(communicationIdentifierContext);
+				}
 			},
 			
 			// rdma_resolve_route()
