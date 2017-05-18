@@ -2,85 +2,51 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait CommunicationEventHandler
+pub trait rdma_cm_idEx
 {
 	#[inline(always)]
-	fn addressResolutionSucceeded(&self)
+	fn contextIsNotNull(self) -> bool;
+	
+	#[inline(always)]
+	fn reconstituteContext(self) -> Box<Box<CommunicationIdentifierContext>>;
+	
+	#[inline(always)]
+	fn destroy(self);
+	
+	#[inline(always)]
+	fn portSpace(self) -> rdma_port_space;
+}
+
+impl rdma_cm_idEx for *mut rdma_cm_id
+{
+	#[inline(always)]
+	fn contextIsNotNull(self) -> bool
 	{
+		!unsafe { (*self).context }.is_null()
 	}
 	
 	#[inline(always)]
-	fn addressResolutionFailed(&self)
+	fn reconstituteContext(self) -> Box<Box<CommunicationIdentifierContext>>
 	{
+		debug_assert!(self.contextIsNotNull(), "context is null");
+		
+		unsafe { Box::from_raw((*self).context as *mut Box<CommunicationIdentifierContext>) }
 	}
 	
 	#[inline(always)]
-	fn routeResolutionSucceeded(&self)
+	fn destroy(self)
 	{
+		if likely(self.contextIsNotNull())
+		{
+			drop(self.reconstituteContext());
+		}
+		
+		panic_on_error!(rdma_destroy_id, self);
 	}
 	
 	#[inline(always)]
-	fn routeResolutionFailed(&self)
+	fn portSpace(self) -> rdma_port_space
 	{
-	}
-	
-	#[inline(always)]
-	fn connectionRequest(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn connectionResponse(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn connectionError(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn unreachable(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn rejected(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn established(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn disconnected(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn deviceRemoval(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn multicastJoin(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn multicastError(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn addressChange(&self)
-	{
-	}
-	
-	#[inline(always)]
-	fn timeWaitExit(&self)
-	{
+		unsafe { (*self).ps }
 	}
 }

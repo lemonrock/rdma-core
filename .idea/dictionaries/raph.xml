@@ -10,12 +10,14 @@
       <w>einval</w>
       <w>epoll</w>
       <w>errormsg</w>
+      <w>failover</w>
       <w>fclass</w>
       <w>flowinfo</w>
       <w>funcs</w>
       <w>getinfo</w>
       <w>guid</w>
       <w>ibverbs</w>
+      <w>infini</w>
       <w>infiniband</w>
       <w>inode</w>
       <w>iovcnt</w>
@@ -37,6 +39,7 @@
       <w>mrwlock</w>
       <w>msync</w>
       <w>musl</w>
+      <w>nack</w>
       <w>nbyte</w>
       <w>nonoverlapping</w>
       <w>nvml</w>
@@ -51,6 +54,7 @@
       <w>pobj</w>
       <w>poolsize</w>
       <w>pthread</w>
+      <w>qkey</w>
       <w>rdma</w>
       <w>recv</w>
       <w>rwlock</w>

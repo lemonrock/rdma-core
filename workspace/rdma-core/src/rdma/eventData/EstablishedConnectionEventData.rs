@@ -2,18 +2,30 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use ::libc::c_int;
-use ::libc::c_void;
-use ::rdma::addresses::*;
-use ::rdma::CommunicationEventHandler;
-use ::rdma::EventChannel;
-use ::rdma_core_sys::*;
-use ::std::cell::RefCell;
-use ::std::marker::PhantomData;
-use ::std::mem::uninitialized;
-use ::std::ptr::null_mut;
-use ::std::rc::Rc;
+pub struct EstablishedConnectionEventData(pub(crate) *mut rdma_cm_event);
 
+impl EventData for EstablishedConnectionEventData
+{
+	#[doc(hidden)]
+	#[inline(always)]
+	fn pointer(&self) -> *mut rdma_cm_event
+	{
+		self.0
+	}
+	
+	#[inline(always)]
+	fn privateData<'a>(&'a self) -> Option<&'a [u8]>
+	{
+		privateDataConn(self.data())
+	}
+	
+	#[inline(always)]
+	fn remoteQueuePairNumber(&self) -> QueuePairNumber
+	{
+		remoteQueuePairNumberConn(self.data())
+	}
+}
 
-include!("AsynchronousCommunicationIdentifier.rs");
-include!("CommunicationIdentifier.rs");
+impl ConnectionEventData for EstablishedConnectionEventData
+{
+}

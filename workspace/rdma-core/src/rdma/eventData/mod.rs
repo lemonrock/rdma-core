@@ -2,27 +2,14 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use self::addresses::*;
-use self::communicationIdentifierContexts::*;
-use self::eventData::*;
-use ::libc::c_int;
-use ::libc::c_void;
+use ::queuePairs::QueuePairNumber;
 use ::rdma_core_sys::*;
-use ::rdma_core_sys::rdma_cm_event_type::*;
-use ::rdma_core_sys::rdma_port_space::*;
-use ::rust_extra::likely;
 use ::rust_extra::unlikely;
-use ::std::collections::HashSet;
-use ::std::mem::forget;
-use ::std::mem::uninitialized;
+use ::std::slice::from_raw_parts;
 
 
-pub mod addresses;
-pub mod communicationIdentifierContexts;
-pub mod eventData;
-
-
-include!("EventChannel.rs");
-include!("rdma_cm_eventEx.rs");
-include!("rdma_cm_idEx.rs");
-include!("rdma_event_channelEx.rs");
+include!("ConnectionEventData.rs");
+include!("EventData.rs");
+include!("EstablishedConnectionEventData.rs");
+include!("RequestedConnectionEventData.rs");
+include!("UnreliableDatagramEventData.rs");
