@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait ibv_contextEx
+pub trait ibv_contextEx: Sized
 {
 	#[inline(always)]
 	fn destroy(self);
@@ -16,6 +16,13 @@ pub trait ibv_contextEx
 	#[doc(hidden)]
 	#[inline(always)]
 	fn data(self) -> ibv_context;
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn ops(self) -> ibv_context_ops
+	{
+		self.data().ops
+	}
 	
 	#[inline(always)]
 	fn numberOfCompletionVectors(self) -> u32;
