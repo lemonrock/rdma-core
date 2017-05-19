@@ -2,14 +2,8 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use super::ExtendedCompletionQueue;
-use ::LocalIdentifier;
-use ::LocalIdentifierPath;
-use ::PartitionKeyIndex;
-use ::QueuePairNumber;
-use ::ServiceLevel;
+use super::*;
 use ::libc::c_int;
-use ::rdma_core_sys::*;
 use ::rust_extra::unlikely;
 use ::rust_extra::likely;
 use ::std::ffi::CStr;
@@ -27,4 +21,3 @@ include!("UnextendedValidWorkCompletion.rs");
 include!("ValidWorkCompletion.rs");
 include!("WorkCompletion.rs");
 include!("WorkRequestError.rs");
-include!("WorkRequestIdentifier.rs");

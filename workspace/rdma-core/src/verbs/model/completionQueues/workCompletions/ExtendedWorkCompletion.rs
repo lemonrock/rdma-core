@@ -12,20 +12,20 @@ impl<'a, E: ExtendedCompletionQueue<'a>> WorkCompletion<'a> for ExtendedWorkComp
 	#[inline(always)]
 	fn workRequestIdentifier(&self) -> WorkRequestIdentifier
 	{
-		self.data().wr_id
+		self.pointer().workRequest()
 	}
 	
 	/// Not present if the extended completion queue was not created with IBV_WC_EX_WITH_QP_NUM
 	#[inline(always)]
 	fn receiveWorkRequestLocalQueuePairNumberForSharedReceiveQueue(&self) -> QueuePairNumber
 	{
-		unsafe { rust_ibv_wc_read_qp_num(self.pointer()) }
+		self.pointer().ibv_wc_read_qp_num()
 	}
 	
 	#[inline(always)]
 	fn workRequestError(self) -> Result<Self::ValidWorkCompletion, WorkRequestError>
 	{
-		let status = self.data().status;
+		let status = self.pointer().status();
 		
 		if likely(status == ibv_wc_status::IBV_WC_SUCCESS)
 		{
@@ -36,7 +36,7 @@ impl<'a, E: ExtendedCompletionQueue<'a>> WorkCompletion<'a> for ExtendedWorkComp
 			Err(WorkRequestError
 			{
 				status: status,
-				vendorErrorCode: unsafe { rust_ibv_wc_read_vendor_err(self.pointer()) },
+				vendorErrorCode: self.pointer().ibv_wc_read_vendor_err(),
 			})
 		}
 	}
@@ -44,12 +44,6 @@ impl<'a, E: ExtendedCompletionQueue<'a>> WorkCompletion<'a> for ExtendedWorkComp
 
 impl<'a, E: ExtendedCompletionQueue<'a>> ExtendedWorkCompletion<'a, E>
 {
-	#[inline(always)]
-	fn data(&self) -> ibv_cq_ex
-	{
-		unsafe { *self.pointer() }
-	}
-	
 	#[inline(always)]
 	fn pointer(&self) -> *mut ibv_cq_ex
 	{

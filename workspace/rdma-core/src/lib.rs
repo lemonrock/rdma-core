@@ -49,3 +49,5 @@ include!("PartitionKey.rs");
 include!("PartitionKeyIndex.rs");
 include!("QueuePairNumber.rs");
 include!("ServiceLevel.rs");
+include!("WorkRequestIdentifier.rs");
+

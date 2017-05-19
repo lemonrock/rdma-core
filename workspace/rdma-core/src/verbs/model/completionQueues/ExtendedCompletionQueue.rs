@@ -22,7 +22,7 @@ pub trait ExtendedCompletionQueue<'a>: CompletionQueue + Sized
 	{
 		if likely(self.isCurrentlyBeingPolled())
 		{
-			let result = unsafe { rust_ibv_next_poll(self.extendedPointer()) };
+			let result = self.extendedPointer().ibv_next_poll();
 			debug_assert!(result >= 0, "result was negative '{}'", result);
 			if likely(result == 0)
 			{
@@ -39,7 +39,7 @@ pub trait ExtendedCompletionQueue<'a>: CompletionQueue + Sized
 				}
 				else
 				{
-					panic!("rust_ibv_next_poll() returned an error number '{}'", result);
+					panic!("ibv_next_poll() returned an error number '{}'", result);
 				}
 			}
 		}
@@ -50,7 +50,7 @@ pub trait ExtendedCompletionQueue<'a>: CompletionQueue + Sized
 				comp_mask: 0
 			};
 			
-			let result = unsafe { rust_ibv_start_poll(self.extendedPointer(), &mut attributes) };
+			let result = self.extendedPointer().ibv_start_poll(&mut attributes);
 			debug_assert!(result >= 0, "result was negative '{}'", result);
 			if likely(result == 0)
 			{
@@ -67,7 +67,7 @@ pub trait ExtendedCompletionQueue<'a>: CompletionQueue + Sized
 				}
 				else
 				{
-					panic!("rust_ibv_start_poll() returned an error number '{}'", result);
+					panic!("ibv_start_poll() returned an error number '{}'", result);
 				}
 			}
 		}
@@ -77,7 +77,7 @@ pub trait ExtendedCompletionQueue<'a>: CompletionQueue + Sized
 	#[inline(always)]
 	fn endPolling(&mut self)
 	{
-		unsafe { rust_ibv_end_poll(self.extendedPointer()) }
+		self.extendedPointer().ibv_end_poll()
 	}
 	
 	#[doc(hidden)]

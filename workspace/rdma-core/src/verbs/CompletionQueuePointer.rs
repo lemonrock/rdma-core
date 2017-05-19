@@ -2,10 +2,52 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait CompletionQueuePointer
+pub trait CompletionQueuePointer: Sized
 {
 	#[inline(always)]
 	fn pointer(self) -> *mut ibv_cq;
+	
+	#[inline(always)]
+	fn verbs(self) -> *mut ibv_context
+	{
+		unsafe { (*self.pointer()).context }
+	}
+	
+	#[inline(always)]
+	fn completionChannel(self) -> *mut ibv_comp_channel
+	{
+		unsafe { (*self.pointer()).channel }
+	}
+	
+	#[inline(always)]
+	fn context(self) -> *mut c_void
+	{
+		unsafe { (*self.pointer()).cq_context }
+	}
+	
+	#[inline(always)]
+	fn handle(self) -> u32
+	{
+		unsafe { (*self.pointer()).handle }
+	}
+	
+	#[inline(always)]
+	fn maximumNumberOfEntries(self) -> c_int
+	{
+		unsafe { (*self.pointer()).cqe }
+	}
+	
+	#[inline(always)]
+	fn completionEventCompleted(self) -> u32
+	{
+		unsafe { (*self.pointer()).comp_events_completed }
+	}
+	
+	#[inline(always)]
+	fn asynchronousEventCompleted(self) -> u32
+	{
+		unsafe { (*self.pointer()).async_events_completed }
+	}
 }
 
 impl CompletionQueuePointer for *mut ibv_cq

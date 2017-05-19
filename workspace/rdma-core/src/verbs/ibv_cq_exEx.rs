@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait ibv_cq_exEx
+pub trait ibv_cq_exEx: CompletionQueuePointer
 {
 	#[inline(always)]
 	fn ibv_cq_ex_to_cq(self) -> *mut ibv_cq;
@@ -34,10 +34,13 @@ pub trait ibv_cq_exEx
 	#[inline(always)]
 	fn ibv_wc_read_imm_data(self) -> uint32_t;
 	
+	#[inline(always)]
+	fn ibv_wc_read_qp_num(self) -> QueuePairNumber;
+	
 	/// Only relevant for Unreliable Datagrams
 	/// Not present if the extended completion queue was not created with IBV_WC_EX_WITH_SRC_QP
 	#[inline(always)]
-	fn ibv_wc_read_qp_num(self) -> QueuePairNumber;
+	fn ibv_wc_read_src_qp(self) -> QueuePairNumber;
 	
 	#[inline(always)]
 	fn ibv_wc_read_wc_flags(self) -> c_int;
@@ -71,6 +74,12 @@ pub trait ibv_cq_exEx
 	/// Not present if the extended completion queue was not created with IBV_WC_EX_WITH_FLOW_TAG
 	#[inline(always)]
 	fn ibv_wc_read_flow_tag(self) -> uint32_t;
+	
+	#[inline(always)]
+	fn workRequest(self) -> WorkRequestIdentifier;
+	
+	#[inline(always)]
+	fn status(self) -> ibv_wc_status;
 }
 
 impl ibv_cq_exEx for *mut ibv_cq_ex
@@ -149,6 +158,14 @@ impl ibv_cq_exEx for *mut ibv_cq_ex
 	}
 	
 	#[inline(always)]
+	fn ibv_wc_read_src_qp(self) -> QueuePairNumber
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).read_src_qp.unwrap()(self) }
+	}
+	
+	#[inline(always)]
 	fn ibv_wc_read_wc_flags(self) -> c_int
 	{
 		debug_assert!(!self.is_null(), "self is null");
@@ -202,5 +219,17 @@ impl ibv_cq_exEx for *mut ibv_cq_ex
 		debug_assert!(!self.is_null(), "self is null");
 		
 		unsafe { (*self).read_flow_tag.unwrap()(self) }
+	}
+	
+	#[inline(always)]
+	fn workRequest(self) -> WorkRequestIdentifier
+	{
+		unsafe { (*self).wr_id }
+	}
+	
+	#[inline(always)]
+	fn status(self) -> ibv_wc_status
+	{
+		unsafe { (*self).status }
 	}
 }
