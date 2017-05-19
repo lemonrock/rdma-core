@@ -13,6 +13,41 @@ impl HasProtectionDomainPointer for *mut ibv_ah
 	#[inline(always)]
 	fn protectionDomain(self) -> *mut ibv_pd
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).pd }
+	}
+}
+
+impl HasProtectionDomainPointer for *mut ibv_mr
+{
+	#[inline(always)]
+	fn protectionDomain(self) -> *mut ibv_pd
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).pd }
+	}
+}
+
+impl HasProtectionDomainPointer for *mut ibv_mw
+{
+	#[inline(always)]
+	fn protectionDomain(self) -> *mut ibv_pd
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).pd }
+	}
+}
+
+impl HasProtectionDomainPointer for *mut ibv_qp
+{
+	#[inline(always)]
+	fn protectionDomain(self) -> *mut ibv_pd
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self).pd }
 	}
 }
@@ -22,6 +57,19 @@ impl HasProtectionDomainPointer for *mut ibv_srq
 	#[inline(always)]
 	fn protectionDomain(self) -> *mut ibv_pd
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).pd }
+	}
+}
+
+impl HasProtectionDomainPointer for *mut ibv_wq
+{
+	#[inline(always)]
+	fn protectionDomain(self) -> *mut ibv_pd
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self).pd }
 	}
 }

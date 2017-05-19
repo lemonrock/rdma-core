@@ -22,6 +22,7 @@ impl HasVerbsPointer for *mut ibv_ah
 	#[inline(always)]
 	fn verbs(self) -> *mut ibv_context
 	{
+		debug_assert!(!self.is_null(), "self is null");
 		debug_assert!(self.protectionDomain().verbs() == unsafe { (*self).context }, "ibv_ah.context is not the same as ibv_ah.pd.context");
 		
 		unsafe { (*self).context }
@@ -33,6 +34,8 @@ impl HasVerbsPointer for *mut ibv_comp_channel
 	#[inline(always)]
 	fn verbs(self) -> *mut ibv_context
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self).context }
 	}
 }
@@ -42,6 +45,8 @@ impl HasVerbsPointer for *mut ibv_cq
 	#[inline(always)]
 	fn verbs(self) -> *mut ibv_context
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self.pointer()).context }
 	}
 }
@@ -51,7 +56,42 @@ impl HasVerbsPointer for *mut ibv_cq_ex
 	#[inline(always)]
 	fn verbs(self) -> *mut ibv_context
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self.pointer()).context }
+	}
+}
+
+impl HasVerbsPointer for *mut ibv_flow
+{
+	#[inline(always)]
+	fn verbs(self) -> *mut ibv_context
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context }
+	}
+}
+
+impl HasVerbsPointer for *mut ibv_mr
+{
+	#[inline(always)]
+	fn verbs(self) -> *mut ibv_context
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context }
+	}
+}
+
+impl HasVerbsPointer for *mut ibv_mw
+{
+	#[inline(always)]
+	fn verbs(self) -> *mut ibv_context
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context }
 	}
 }
 
@@ -60,6 +100,8 @@ impl HasVerbsPointer for *mut ibv_pd
 	#[inline(always)]
 	fn verbs(self) -> *mut ibv_context
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self).context }
 	}
 }
@@ -69,6 +111,8 @@ impl HasVerbsPointer for *mut ibv_qp
 	#[inline(always)]
 	fn verbs(self) -> *mut ibv_context
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self).context }
 	}
 }
@@ -78,6 +122,8 @@ impl HasVerbsPointer for *mut ibv_srq
 	#[inline(always)]
 	fn verbs(self) -> *mut ibv_context
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self).context }
 	}
 }
@@ -87,6 +133,19 @@ impl HasVerbsPointer for *mut ibv_wq
 	#[inline(always)]
 	fn verbs(self) -> *mut ibv_context
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context }
+	}
+}
+
+impl HasVerbsPointer for *mut ibv_xrcd
+{
+	#[inline(always)]
+	fn verbs(self) -> *mut ibv_context
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { (*self).context }
 	}
 }

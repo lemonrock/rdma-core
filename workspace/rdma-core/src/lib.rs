@@ -50,5 +50,7 @@ include!("PartitionKey.rs");
 include!("PartitionKeyIndex.rs");
 include!("QueuePairNumber.rs");
 include!("ServiceLevel.rs");
+include!("SharedReceiveQueueNumber.rs");
+include!("SharedReceiveQueueSettings.rs");
 include!("WorkRequestIdentifier.rs");
 

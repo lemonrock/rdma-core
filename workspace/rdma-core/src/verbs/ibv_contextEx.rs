@@ -8,6 +8,9 @@ pub trait ibv_contextEx: Sized
 	fn destroy(self);
 	
 	#[inline(always)]
+	fn attributes(self) -> ibv_device_attr;
+	
+	#[inline(always)]
 	fn extendedAttributes(self) -> ibv_device_attr_ex;
 	
 	#[inline(always)]
@@ -72,12 +75,23 @@ impl ibv_contextEx for *mut ibv_context
 	}
 	
 	#[inline(always)]
-	fn extendedAttributes(self) -> ibv_device_attr_ex
+	fn attributes(self) -> ibv_device_attr
 	{
 		debug_assert!(!self.is_null(), "self is null");
 		
 		let mut attributes = unsafe { zeroed() };
-		panic_on_error!(rust_ibv_query_device_ex, self, null_mut(), &mut attributes);
+		panic_on_error!(ibv_query_device, self, &mut attributes);
+		attributes
+	}
+	
+	#[inline(always)]
+	fn extendedAttributes(self) -> ibv_device_attr_ex
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		let input = unsafe { zeroed() };
+		let mut attributes = unsafe { zeroed() };
+		panic_on_error!(rust_ibv_query_device_ex, self, &input, &mut attributes);
 		attributes
 	}
 	

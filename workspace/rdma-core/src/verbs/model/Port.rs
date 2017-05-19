@@ -52,12 +52,4 @@ impl<'a> Port<'a>
 		panic_on_error!(ibv_query_gid, self.context.0, self.portNumber, index, &mut gid);
 		gid
 	}
-	
-	#[inline(always)]
-	pub fn initialiseAddressHandleAttributes(&self, unextendedWorkCompletion: &mut UnextendedWorkCompletion, globalRoutingHeader: &mut GlobalRoutingHeader) -> ibv_ah_attr
-	{
-		let mut attributes = unsafe { uninitialized() };
-		panic_on_error!(ibv_init_ah_from_wc, self.context.0, self.portNumber, &mut unextendedWorkCompletion.0, &mut globalRoutingHeader.0, &mut attributes);
-		attributes
-	}
 }

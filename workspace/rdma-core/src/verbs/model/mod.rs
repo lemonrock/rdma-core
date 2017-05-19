@@ -4,7 +4,6 @@
 
 use super::*;
 use self::completionQueues::*;
-use self::completionQueues::workCompletions::*;
 use self::sharedReceiveQueues::*;
 use ::errno::errno;
 use ::libc::c_void;

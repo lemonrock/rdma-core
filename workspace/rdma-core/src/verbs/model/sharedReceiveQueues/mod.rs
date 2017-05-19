@@ -11,7 +11,5 @@ use ::std::mem::uninitialized;
 include!("ExtendedSharedReceiveQueue.rs");
 include!("ReceiveWorkQueueIndirectionTable.rs");
 include!("SharedReceiveQueue.rs");
-include!("SharedReceiveQueueNumber.rs");
-include!("SharedReceiveQueueSettings.rs");
 include!("UnextendedSharedReceiveQueue.rs");
 include!("WorkQueue.rs");
