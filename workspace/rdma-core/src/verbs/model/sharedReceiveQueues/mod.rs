@@ -3,13 +3,12 @@
 
 
 use super::*;
-use super::completionQueues::CompletionQueue;
 use ::libc::c_int;
 use ::std::mem::uninitialized;
 
 
-include!("ExtendedSharedReceiveQueue.rs");
-include!("ReceiveWorkQueueIndirectionTable.rs");
+//include!("ExtendedSharedReceiveQueue.rs");
+//include!("ReceiveWorkQueueIndirectionTable.rs");
 include!("SharedReceiveQueue.rs");
 include!("UnextendedSharedReceiveQueue.rs");
-include!("WorkQueue.rs");
+//include!("WorkQueue.rs");

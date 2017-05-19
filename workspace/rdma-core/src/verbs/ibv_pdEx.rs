@@ -5,6 +5,9 @@
 pub trait ibv_pdEx
 {
 	#[inline(always)]
+	fn destroy(self);
+	
+	#[inline(always)]
 	fn createWorkQueue(self, context: *mut c_void, requestedSettings: SharedReceiveQueueSettings, cvLanStripping: bool, fcsFieldWillBeScatteredToHostMemory: bool, completionQueue: *mut ibv_cq) -> (*mut ibv_wq, SharedReceiveQueueSettings);
 	
 	#[inline(always)]
@@ -26,6 +29,12 @@ pub trait ibv_pdEx
 
 impl ibv_pdEx for *mut ibv_pd
 {
+	#[inline(always)]
+	fn destroy(self)
+	{
+		panic_on_errno!(ibv_dealloc_pd, self);
+	}
+	
 	#[inline(always)]
 	fn createWorkQueue(self, context: *mut c_void, requestedSettings: SharedReceiveQueueSettings, cvLanStripping: bool, fcsFieldWillBeScatteredToHostMemory: bool, completionQueue: *mut ibv_cq) -> (*mut ibv_wq, SharedReceiveQueueSettings)
 	{

@@ -9,12 +9,14 @@ use ::libc::uint16_t;
 use ::libc::uint32_t;
 use ::libc::uint64_t;
 use ::libc::timespec;
+use ::rust_extra::u31;
 use ::std::mem::transmute;
 use ::std::mem::uninitialized;
 use ::std::mem::zeroed;
 use ::std::ptr::null_mut;
 
 
+pub mod completionQueueContexts;
 pub mod model;
 
 

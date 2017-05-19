@@ -2,9 +2,9 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait WorkCompletion<'a>
+pub trait WorkCompletion
 {
-	type ValidWorkCompletion: ValidWorkCompletion<'a>;
+	type ValidWorkCompletion: ValidWorkCompletion;
 	
 	#[inline(always)]
 	fn workRequestIdentifier(&self) -> WorkRequestIdentifier;

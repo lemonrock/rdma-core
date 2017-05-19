@@ -3,13 +3,13 @@
 
 
 #[derive(Copy, Clone)]
-pub struct MultiCastGroupIdentifier
+pub struct MulticastGroupIdentifier
 {
 	localIdentifier: LocalIdentifier,
 	multicastGroupId: ibv_gid,
 }
 
-impl PartialEq for MultiCastGroupIdentifier
+impl PartialEq for MulticastGroupIdentifier
 {
 	fn eq(&self, other: &Self) -> bool
 	{
@@ -17,11 +17,11 @@ impl PartialEq for MultiCastGroupIdentifier
 	}
 }
 
-impl Eq for MultiCastGroupIdentifier
+impl Eq for MulticastGroupIdentifier
 {
 }
 
-impl Hash for MultiCastGroupIdentifier
+impl Hash for MulticastGroupIdentifier
 {
 	fn hash<H: Hasher>(&self, state: &mut H)
 	{
@@ -30,7 +30,7 @@ impl Hash for MultiCastGroupIdentifier
 	}
 }
 
-impl MultiCastGroupIdentifier
+impl MulticastGroupIdentifier
 {
 	#[inline(always)]
 	pub fn new(subnetPrefix: __be64, interfaceId: __be64, localIdentifier: LocalIdentifier) -> Self

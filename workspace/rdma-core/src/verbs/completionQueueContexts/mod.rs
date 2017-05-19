@@ -2,11 +2,16 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct ExtendedReliableConnectionSendQueuePair
-{
-}
+use super::*;
+use self::workCompletions::*;
+use ::arrayvec::ArrayVec;
+use ::errno::errno;
+use ::syscall_alt::constants::E;
 
-impl QueuePair2 for ExtendedReliableConnectionSendQueuePair
-{
-	const Type: ibv_qp_type = ibv_qp_type::IBV_QPT_XRC_SEND;
-}
+
+pub mod workCompletions;
+
+
+include!("CompletionQueueContext.rs");
+include!("ExtendedCompletionQueueContext.rs");
+include!("UnextendedCompletionQueueContext.rs");

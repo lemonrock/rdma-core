@@ -3,25 +3,18 @@
 
 
 use super::*;
-use self::completionQueues::*;
-use self::sharedReceiveQueues::*;
 use ::errno::errno;
 use ::libc::c_void;
 use ::libc::O_CREAT;
 use ::libc::O_EXCL;
 use ::libc::timespec;
-use self::queuePairs::*;
 use ::rust_extra::unlikely;
-use ::rust_extra::powersOfTwo::AsU32;
-use ::rust_extra::powersOfTwo::PowerOfTwoThirtyTwoBit;
 use ::std::ffi::CStr;
 use ::std::marker::PhantomData;
 use ::std::mem::uninitialized;
-use ::std::ptr::null_mut;
 use ::syscall_alt::constants::E;
 
 
-pub mod completionQueues;
 pub mod queuePairs;
 pub mod sharedReceiveQueues;
 

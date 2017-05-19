@@ -13,7 +13,7 @@ impl<'a> Drop for ProtectionDomain<'a>
 	#[inline(always)]
 	fn drop(&mut self)
 	{
-		panic_on_errno!(ibv_dealloc_pd, self.pointer);
+		self.pointer.destroy();
 	}
 }
 
@@ -72,57 +72,57 @@ impl<'a> ProtectionDomain<'a>
 	// TODO: An extended shared recv queue also has a completion queue, and is only for valid for XRC queue pairs I suspect
 	
 	
-	#[inline(always)]
-	pub fn createUnextendedQueuePair<SendC: CompletionQueue, ReceiveC: CompletionQueue, SharedReceive: SharedReceiveQueue>(&'a self, sendCompletionQueue: &'a SendC, receiveCompletionQueue: &'a ReceiveC, sharedReceiveQueue: Option<&'a SharedReceive>, capabilities: ibv_qp_cap, eachWorkRequestSubmittedToTheSendCompletionQueueGeneratesACompletionEntry: bool) -> UnextendedQueuePair<'a, SendC, ReceiveC, SharedReceive>
-	{
-		let context = self.context;
-		assert!(sendCompletionQueue.isValidForContext(context), "sendCompletionQueue is not valid for this protection domain's context");
-		assert!(receiveCompletionQueue.isValidForContext(context), "receiveCompletionQueue is not valid for this protection domain's context");
-		
-		let mut attributes = ibv_qp_init_attr
-		{
-			qp_context: null_mut(),
-			send_cq: sendCompletionQueue.pointer(),
-			recv_cq: receiveCompletionQueue.pointer(),
-			srq: match sharedReceiveQueue
-			{
-				None => null_mut(),
-				Some(sharedReceiveQueue) =>
-				{
-					assert!(sharedReceiveQueue.isValidForProtectionDomain(self), "shared receive queue is not valid for this protection domain");
-					
-					sharedReceiveQueue.pointer()
-				},
-			},
-			cap: capabilities,
-			qp_type: ibv_qp_type::IBV_QPT_RC,
-			sq_sig_all: if unlikely(eachWorkRequestSubmittedToTheSendCompletionQueueGeneratesACompletionEntry)
-			{
-				1
-			}
-			else
-			{
-				0
-			},
-		};
-		
-		/*
-			IBV_QPT_RC = 2,
-			IBV_QPT_UC = 3,
-			IBV_QPT_UD = 4,
-			IBV_QPT_RAW_PACKET = 8,
-			IBV_QPT_XRC_SEND = 9,
-			IBV_QPT_XRC_RECV = 10,
-		*/
-		
-		let pointer = panic_on_null!(ibv_create_qp, self.pointer, &mut attributes);
-		UnextendedQueuePair::new(pointer, attributes.cap, (self, sendCompletionQueue, receiveCompletionQueue, sharedReceiveQueue))
-		
-		/*
-	pub fn rust_ibv_create_qp_ex(context: *mut ibv_context, qp_init_attr_ex: *mut ibv_qp_init_attr_ex) -> *mut ibv_qp;
-	pub fn rust_ibv_open_qp(context: *mut ibv_context, qp_open_attr: *mut ibv_qp_open_attr) -> *mut ibv_qp;
-	
-	
-		*/
-	}
+//	#[inline(always)]
+//	pub fn createUnextendedQueuePair<SendC: CompletionQueue, ReceiveC: CompletionQueue, SharedReceive: SharedReceiveQueue>(&'a self, sendCompletionQueue: &'a SendC, receiveCompletionQueue: &'a ReceiveC, sharedReceiveQueue: Option<&'a SharedReceive>, capabilities: ibv_qp_cap, eachWorkRequestSubmittedToTheSendCompletionQueueGeneratesACompletionEntry: bool) -> UnextendedQueuePair<'a, SendC, ReceiveC, SharedReceive>
+//	{
+//		let context = self.context;
+//		assert!(sendCompletionQueue.isValidForContext(context), "sendCompletionQueue is not valid for this protection domain's context");
+//		assert!(receiveCompletionQueue.isValidForContext(context), "receiveCompletionQueue is not valid for this protection domain's context");
+//
+//		let mut attributes = ibv_qp_init_attr
+//		{
+//			qp_context: null_mut(),
+//			send_cq: sendCompletionQueue.pointer(),
+//			recv_cq: receiveCompletionQueue.pointer(),
+//			srq: match sharedReceiveQueue
+//			{
+//				None => null_mut(),
+//				Some(sharedReceiveQueue) =>
+//				{
+//					assert!(sharedReceiveQueue.isValidForProtectionDomain(self), "shared receive queue is not valid for this protection domain");
+//
+//					sharedReceiveQueue.pointer()
+//				},
+//			},
+//			cap: capabilities,
+//			qp_type: ibv_qp_type::IBV_QPT_RC,
+//			sq_sig_all: if unlikely(eachWorkRequestSubmittedToTheSendCompletionQueueGeneratesACompletionEntry)
+//			{
+//				1
+//			}
+//			else
+//			{
+//				0
+//			},
+//		};
+//
+//		/*
+//			IBV_QPT_RC = 2,
+//			IBV_QPT_UC = 3,
+//			IBV_QPT_UD = 4,
+//			IBV_QPT_RAW_PACKET = 8,
+//			IBV_QPT_XRC_SEND = 9,
+//			IBV_QPT_XRC_RECV = 10,
+//		*/
+//
+//		let pointer = panic_on_null!(ibv_create_qp, self.pointer, &mut attributes);
+//		UnextendedQueuePair::new(pointer, attributes.cap, (self, sendCompletionQueue, receiveCompletionQueue, sharedReceiveQueue))
+//
+//		/*
+//	pub fn rust_ibv_create_qp_ex(context: *mut ibv_context, qp_init_attr_ex: *mut ibv_qp_init_attr_ex) -> *mut ibv_qp;
+//	pub fn rust_ibv_open_qp(context: *mut ibv_context, qp_open_attr: *mut ibv_qp_open_attr) -> *mut ibv_qp;
+//
+//
+//		*/
+//	}
 }

@@ -100,26 +100,6 @@ impl Context
 	}
 	
 	#[inline(always)]
-	pub fn createCompletionChannel<'a>(&'a self) -> CompletionChannel<'a>
-	{
-		CompletionChannel::new(self.0.createCompletionChannel(), self)
-	}
-	
-	#[inline(always)]
-	pub fn createUnextendedCompletionQueueWithoutCompletionChannel<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> WithoutCompletionChannelUnextendedCompletionQueue<'a>
-	{
-		let pointer = self.0.createUnextendedCompletionQueueWithoutCompletionChannel(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector);
-		WithoutCompletionChannelUnextendedCompletionQueue::new(pointer, self)
-	}
-	
-	#[inline(always)]
-	pub fn createExtendedCompletionQueueWithoutCompletionChannel<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> WithoutCompletionChannelExtendedCompletionQueue<'a>
-	{
-		let pointer = self.0.createExtendedCompletionQueueWithoutCompletionChannel(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe);
-		WithoutCompletionChannelExtendedCompletionQueue::new(pointer, self)
-	}
-	
-	#[inline(always)]
 	pub fn createExtendedReliableConnectionDomainWithoutInode<'a>(&'a self) -> ExtendedReliableConnectionDomain<'a>
 	{
 		let pointer = self.openExtendedReliableConnectionDomainInternal(-1, true, false);
@@ -172,28 +152,28 @@ impl Context
 		unsafe { rust_ibv_open_xrcd(self.0, &mut attributes) }
 	}
 	
-	/// NOTE: This implementation is almost certainly currently broken
-	/// The created object should be used as part of ibv_create_qp_ex() to enable dispatching of incoming packets based on some RX hash configuration.
-	#[inline(always)]
-	pub fn createReceiveWorkQueueIndirectionTable<'a>(&'a self, size: PowerOfTwoThirtyTwoBit) -> ReceiveWorkQueueIndirectionTable<'a>
-	{
-		let sizeU32 = size.as_u32();
-		
-		let mut indirectionTable = Vec::with_capacity(sizeU32 as usize);
-		
-		let mut attributes = ibv_rwq_ind_table_init_attr
-		{
-			log_ind_tbl_size: sizeU32,
-			ind_tbl: indirectionTable.as_mut_ptr(),
-			comp_mask: 0,
-		};
-		
-		let pointer = panic_on_null!(rust_ibv_create_rwq_ind_table, self.0, &mut attributes);
-		ReceiveWorkQueueIndirectionTable
-		{
-			pointer: pointer,
-			context: self,
-			indirectionTable: indirectionTable,
-		}
-	}
+//	/// NOTE: This implementation is almost certainly currently broken
+//	/// The created object should be used as part of ibv_create_qp_ex() to enable dispatching of incoming packets based on some RX hash configuration.
+//	#[inline(always)]
+//	pub fn createReceiveWorkQueueIndirectionTable<'a>(&'a self, size: PowerOfTwoThirtyTwoBit) -> ReceiveWorkQueueIndirectionTable<'a>
+//	{
+//		let sizeU32 = size.as_u32();
+//
+//		let mut indirectionTable = Vec::with_capacity(sizeU32 as usize);
+//
+//		let mut attributes = ibv_rwq_ind_table_init_attr
+//		{
+//			log_ind_tbl_size: sizeU32,
+//			ind_tbl: indirectionTable.as_mut_ptr(),
+//			comp_mask: 0,
+//		};
+//
+//		let pointer = panic_on_null!(rust_ibv_create_rwq_ind_table, self.0, &mut attributes);
+//		ReceiveWorkQueueIndirectionTable
+//		{
+//			pointer: pointer,
+//			context: self,
+//			indirectionTable: indirectionTable,
+//		}
+//	}
 }

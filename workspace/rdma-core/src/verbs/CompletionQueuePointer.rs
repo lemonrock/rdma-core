@@ -8,15 +8,22 @@ pub trait CompletionQueuePointer: HasContextPointer
 	fn pointer(self) -> *mut ibv_cq;
 	
 	#[inline(always)]
-	fn completionChannel(self) -> *mut ibv_comp_channel
+	fn resize(&self, atLeastThisNumberOfCompletionQueueEvents: u31)
 	{
-		unsafe { (*self.pointer()).channel }
+		panic_on_error!(ibv_resize_cq, self.pointer(), atLeastThisNumberOfCompletionQueueEvents as i32);
+	}
+	
+	/// NOTE: DO NOT CALL THIS ON AN EXTENDED CQ THAT IS CURRENTLY POLLING
+	#[inline(always)]
+	fn destroy(&mut self)
+	{
+		panic_on_errno!(ibv_destroy_cq, self.pointer());
 	}
 	
 	#[inline(always)]
-	fn handle(self) -> u32
+	fn completionChannel(self) -> *mut ibv_comp_channel
 	{
-		unsafe { (*self.pointer()).handle }
+		unsafe { (*self.pointer()).channel }
 	}
 	
 	#[inline(always)]
