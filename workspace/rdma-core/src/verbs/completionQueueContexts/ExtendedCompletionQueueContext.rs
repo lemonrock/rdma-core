@@ -8,8 +8,11 @@ pub struct ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext: Size
 	isCurrentlyBeingPolled: bool,
 }
 
-impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompletionQueueContext> for ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
+impl<'a, UnderlyingCompletionQueueContext> CompletionQueueContext<'a, UnderlyingCompletionQueueContext> for ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
+where UnderlyingCompletionQueueContext: 'a
 {
+	type PollIterator = ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>;
+	
 	#[inline(always)]
 	fn isExtended(&self) -> bool
 	{
@@ -33,16 +36,16 @@ impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompleti
 		
 		completionQueuePointerMaybeExtended.destroy();
 	}
+	
+	#[inline(always)]
+	fn iteratePoll(&'a mut self, completionQueuePointerMaybeExtended: *mut ibv_cq) -> Self::PollIterator
+	{
+		ExtendedCompletionQueueContextIterator(self, completionQueuePointerMaybeExtended as *mut ibv_cq_ex)
+	}
 }
 
 impl<UnderlyingCompletionQueueContext> ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 {
-	#[inline(always)]
-	pub fn iter<'a>(&'a mut self, completionQueuePointer: *mut ibv_cq_ex) -> ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>
-	{
-		ExtendedCompletionQueueContextIterator(self, completionQueuePointer)
-	}
-	
 	/// NOTE WELL: Once poll() is called, the previous item will be invalid
 	#[inline(always)]
 	pub fn pollNext(&mut self, completionQueuePointer: *mut ibv_cq_ex) -> Option<ExtendedWorkCompletion>

@@ -7,8 +7,11 @@ pub struct UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext: Si
 	underlying: UnderlyingCompletionQueueContext,
 }
 
-impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompletionQueueContext> for UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext>
+impl<'a, UnderlyingCompletionQueueContext> CompletionQueueContext<'a, UnderlyingCompletionQueueContext> for UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext>
+where UnderlyingCompletionQueueContext: 'a
 {
+	type PollIterator = UnextendedCompletionQueueContextIterator;
+	
 	#[inline(always)]
 	fn isExtended(&self) -> bool
 	{
@@ -26,20 +29,20 @@ impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompleti
 	{
 		completionQueuePointerMaybeExtended.destroy();
 	}
+	
+	#[inline(always)]
+	fn iteratePoll(&'a mut self, completionQueuePointerMaybeExtended: *mut ibv_cq) -> Self::PollIterator
+	{
+		let mut into = ArrayVec::new();
+		Self::poll(completionQueuePointerMaybeExtended, &mut into);
+		UnextendedCompletionQueueContextIterator(into.into_iter())
+	}
 }
 
 pub const UnextendedCompletionQueuePollArraySize: usize = 32;
 
 impl<UnderlyingCompletionQueueContext> UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 {
-	#[inline(always)]
-	pub fn iter<'a>(&'a mut self, completionQueuePointer: *mut ibv_cq) -> UnextendedCompletionQueueContextIterator
-	{
-		let mut into = ArrayVec::new();
-		Self::poll(completionQueuePointer, &mut into);
-		UnextendedCompletionQueueContextIterator(into.into_iter())
-	}
-	
 	/// Returns number of additional work completions added; it is recommended that `into` is empty
 	#[inline(always)]
 	pub fn poll(completionQueuePointer: *mut ibv_cq, into: &mut ArrayVec<[UnextendedWorkCompletion; UnextendedCompletionQueuePollArraySize]>) -> usize

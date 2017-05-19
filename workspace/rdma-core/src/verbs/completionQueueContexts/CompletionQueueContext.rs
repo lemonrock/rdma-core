@@ -2,8 +2,11 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait CompletionQueueContext<UnderlyingCompletionQueueContext: Sized>
+pub trait CompletionQueueContext<'a, UnderlyingCompletionQueueContext: Sized>
+where UnderlyingCompletionQueueContext: 'a
 {
+	type PollIterator;
+	
 	#[inline(always)]
 	fn isExtended(&self) -> bool;
 	
@@ -13,4 +16,8 @@ pub trait CompletionQueueContext<UnderlyingCompletionQueueContext: Sized>
 	/// completionQueuePointerMaybeExtended can also be of type ibv_cq_ex
 	#[inline(always)]
 	fn destroy(&mut self, completionQueuePointerMaybeExtended: *mut ibv_cq);
+	
+	/// completionQueuePointerMaybeExtended can also be of type ibv_cq_ex
+	#[inline(always)]
+	fn iteratePoll(&'a mut self, completionQueuePointerMaybeExtended: *mut ibv_cq) -> Self::PollIterator;
 }
