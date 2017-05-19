@@ -16,14 +16,17 @@ pub trait CommunicationIdentifierContext: Drop
 			communicationIdentifier.setTypeOfService(typeOfService);
 		}
 		
-		// It looks like a CommunicationIdentifierContext really should own a protection domain, or, the context does
-		// Lifetime management becomes interesting, as an event channel can have multiple devices/contexts (aka verbs)
-		// We only need multiple PDs if dealing with different memory regions
 		
-		// actually rdma_create_qp_ex
-		// rdma_create_qp(id, s_ctx->pd, &qp_attr)
+		
+		// Call rdma_create_qp_ex()
 		
 		// Call rdma_resolve_route(node->cma_id, 2000);
+		
+		// Need to make sure all queue pairs are destroyed before destroying the rdma_cm_id
+		
+		// Easiest way to do this is to probably use the 'pd' field we are given in rdma_cm_id
+		// This means we need to assign to it
+		// I suggest we also use the associated pd field; if we make this Arc or Rc then we can manage lifetime
 	}
 	
 	/// Return true to tear down this context and associated resources
@@ -45,6 +48,7 @@ pub trait CommunicationIdentifierContext: Drop
 	#[inline(always)]
 	fn routeResolutionFailed(&self, statusCode: i32)
 	{
+		// TODO: need to destroy any queue pair created by addressResolutionSucceeded()
 	}
 	
 	/// u8 => Length of private data written
