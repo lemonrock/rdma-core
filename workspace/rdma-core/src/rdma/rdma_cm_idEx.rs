@@ -14,6 +14,9 @@ pub trait rdma_cm_idEx
 	fn destroy(self);
 	
 	#[inline(always)]
+	fn portNumber(self) -> u8;
+	
+	#[inline(always)]
 	fn portSpace(self) -> rdma_port_space;
 	
 	#[inline(always)]
@@ -30,6 +33,58 @@ pub trait rdma_cm_idEx
 	
 	#[inline(always)]
 	fn setTypeOfService(self, toS: u8);
+}
+
+impl HasContextPointer for *mut rdma_cm_id
+{
+	#[inline(always)]
+	fn context(self) -> *mut c_void
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context }
+	}
+	
+	#[inline(always)]
+	fn setContext(self, context: *mut c_void)
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context = context };
+	}
+}
+
+impl HasVerbsPointer for *mut rdma_cm_id
+{
+	#[inline(always)]
+	fn verbs(self) -> *mut ibv_context
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).verbs }
+	}
+}
+
+impl HasProtectionDomainPointer for *mut rdma_cm_id
+{
+	#[inline(always)]
+	fn protectionDomain(self) -> *mut ibv_pd
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).pd }
+	}
+}
+
+impl HasQueuePairType for *mut rdma_cm_id
+{
+	#[inline(always)]
+	fn queuePairType(self) -> ibv_qp_type
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).qp_type }
+	}
 }
 
 impl rdma_cm_idEx for *mut rdma_cm_id
@@ -61,6 +116,14 @@ impl rdma_cm_idEx for *mut rdma_cm_id
 		}
 		
 		panic_on_error!(rdma_destroy_id, self);
+	}
+	
+	#[inline(always)]
+	fn portNumber(self) -> u8
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).port_num }
 	}
 	
 	#[inline(always)]

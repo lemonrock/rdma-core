@@ -36,9 +36,6 @@ pub trait ibv_qpEx: HasContextPointer
 	fn queuePairNumber(self) -> QueuePairNumber;
 	
 	#[inline(always)]
-	fn queuePairType(self) -> ibv_qp_type;
-	
-	#[inline(always)]
 	fn eventsCompleted(self) -> u32;
 }
 
@@ -106,14 +103,6 @@ impl ibv_qpEx for *mut ibv_qp
 		debug_assert!(!self.is_null(), "self is null");
 		
 		unsafe { (*self).qp_num }
-	}
-	
-	#[inline(always)]
-	fn queuePairType(self) -> ibv_qp_type
-	{
-		debug_assert!(!self.is_null(), "self is null");
-		
-		unsafe { (*self).qp_type }
 	}
 	
 	#[inline(always)]

@@ -7,6 +7,7 @@ use self::communicationIdentifierContexts::*;
 use self::eventData::*;
 use super::FileDescriptor;
 use super::QueuePairNumber;
+use super::verbs::*;
 use ::libc::c_int;
 use ::libc::c_void;
 use ::rdma_core_sys::*;
