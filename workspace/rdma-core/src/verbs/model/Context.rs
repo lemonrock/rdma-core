@@ -9,13 +9,7 @@ impl Drop for Context
 	#[inline(always)]
 	fn drop(&mut self)
 	{
-		let result = unsafe { ibv_close_device(self.0) };
-		debug_assert!(result == 0 || result == 1, "ibv_close_device returned a result '{}' which was not 0 or 1", result);
-		if unlikely(result == -1)
-		{
-			// Examination of C source code suggests it can't actually fail
-			panic!("ibv_close_device failed (no further details)");
-		}
+		self.0.destroy();
 	}
 }
 
