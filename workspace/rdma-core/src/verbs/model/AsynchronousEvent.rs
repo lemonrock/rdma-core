@@ -9,6 +9,6 @@ impl Drop for AsynchronousEvent
 	#[inline(always)]
 	fn drop(&mut self)
 	{
-		unsafe { ibv_ack_async_event(&mut self.0) }
+		self.0.destroy();
 	}
 }

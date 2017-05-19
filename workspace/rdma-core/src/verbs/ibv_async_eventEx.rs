@@ -2,17 +2,26 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use super::*;
-use ::libc::c_void;
-use ::libc::timespec;
-use ::std::mem::uninitialized;
-use ::std::mem::zeroed;
-use ::std::ptr::null_mut;
+pub trait ibv_async_eventEx
+{
+	#[inline(always)]
+	fn destroy(self);
+}
 
+impl ibv_async_eventEx for *mut ibv_async_event
+{
+	#[inline(always)]
+	fn destroy(self)
+	{
+		unsafe { ibv_ack_async_event(self) }
+	}
+}
 
-pub mod model;
-
-
-include!("ibv_async_eventEx.rs");
-include!("ibv_contextEx.rs");
-include!("ibv_device_attrEx.rs");
+impl ibv_async_eventEx for ibv_async_event
+{
+	#[inline(always)]
+	fn destroy(mut self)
+	{
+		unsafe { ibv_ack_async_event(&mut self) }
+	}
+}

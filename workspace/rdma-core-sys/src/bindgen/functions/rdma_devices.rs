@@ -4,5 +4,6 @@
 
 extern "C"
 {
+	pub fn rdma_free_devices(list: *mut *mut ibv_context);
 	pub fn rdma_get_devices(num_devices: *mut c_int) -> *mut *mut ibv_context;
 }
