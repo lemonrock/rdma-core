@@ -19,9 +19,14 @@ pub mod model;
 
 
 include!("CompletionQueuePointer.rs");
+include!("HasContextPointer.rs");
+include!("HasProtectionDomainPointer.rs");
+include!("HasVerbsPointer.rs");
 include!("ibv_async_eventEx.rs");
 include!("ibv_comp_channelEx.rs");
 include!("ibv_contextEx.rs");
 include!("ibv_cq_exEx.rs");
 include!("ibv_device_attrEx.rs");
+include!("ibv_pdEx.rs");
+include!("ibv_qpEx.rs");
 include!("ibv_wqEx.rs");

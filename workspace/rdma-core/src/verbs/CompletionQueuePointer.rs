@@ -2,27 +2,15 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait CompletionQueuePointer: Sized + Copy
+pub trait CompletionQueuePointer: HasContextPointer
 {
 	#[inline(always)]
 	fn pointer(self) -> *mut ibv_cq;
 	
 	#[inline(always)]
-	fn verbs(self) -> *mut ibv_context
-	{
-		unsafe { (*self.pointer()).context }
-	}
-	
-	#[inline(always)]
 	fn completionChannel(self) -> *mut ibv_comp_channel
 	{
 		unsafe { (*self.pointer()).channel }
-	}
-	
-	#[inline(always)]
-	fn context(self) -> *mut c_void
-	{
-		unsafe { (*self.pointer()).cq_context }
 	}
 	
 	#[inline(always)]

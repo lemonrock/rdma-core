@@ -3,6 +3,7 @@
 
 
 #![feature(associated_consts)]
+#![feature(specialization)]
 
 
 #![allow(missing_copy_implementations)]

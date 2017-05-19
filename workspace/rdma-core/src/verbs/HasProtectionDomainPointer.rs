@@ -2,21 +2,26 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait ibv_wqEx: HasContextPointer
+pub trait HasProtectionDomainPointer: HasVerbsPointer
 {
 	#[inline(always)]
-	fn ibv_post_wq_recv(self, recv_wr: *mut ibv_recv_wr, bad_recv_wr: *mut *mut ibv_recv_wr) -> c_int;
+	fn protectionDomain(self) -> *mut ibv_pd;
 }
 
-impl ibv_wqEx for *mut ibv_wq
+impl HasProtectionDomainPointer for *mut ibv_ah
 {
 	#[inline(always)]
-	fn ibv_post_wq_recv(self, recv_wr: *mut ibv_recv_wr, bad_recv_wr: *mut *mut ibv_recv_wr) -> c_int
+	fn protectionDomain(self) -> *mut ibv_pd
 	{
-		debug_assert!(!self.is_null(), "self is null");
-		debug_assert!(!recv_wr.is_null(), "recv_wr is null");
-		debug_assert!(!bad_recv_wr.is_null(), "bad_recv_wr is null");
-		
-		unsafe { (*self).post_recv.unwrap()(self, recv_wr, bad_recv_wr) }
+		unsafe { (*self).pd }
+	}
+}
+
+impl HasProtectionDomainPointer for *mut ibv_srq
+{
+	#[inline(always)]
+	fn protectionDomain(self) -> *mut ibv_pd
+	{
+		unsafe { (*self).pd }
 	}
 }
