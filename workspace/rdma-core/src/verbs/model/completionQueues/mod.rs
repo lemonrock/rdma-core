@@ -2,14 +2,13 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
+use super::super::*;
 use super::Context;
 use self::workCompletions::ExtendedWorkCompletion;
 use self::workCompletions::UnextendedWorkCompletion;
-use ::FileDescriptor;
 use ::arrayvec::ArrayVec;
 use ::errno::errno;
 use ::libc::c_void;
-use ::rdma_core_sys::*;
 use ::rust_extra::u31;
 use ::rust_extra::unlikely;
 use ::rust_extra::likely;

@@ -3,6 +3,7 @@
 
 
 use super::*;
+use ::libc::c_void;
 use ::libc::timespec;
 use ::std::mem::uninitialized;
 use ::std::mem::zeroed;

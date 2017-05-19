@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub struct Context(*mut ibv_context, ibv_device_attr_ex);
+pub struct Context(pub(crate) *mut ibv_context, ibv_device_attr_ex);
 
 impl Drop for Context
 {
@@ -108,49 +108,15 @@ impl Context
 	#[inline(always)]
 	pub fn createUnextendedCompletionQueueWithoutCompletionChannel<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> WithoutCompletionChannelUnextendedCompletionQueue<'a>
 	{
-		let pointer = self.createUnextendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, null_mut());
+		let pointer = self.0.createUnextendedCompletionQueueWithoutCompletionChannel(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector);
 		WithoutCompletionChannelUnextendedCompletionQueue::new(pointer, self)
-	}
-	
-	#[inline(always)]
-	fn createUnextendedCompletionQueueInternal<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, potentiallyNullCompletionChannel: *mut ibv_comp_channel) -> *mut ibv_cq
-	{
-		debug_assert!(completionVector < self.numberOfCompletionVectors(), "completionVector '{}' is not less than context numberOfCompletionVectors '{}'", completionVector, self.numberOfCompletionVectors());
-		
-		panic_on_null!(ibv_create_cq, self.0, atLeastThisNumberOfCompletionQueueEvents as i32, completionQueueContext, potentiallyNullCompletionChannel, completionVector as i32)
 	}
 	
 	#[inline(always)]
 	pub fn createExtendedCompletionQueueWithoutCompletionChannel<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> WithoutCompletionChannelExtendedCompletionQueue<'a>
 	{
-		let pointer = self.createExtendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, null_mut());
+		let pointer = self.0.createExtendedCompletionQueueWithoutCompletionChannel(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe);
 		WithoutCompletionChannelExtendedCompletionQueue::new(pointer, self)
-	}
-	
-	#[inline(always)]
-	fn createExtendedCompletionQueueInternal<'a>(&'a self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool, potentiallyNullCompletionChannel: *mut ibv_comp_channel) -> *mut ibv_cq_ex
-	{
-		debug_assert!(completionVector < self.numberOfCompletionVectors(), "completionVector '{}' is not less than context numberOfCompletionVectors '{}'", completionVector, self.numberOfCompletionVectors());
-		
-		let mut attributes = ibv_cq_init_attr_ex
-		{
-			cqe: atLeastThisNumberOfCompletionQueueEvents,
-			cq_context: completionQueueContext,
-			channel: potentiallyNullCompletionChannel,
-			comp_vector: completionVector,
-			wc_flags: workCompletionFlags.0 as u64,
-			comp_mask: ibv_cq_init_attr_mask_IBV_CQ_INIT_ATTR_MASK_FLAGS.0,
-			flags: if likely(lockLessButNotThreadSafe)
-			{
-				ibv_create_cq_attr_flags_IBV_CREATE_CQ_ATTR_SINGLE_THREADED.0
-			}
-			else
-			{
-				0
-			},
-		};
-		
-		panic_on_null!(rust_ibv_create_cq_ex, self.0, &mut attributes)
 	}
 	
 	#[inline(always)]

@@ -34,6 +34,18 @@ pub trait ibv_contextEx
 	
 	#[inline(always)]
 	fn createCompletionChannel(self) -> *mut ibv_comp_channel;
+	
+	#[inline(always)]
+	fn createUnextendedCompletionQueueWithoutCompletionChannel(self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> *mut ibv_cq;
+	
+	#[inline(always)]
+	fn createUnextendedCompletionQueue(self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, potentiallyNullCompletionChannel: *mut ibv_comp_channel) -> *mut ibv_cq;
+	
+	#[inline(always)]
+	fn createExtendedCompletionQueueWithoutCompletionChannel(self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> *mut ibv_cq_ex;
+	
+	#[inline(always)]
+	fn createExtendedCompletionQueue(self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool, potentiallyNullCompletionChannel: *mut ibv_comp_channel) -> *mut ibv_cq_ex;
 }
 
 impl ibv_contextEx for *mut ibv_context
@@ -124,5 +136,51 @@ impl ibv_contextEx for *mut ibv_context
 	fn createCompletionChannel(self) -> *mut ibv_comp_channel
 	{
 		panic_on_null!(ibv_create_comp_channel, self)
+	}
+	
+	#[inline(always)]
+	fn createUnextendedCompletionQueueWithoutCompletionChannel(self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> *mut ibv_cq
+	{
+		self.createUnextendedCompletionQueue(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, null_mut())
+	}
+	
+	#[inline(always)]
+	fn createUnextendedCompletionQueue(self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, potentiallyNullCompletionChannel: *mut ibv_comp_channel) -> *mut ibv_cq
+	{
+		assert!(completionVector < self.numberOfCompletionVectors(), "completionVector '{}' is not less than context numberOfCompletionVectors '{}'", completionVector, self.numberOfCompletionVectors());
+		
+		panic_on_null!(ibv_create_cq, self, atLeastThisNumberOfCompletionQueueEvents as i32, completionQueueContext, potentiallyNullCompletionChannel, completionVector as i32)
+	}
+	
+	#[inline(always)]
+	fn createExtendedCompletionQueueWithoutCompletionChannel(self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> *mut ibv_cq_ex
+	{
+		self.createExtendedCompletionQueue(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, null_mut())
+	}
+	
+	#[inline(always)]
+	fn createExtendedCompletionQueue(self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool, potentiallyNullCompletionChannel: *mut ibv_comp_channel) -> *mut ibv_cq_ex
+	{
+		assert!(completionVector < self.numberOfCompletionVectors(), "completionVector '{}' is not less than context numberOfCompletionVectors '{}'", completionVector, self.numberOfCompletionVectors());
+		
+		let mut attributes = ibv_cq_init_attr_ex
+		{
+			cqe: atLeastThisNumberOfCompletionQueueEvents,
+			cq_context: completionQueueContext,
+			channel: potentiallyNullCompletionChannel,
+			comp_vector: completionVector,
+			wc_flags: workCompletionFlags.0 as u64,
+			comp_mask: ibv_cq_init_attr_mask_IBV_CQ_INIT_ATTR_MASK_FLAGS.0,
+			flags: if likely(lockLessButNotThreadSafe)
+			{
+				ibv_create_cq_attr_flags_IBV_CREATE_CQ_ATTR_SINGLE_THREADED.0
+			}
+			else
+			{
+				0
+			},
+		};
+		
+		panic_on_null!(rust_ibv_create_cq_ex, self, &mut attributes)
 	}
 }

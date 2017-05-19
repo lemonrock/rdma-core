@@ -44,7 +44,8 @@ impl<'a> CompletionChannel<'a>
 	#[inline(always)]
 	pub fn createWithCompletionChannelUnextendedCompletionQueue(&'a mut self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32) -> &'a WithCompletionChannelUnextendedCompletionQueue<'a>
 	{
-		let pointer = self.context.createUnextendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, self.pointer);
+		let pointer = self.context.0.createUnextendedCompletionQueue(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, self.pointer);
+		
 		let key = pointer as usize;
 		self.unextendedCompletionQueues.insert(key, WithCompletionChannelUnextendedCompletionQueue::new(pointer, self.context));
 		self.unextendedCompletionQueues.get(&key).unwrap()
@@ -53,7 +54,7 @@ impl<'a> CompletionChannel<'a>
 	#[inline(always)]
 	pub fn createWithCompletionChannelExtendedCompletionQueue(&'a mut self, atLeastThisNumberOfCompletionQueueEvents: u32, completionQueueContext: *mut c_void, completionVector: u32, workCompletionFlags: ibv_create_cq_wc_flags, lockLessButNotThreadSafe: bool) -> &'a WithCompletionChannelExtendedCompletionQueue<'a>
 	{
-		let pointer = self.context.createExtendedCompletionQueueInternal(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, self.pointer);
+		let pointer = self.context.0.createExtendedCompletionQueue(atLeastThisNumberOfCompletionQueueEvents, completionQueueContext, completionVector, workCompletionFlags, lockLessButNotThreadSafe, self.pointer);
 		let key = pointer as usize;
 		self.extendedCompletionQueues.insert(key, WithCompletionChannelExtendedCompletionQueue::new(pointer, self.context));
 		self.extendedCompletionQueues.get(&key).unwrap()
