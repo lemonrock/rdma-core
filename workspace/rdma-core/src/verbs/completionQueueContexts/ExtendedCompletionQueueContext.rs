@@ -11,6 +11,7 @@ pub struct ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext: Size
 impl<'a, UnderlyingCompletionQueueContext> CompletionQueueContext<'a, UnderlyingCompletionQueueContext> for ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 where UnderlyingCompletionQueueContext: 'a
 {
+	type WorkCompletion = ExtendedWorkCompletion;
 	type PollIterator = ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>;
 	
 	#[inline(always)]

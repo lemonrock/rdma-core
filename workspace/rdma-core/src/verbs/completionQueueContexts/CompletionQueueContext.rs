@@ -5,7 +5,8 @@
 pub trait CompletionQueueContext<'a, UnderlyingCompletionQueueContext: Sized>
 where UnderlyingCompletionQueueContext: 'a
 {
-	type PollIterator;
+	type WorkCompletion: WorkCompletion;
+	type PollIterator: Iterator<Item=Self::WorkCompletion>;
 	
 	#[inline(always)]
 	fn isExtended(&self) -> bool;

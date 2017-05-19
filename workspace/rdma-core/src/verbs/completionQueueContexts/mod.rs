@@ -17,4 +17,3 @@ include!("CompletionQueueContext.rs");
 include!("ExtendedCompletionQueueContext.rs");
 include!("ExtendedCompletionQueueContextIterator.rs");
 include!("UnextendedCompletionQueueContext.rs");
-include!("UnextendedCompletionQueueContextIterator.rs");

@@ -10,7 +10,8 @@ pub struct UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext: Si
 impl<'a, UnderlyingCompletionQueueContext> CompletionQueueContext<'a, UnderlyingCompletionQueueContext> for UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 where UnderlyingCompletionQueueContext: 'a
 {
-	type PollIterator = UnextendedCompletionQueueContextIterator;
+	type WorkCompletion = UnextendedWorkCompletion;
+	type PollIterator = IntoIter<[UnextendedWorkCompletion; UnextendedCompletionQueuePollArraySize]>;
 	
 	#[inline(always)]
 	fn isExtended(&self) -> bool
@@ -35,7 +36,7 @@ where UnderlyingCompletionQueueContext: 'a
 	{
 		let mut into = ArrayVec::new();
 		Self::poll(completionQueuePointerMaybeExtended, &mut into);
-		UnextendedCompletionQueueContextIterator(into.into_iter())
+		into.into_iter()
 	}
 }
 
