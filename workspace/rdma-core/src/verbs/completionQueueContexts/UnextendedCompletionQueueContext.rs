@@ -2,22 +2,29 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct UnextendedCompletionQueueContext
+pub struct UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext: Sized>
 {
+	underlying: UnderlyingCompletionQueueContext,
 }
 
-impl CompletionQueueContext for UnextendedCompletionQueueContext
+impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompletionQueueContext> for UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 {
 	#[inline(always)]
 	fn isExtended(&self) -> bool
 	{
 		false
 	}
+	
+	#[inline(always)]
+	fn underlying(&mut self) -> &mut UnderlyingCompletionQueueContext
+	{
+		&mut self.underlying
+	}
 }
 
 pub const UnextendedCompletionQueuePollArraySize: usize = 32;
 
-impl UnextendedCompletionQueueContext
+impl<UnderlyingCompletionQueueContext> UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 {
 	/// Returns number of additional work completions added; it is recommended that `into` is empty
 	#[inline(always)]

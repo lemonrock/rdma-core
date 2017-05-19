@@ -2,22 +2,28 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext: CompletionQueueContext>
+pub struct ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext: Sized>
 {
 	underlying: UnderlyingCompletionQueueContext,
 	isCurrentlyBeingPolled: bool,
 }
 
-impl<UnderlyingCompletionQueueContext: CompletionQueueContext> CompletionQueueContext for ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
+impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompletionQueueContext> for ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 {
 	#[inline(always)]
 	fn isExtended(&self) -> bool
 	{
 		true
 	}
+	
+	#[inline(always)]
+	fn underlying(&mut self) -> &mut UnderlyingCompletionQueueContext
+	{
+		&mut self.underlying
+	}
 }
 
-impl<UnderlyingCompletionQueueContext: CompletionQueueContext> ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
+impl<UnderlyingCompletionQueueContext> ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 {
 	#[inline(always)]
 	pub fn destroy(&mut self, completionQueuePointer: *mut ibv_cq_ex)
@@ -26,12 +32,6 @@ impl<UnderlyingCompletionQueueContext: CompletionQueueContext> ExtendedCompletio
 		{
 			self.endPolling(completionQueuePointer);
 		}
-	}
-	
-	#[inline(always)]
-	pub fn underlying(&mut self) -> &mut UnderlyingCompletionQueueContext
-	{
-		&mut self.underlying
 	}
 	
 	/// NOTE WELL: Once poll() is called, the previous item will be invalid

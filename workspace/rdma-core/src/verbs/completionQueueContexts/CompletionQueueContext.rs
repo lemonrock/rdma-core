@@ -2,8 +2,11 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait CompletionQueueContext
+pub trait CompletionQueueContext<UnderlyingCompletionQueueContext: Sized>
 {
 	#[inline(always)]
 	fn isExtended(&self) -> bool;
+	
+	#[inline(always)]
+	fn underlying(&mut self) -> &mut UnderlyingCompletionQueueContext;
 }
