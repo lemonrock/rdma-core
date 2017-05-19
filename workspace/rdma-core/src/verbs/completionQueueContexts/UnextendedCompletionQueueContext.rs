@@ -20,6 +20,12 @@ impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompleti
 	{
 		&mut self.underlying
 	}
+	
+	#[inline(always)]
+	fn destroy(&mut self, mut completionQueuePointerMaybeExtended: *mut ibv_cq)
+	{
+		completionQueuePointerMaybeExtended.destroy();
+	}
 }
 
 pub const UnextendedCompletionQueuePollArraySize: usize = 32;

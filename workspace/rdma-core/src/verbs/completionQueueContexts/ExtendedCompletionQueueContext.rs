@@ -21,22 +21,24 @@ impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompleti
 	{
 		&mut self.underlying
 	}
+	
+	#[inline(always)]
+	fn destroy(&mut self, mut completionQueuePointerMaybeExtended: *mut ibv_cq)
+	{
+		if self.isCurrentlyBeingPolled
+		{
+			self.endPolling((completionQueuePointerMaybeExtended as *mut ibv_cq_ex));
+		}
+		
+		completionQueuePointerMaybeExtended.destroy();
+	}
 }
 
 impl<UnderlyingCompletionQueueContext> ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 {
-	#[inline(always)]
-	pub fn destroy(&mut self, completionQueuePointer: *mut ibv_cq_ex)
-	{
-		if self.isCurrentlyBeingPolled
-		{
-			self.endPolling(completionQueuePointer);
-		}
-	}
-	
 	/// NOTE WELL: Once poll() is called, the previous item will be invalid
 	#[inline(always)]
-	pub fn poll(&mut self, completionQueuePointer: *mut ibv_cq_ex) -> Option<ExtendedWorkCompletion>
+	pub fn pollNext(&mut self, completionQueuePointer: *mut ibv_cq_ex) -> Option<ExtendedWorkCompletion>
 	{
 		if likely(self.isCurrentlyBeingPolled)
 		{

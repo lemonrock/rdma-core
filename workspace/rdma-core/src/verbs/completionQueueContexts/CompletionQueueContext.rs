@@ -9,4 +9,8 @@ pub trait CompletionQueueContext<UnderlyingCompletionQueueContext: Sized>
 	
 	#[inline(always)]
 	fn underlying(&mut self) -> &mut UnderlyingCompletionQueueContext;
+	
+	/// completionQueuePointerMaybeExtended can also be of type ibv_cq_ex
+	#[inline(always)]
+	fn destroy(&mut self, completionQueuePointerMaybeExtended: *mut ibv_cq);
 }
