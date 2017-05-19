@@ -34,6 +34,7 @@ pub trait ibv_cq_exEx: CompletionQueuePointer
 	#[inline(always)]
 	fn ibv_wc_read_imm_data(self) -> uint32_t;
 	
+	/// Not present if the extended completion queue was not created with IBV_WC_EX_WITH_QP_NUM
 	#[inline(always)]
 	fn ibv_wc_read_qp_num(self) -> QueuePairNumber;
 	
