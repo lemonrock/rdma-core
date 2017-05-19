@@ -28,6 +28,7 @@ impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompleti
 		if self.isCurrentlyBeingPolled
 		{
 			self.endPolling((completionQueuePointerMaybeExtended as *mut ibv_cq_ex));
+			self.isCurrentlyBeingPolled = false;
 		}
 		
 		completionQueuePointerMaybeExtended.destroy();
@@ -36,6 +37,12 @@ impl<UnderlyingCompletionQueueContext> CompletionQueueContext<UnderlyingCompleti
 
 impl<UnderlyingCompletionQueueContext> ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
 {
+	#[inline(always)]
+	pub fn iter<'a>(&'a mut self, completionQueuePointer: *mut ibv_cq_ex) -> ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>
+	{
+		ExtendedCompletionQueueContextIterator(self, completionQueuePointer)
+	}
+	
 	/// NOTE WELL: Once poll() is called, the previous item will be invalid
 	#[inline(always)]
 	pub fn pollNext(&mut self, completionQueuePointer: *mut ibv_cq_ex) -> Option<ExtendedWorkCompletion>

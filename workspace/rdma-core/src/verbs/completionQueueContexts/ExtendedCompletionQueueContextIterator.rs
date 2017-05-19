@@ -2,19 +2,16 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use super::*;
-use self::workCompletions::*;
-use ::arrayvec::ArrayVec;
-use ::arrayvec::IntoIter;
-use ::errno::errno;
-use ::syscall_alt::constants::E;
+pub struct ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>(&'a mut ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>, *mut ibv_cq_ex)
+	where UnderlyingCompletionQueueContext: 'a;
 
-
-pub mod workCompletions;
-
-
-include!("CompletionQueueContext.rs");
-include!("ExtendedCompletionQueueContext.rs");
-include!("ExtendedCompletionQueueContextIterator.rs");
-include!("UnextendedCompletionQueueContext.rs");
-include!("UnextendedCompletionQueueContextIterator.rs");
+impl<'a, UnderlyingCompletionQueueContext> Iterator for ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>
+{
+	type Item = ExtendedWorkCompletion;
+	
+	#[inline(always)]
+	fn next(&mut self) -> Option<ExtendedWorkCompletion>
+	{
+		self.0.pollNext(self.1)
+	}
+}
