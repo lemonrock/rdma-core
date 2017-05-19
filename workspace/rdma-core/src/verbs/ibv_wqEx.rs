@@ -2,26 +2,21 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use super::*;
-use ::libc::c_int;
-use ::libc::c_void;
-use ::libc::uint16_t;
-use ::libc::uint32_t;
-use ::libc::uint64_t;
-use ::libc::timespec;
-use ::std::mem::transmute;
-use ::std::mem::uninitialized;
-use ::std::mem::zeroed;
-use ::std::ptr::null_mut;
+pub trait ibv_wqEx
+{
+	#[inline(always)]
+	fn ibv_post_wq_recv(self, recv_wr: *mut ibv_recv_wr, bad_recv_wr: *mut *mut ibv_recv_wr) -> c_int;
+}
 
-
-pub mod model;
-
-
-include!("CompletionQueuePointer.rs");
-include!("ibv_async_eventEx.rs");
-include!("ibv_comp_channelEx.rs");
-include!("ibv_contextEx.rs");
-include!("ibv_cq_exEx.rs");
-include!("ibv_device_attrEx.rs");
-include!("ibv_wqEx.rs");
+impl ibv_wqEx for *mut ibv_wq
+{
+	#[inline(always)]
+	fn ibv_post_wq_recv(self, recv_wr: *mut ibv_recv_wr, bad_recv_wr: *mut *mut ibv_recv_wr) -> c_int
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		debug_assert!(!recv_wr.is_null(), "recv_wr is null");
+		debug_assert!(!bad_recv_wr.is_null(), "bad_recv_wr is null");
+		
+		unsafe { (*self).post_recv.unwrap()(self, recv_wr, bad_recv_wr) }
+	}
+}

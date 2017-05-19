@@ -15,7 +15,7 @@ impl<'a> Drop for CompletionChannel<'a>
 	#[inline(always)]
 	fn drop(&mut self)
 	{
-		panic_on_errno!(ibv_destroy_comp_channel, self.pointer);
+		self.pointer.destroy();
 	}
 }
 
@@ -38,7 +38,7 @@ impl<'a> CompletionChannel<'a>
 	#[inline(always)]
 	pub fn fileDescriptorForEpoll(&self) -> FileDescriptor
 	{
-		unsafe { *self.pointer }.fd
+		self.pointer.fileDescriptorForEpoll()
 	}
 	
 	#[inline(always)]
@@ -63,9 +63,7 @@ impl<'a> CompletionChannel<'a>
 	#[inline(always)]
 	pub fn waitForCompletionEvent<R, Unextended: Fn(&WithCompletionChannelUnextendedCompletionQueue<'a>, *mut c_void) -> R, Extended: Fn(&WithCompletionChannelExtendedCompletionQueue<'a>, *mut c_void) -> R>(&self, handleUnextendedEventAndContext: Unextended, handleExtendedEventAndContext: Extended) -> R
 	{
-		let mut cq = null_mut();
-		let mut context = null_mut();
-		panic_on_error!(ibv_get_cq_event, self.pointer, &mut cq, &mut context);
+		let (cq, context) = self.pointer.waitForCompletionEvent();
 		let key = cq as usize;
 		if let Some(unextendedCompletionQueue) = self.unextendedCompletionQueues.get(&key)
 		{

@@ -14,7 +14,6 @@ use ::rust_extra::unlikely;
 use ::rust_extra::likely;
 use ::std::collections::HashMap;
 use ::std::mem::transmute;
-use ::std::ptr::null_mut;
 use ::syscall_alt::constants::E;
 
 

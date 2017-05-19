@@ -2,26 +2,30 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-use super::*;
-use ::libc::c_int;
-use ::libc::c_void;
-use ::libc::uint16_t;
-use ::libc::uint32_t;
-use ::libc::uint64_t;
-use ::libc::timespec;
-use ::std::mem::transmute;
-use ::std::mem::uninitialized;
-use ::std::mem::zeroed;
-use ::std::ptr::null_mut;
+pub trait CompletionQueuePointer
+{
+	#[inline(always)]
+	fn pointer(self) -> *mut ibv_cq;
+}
 
+impl CompletionQueuePointer for *mut ibv_cq
+{
+	#[inline(always)]
+	fn pointer(self) -> *mut ibv_cq
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		self
+	}
+}
 
-pub mod model;
-
-
-include!("CompletionQueuePointer.rs");
-include!("ibv_async_eventEx.rs");
-include!("ibv_comp_channelEx.rs");
-include!("ibv_contextEx.rs");
-include!("ibv_cq_exEx.rs");
-include!("ibv_device_attrEx.rs");
-include!("ibv_wqEx.rs");
+impl CompletionQueuePointer for *mut ibv_cq_ex
+{
+	#[inline(always)]
+	fn pointer(self) -> *mut ibv_cq
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		self.ibv_cq_ex_to_cq()
+	}
+}

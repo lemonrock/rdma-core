@@ -13,6 +13,8 @@ impl ibv_async_eventEx for *mut ibv_async_event
 	#[inline(always)]
 	fn destroy(self)
 	{
+		debug_assert!(!self.is_null(), "self is null");
+		
 		unsafe { ibv_ack_async_event(self) }
 	}
 }
