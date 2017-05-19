@@ -20,16 +20,21 @@ impl Context
 	{
 		debug_assert!(!pointer.is_null(), "pointer is null");
 		
-		//let mut attributes = unsafe { uninitialized() };
-		let mut attributes = unsafe { zeroed() };
-		panic_on_error!(rust_ibv_query_device_ex, pointer, null_mut(), &mut attributes);
-		Context(pointer, attributes)
+		Context(pointer, pointer.extendedAttributes())
 	}
 	
 	#[inline(always)]
-	fn data(&self) -> ibv_context
+	pub fn port<'a>(&'a self, portNumber: u8) -> Port<'a>
 	{
-		unsafe { *self.0 }
+		debug_assert!(portNumber < self.numberOfPhysicalPorts(), "portNumber '{}' exceeds maximum number of ports '{}'", portNumber, self.numberOfPhysicalPorts());
+		
+		Port::new(self, portNumber)
+	}
+	
+	#[inline(always)]
+	pub fn data(&self) -> ibv_context
+	{
+		self.0.data()
 	}
 	
 	/// See <https://linux.die.net/man/3/ibv_query_device> for explanations of fields of ibv_device_attr
@@ -46,86 +51,58 @@ impl Context
 	}
 	
 	#[inline(always)]
-	pub fn queryRealTimeValues(&self) -> ibv_values_ex
+	pub fn queryRealTimeRawClock(&self) -> timespec
 	{
-		const IBV_VALUES_MASK_RAW_CLOCK: u32 = 1;
-		
-		let mut realTimeValues = ibv_values_ex
-		{
-			comp_mask: IBV_VALUES_MASK_RAW_CLOCK,
-			raw_clock: unsafe { zeroed() },
-		};
-		
-		panic_on_errno!(rust_ibv_query_rt_values_ex, self.0, &mut realTimeValues);
-		realTimeValues
+		self.0.queryRealTimeRawClock()
 	}
 	
 	#[inline(always)]
 	pub fn deviceHasCapability(&self, capability: ibv_device_cap_flags) -> bool
 	{
-		let bit = capability as i32;
-		self.attributes().device_cap_flags & bit == bit
+		self.attributes().deviceHasCapability(capability)
 	}
 	
 	#[inline(always)]
 	pub fn numberOfCompletionVectors(&self) -> u32
 	{
-		let num_comp_vectors = self.data().num_comp_vectors;
-		if unlikely(num_comp_vectors < 0)
-		{
-			0
-		}
-		else
-		{
-			num_comp_vectors as u32
-		}
+		self.0.numberOfCompletionVectors()
 	}
 	
 	#[inline(always)]
 	pub fn commandFileDescriptor(&self) -> FileDescriptor
 	{
-		self.data().cmd_fd
+		self.0.commandFileDescriptor()
 	}
 	
 	#[inline(always)]
 	pub fn asyncFileDescriptor(&self) -> FileDescriptor
 	{
-		self.data().async_fd
+		self.0.asyncFileDescriptor()
 	}
 	
 	#[inline(always)]
 	pub fn numberOfPhysicalPorts(&self) -> u8
 	{
-		self.attributes().phys_port_cnt
+		self.attributes().numberOfPhysicalPorts()
 	}
 	
 	/// See <https://linux.die.net/man/3/ibv_get_async_event>
 	#[inline(always)]
 	pub fn blockOnAsynchronousEvent(&self) -> AsynchronousEvent
 	{
-		let mut asynchronousEvent = unsafe { uninitialized() };
-		panic_on_error!(ibv_get_async_event, self.0, &mut asynchronousEvent);
-		AsynchronousEvent(asynchronousEvent)
-	}
-	
-	#[inline(always)]
-	pub fn port<'a>(&'a self, portNumber: u8) -> Port<'a>
-	{
-		debug_assert!(portNumber < self.numberOfPhysicalPorts(), "portNumber '{}' exceeds maximum number of ports '{}'", portNumber, self.numberOfPhysicalPorts());
-		
-		Port::new(self, portNumber)
+		AsynchronousEvent(self.0.blockOnAsynchronousEvent())
 	}
 	
 	#[inline(always)]
 	pub fn allocateProtectionDomain<'a>(&'a self) -> ProtectionDomain<'a>
 	{
-		ProtectionDomain::new(panic_on_null!(ibv_alloc_pd, self.0), self)
+		ProtectionDomain::new(self.0.allocateProtectionDomain(), self)
 	}
 	
 	#[inline(always)]
 	pub fn createCompletionChannel<'a>(&'a self) -> CompletionChannel<'a>
 	{
-		CompletionChannel::new(panic_on_null!(ibv_create_comp_channel, self.0), self)
+		CompletionChannel::new(self.0.createCompletionChannel(), self)
 	}
 	
 	#[inline(always)]

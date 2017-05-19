@@ -10,6 +10,7 @@ use ::errno::errno;
 use ::libc::c_void;
 use ::libc::O_CREAT;
 use ::libc::O_EXCL;
+use ::libc::timespec;
 use self::queuePairs::*;
 use ::rust_extra::likely;
 use ::rust_extra::unlikely;
@@ -18,7 +19,6 @@ use ::rust_extra::powersOfTwo::PowerOfTwoThirtyTwoBit;
 use ::std::ffi::CStr;
 use ::std::marker::PhantomData;
 use ::std::mem::uninitialized;
-use ::std::mem::zeroed;
 use ::std::ptr::null_mut;
 use ::syscall_alt::constants::E;
 

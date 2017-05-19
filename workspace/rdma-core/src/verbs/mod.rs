@@ -3,9 +3,14 @@
 
 
 use super::*;
+use ::libc::timespec;
+use ::std::mem::uninitialized;
+use ::std::mem::zeroed;
+use ::std::ptr::null_mut;
 
 
 pub mod model;
 
 
 include!("ibv_contextEx.rs");
+include!("ibv_device_attrEx.rs");
