@@ -92,6 +92,7 @@ preprocess_before_headersFolderPath()
 {
 	bindgen_wrapper_generateStaticFunctions 'infiniband/verbs.h' 'infiniband-verbs-static-inline'
 	bindgen_wrapper_generateStaticFunctions 'rdma/rdma_verbs.h' 'rdma-verbs-static-inline'
+	bindgen_wrapper_generateStaticFunctions 'rdma/rdma_cma.h' 'rdma-cma-static-inline'
 }
 
 final_chance_to_tweak()

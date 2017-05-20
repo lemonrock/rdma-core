@@ -29,6 +29,8 @@ extern "C"
 	pub fn rdma_resolve_addr(id: *mut rdma_cm_id, src_addr: *mut sockaddr, dst_addr: *mut sockaddr, timeout_ms: c_int) -> c_int;
 	pub fn rdma_resolve_route(id: *mut rdma_cm_id, timeout_ms: c_int) -> c_int;
 	pub fn rdma_set_option(id: *mut rdma_cm_id, level: c_int, optname: c_int, optval: *mut c_void, optlen: usize) -> c_int;
+	pub fn rust_rdma_get_local_addr(id: *mut rdma_cm_id) -> *mut sockaddr;
+	pub fn rust_rdma_get_peer_addr(id: *mut rdma_cm_id) -> *mut sockaddr;
 	pub fn rust_rdma_get_recv_comp(id: *mut rdma_cm_id, wc: *mut ibv_wc) -> c_int;
 	pub fn rust_rdma_get_send_comp(id: *mut rdma_cm_id, wc: *mut ibv_wc) -> c_int;
 	pub fn rust_rdma_post_read(id: *mut rdma_cm_id, context: *mut c_void, addr: *mut c_void, length: usize, mr: *mut ibv_mr, flags: c_int, remote_addr: u64, rkey: u32) -> c_int;

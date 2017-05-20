@@ -3,10 +3,10 @@
 
 
 /// Recommendation: One per core
-#[derive(Debug)]
 pub struct EventChannel
 {
 	pointer: *mut rdma_event_channel,
+	verbMap: VerbMap<UsefulVerbMapEntryCreator>,
 	listening: HashSet<*mut rdma_cm_id>,
 }
 
@@ -20,6 +20,8 @@ impl Drop for EventChannel
 			listener.destroy();
 		}
 		
+		self.verbMap.destroy();
+		
 		self.pointer.destroy();
 	}
 }
@@ -32,8 +34,15 @@ impl EventChannel
 		EventChannel
 		{
 			pointer: panic_on_null!(rdma_create_event_channel),
+			verbMap: VerbMap::new(),
 			listening: HashSet::with_capacity(16),
 		}
+	}
+	
+	#[inline(always)]
+	pub(crate) fn fileDescriptorForEPoll(self) -> FileDescriptor
+	{
+		self.pointer.fileDescriptorForEPoll()
 	}
 	
 	#[inline(always)]

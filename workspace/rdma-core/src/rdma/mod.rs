@@ -5,6 +5,7 @@
 use self::addresses::*;
 use self::communicationIdentifierContexts::*;
 use self::eventData::*;
+use self::verbMapEntryCreators::*;
 use super::FileDescriptor;
 use super::QueuePairNumber;
 use super::verbs::*;
@@ -15,6 +16,7 @@ use ::rdma_core_sys::rdma_cm_event_type::*;
 use ::rdma_core_sys::rdma_port_space::*;
 use ::rust_extra::likely;
 use ::rust_extra::unlikely;
+use ::std::collections::HashMap;
 use ::std::collections::HashSet;
 use ::std::mem::forget;
 use ::std::mem::size_of;
@@ -25,10 +27,12 @@ use ::std::ptr::null;
 pub mod addresses;
 pub mod communicationIdentifierContexts;
 pub mod eventData;
+pub mod verbMapEntryCreators;
 
 
+include!("ConnectionAcceptance.rs");
 include!("EventChannel.rs");
 include!("rdma_cm_eventEx.rs");
 include!("rdma_cm_idEx.rs");
 include!("rdma_event_channelEx.rs");
-include!("ConnectionAcceptance.rs");
+include!("VerbMap.rs");
