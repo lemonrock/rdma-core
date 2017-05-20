@@ -3,16 +3,23 @@
 
 
 use super::*;
+use ::libc::c_char;
 use ::libc::c_int;
 use ::libc::c_void;
+use ::libc::strnlen;
 use ::libc::uint16_t;
 use ::libc::uint32_t;
 use ::libc::uint64_t;
 use ::libc::timespec;
 use ::rust_extra::u31;
+use ::rust_extra::cstrings::cStrFromFixedLengthString;
+use ::std::ffi::CStr;
 use ::std::mem::transmute;
 use ::std::mem::uninitialized;
 use ::std::mem::zeroed;
+use ::std::ffi::OsStr;
+use ::std::os::unix::ffi::OsStrExt;
+use ::std::path::Path;
 use ::std::ptr::null_mut;
 
 
@@ -30,6 +37,7 @@ include!("ibv_comp_channelEx.rs");
 include!("ibv_contextEx.rs");
 include!("ibv_cq_exEx.rs");
 include!("ibv_device_attrEx.rs");
+include!("ibv_deviceEx.rs");
 include!("ibv_pdEx.rs");
 include!("ibv_qpEx.rs");
 include!("ibv_wqEx.rs");
