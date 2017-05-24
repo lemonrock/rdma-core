@@ -31,10 +31,10 @@ pub trait ibv_contextEx: Sized
 	fn numberOfCompletionVectors(self) -> u32;
 	
 	#[inline(always)]
-	fn commandFileDescriptor(self) -> FileDescriptor;
+	fn commandRawFd(self) -> RawFd;
 	
 	#[inline(always)]
-	fn asyncFileDescriptor(self) -> FileDescriptor;
+	fn asyncRawFd(self) -> RawFd;
 	
 	#[inline(always)]
 	fn blockOnAsynchronousEvent(self) -> ibv_async_event;
@@ -138,7 +138,7 @@ impl ibv_contextEx for *mut ibv_context
 	}
 	
 	#[inline(always)]
-	fn commandFileDescriptor(self) -> FileDescriptor
+	fn commandRawFd(self) -> RawFd
 	{
 		debug_assert!(!self.is_null(), "self is null");
 		
@@ -146,7 +146,7 @@ impl ibv_contextEx for *mut ibv_context
 	}
 	
 	#[inline(always)]
-	fn asyncFileDescriptor(self) -> FileDescriptor
+	fn asyncRawFd(self) -> RawFd
 	{
 		debug_assert!(!self.is_null(), "self is null");
 		

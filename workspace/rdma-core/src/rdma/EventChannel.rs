@@ -40,7 +40,7 @@ impl EventChannel
 	}
 	
 	#[inline(always)]
-	pub(crate) fn fileDescriptorForEPoll(self) -> FileDescriptor
+	pub(crate) fn fileDescriptorForEPoll(self) -> RawFd
 	{
 		self.pointer.fileDescriptorForEPoll()
 	}

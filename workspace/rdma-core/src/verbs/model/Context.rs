@@ -69,15 +69,15 @@ impl Context
 	}
 	
 	#[inline(always)]
-	pub fn commandFileDescriptor(&self) -> FileDescriptor
+	pub fn commandRawFd(&self) -> RawFd
 	{
-		self.0.commandFileDescriptor()
+		self.0.commandRawFd()
 	}
 	
 	#[inline(always)]
-	pub fn asyncFileDescriptor(&self) -> FileDescriptor
+	pub fn asyncRawFd(&self) -> RawFd
 	{
-		self.0.asyncFileDescriptor()
+		self.0.asyncRawFd()
 	}
 	
 	#[inline(always)]
@@ -116,7 +116,7 @@ impl Context
 	}
 	
 	#[inline(always)]
-	fn openExtendedReliableConnectionDomainInternal<'a>(&'a self, fileDescriptor: FileDescriptor, create: bool, exclusive: bool) -> *mut ibv_xrcd
+	fn openExtendedReliableConnectionDomainInternal<'a>(&'a self, fileDescriptor: RawFd, create: bool, exclusive: bool) -> *mut ibv_xrcd
 	{
 		const IBV_XRCD_INIT_ATTR_FD: u32 = 1;
 		const IBV_XRCD_INIT_ATTR_OFLAGS: u32 = 2;

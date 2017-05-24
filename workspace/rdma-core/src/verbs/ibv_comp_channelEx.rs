@@ -8,7 +8,7 @@ pub trait ibv_comp_channelEx
 	fn destroy(self);
 	
 	#[inline(always)]
-	fn fileDescriptorForEpoll(self) -> FileDescriptor;
+	fn fileDescriptorForEpoll(self) -> RawFd;
 	
 	#[inline(always)]
 	fn waitForCompletionEvent(self) -> (*mut ibv_cq, *mut c_void);
@@ -25,7 +25,7 @@ impl ibv_comp_channelEx for *mut ibv_comp_channel
 	}
 	
 	#[inline(always)]
-	fn fileDescriptorForEpoll(self) -> FileDescriptor
+	fn fileDescriptorForEpoll(self) -> RawFd
 	{
 		debug_assert!(!self.is_null(), "self is null");
 		

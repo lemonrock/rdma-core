@@ -5,7 +5,7 @@
 pub trait rdma_event_channelEx
 {
 	#[inline(always)]
-	fn fileDescriptorForEPoll(self) -> FileDescriptor;
+	fn fileDescriptorForEPoll(self) -> RawFd;
 	
 	#[inline(always)]
 	fn destroy(self);
@@ -21,7 +21,7 @@ pub trait rdma_event_channelEx
 impl rdma_event_channelEx for *mut rdma_event_channel
 {
 	#[inline(always)]
-	fn fileDescriptorForEPoll(self) -> FileDescriptor
+	fn fileDescriptorForEPoll(self) -> RawFd
 	{
 		unsafe { (*self).fd }
 	}

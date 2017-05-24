@@ -14,11 +14,12 @@ use ::libc::timespec;
 use ::rust_extra::u31;
 use ::rust_extra::cstrings::cStrFromFixedLengthString;
 use ::std::ffi::CStr;
+use ::std::ffi::OsStr;
 use ::std::mem::transmute;
 use ::std::mem::uninitialized;
 use ::std::mem::zeroed;
-use ::std::ffi::OsStr;
 use ::std::os::unix::ffi::OsStrExt;
+use ::std::os::unix::io::RawFd;
 use ::std::path::Path;
 use ::std::ptr::null_mut;
 

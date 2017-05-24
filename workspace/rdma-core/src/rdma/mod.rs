@@ -6,12 +6,10 @@ use self::addresses::*;
 use self::communicationIdentifierContexts::*;
 use self::eventData::*;
 use self::verbMapEntryCreators::*;
-use super::FileDescriptor;
-use super::QueuePairNumber;
+use super::*;
 use super::verbs::*;
 use ::libc::c_int;
 use ::libc::c_void;
-use ::rdma_core_sys::*;
 use ::rdma_core_sys::rdma_cm_event_type::*;
 use ::rdma_core_sys::rdma_port_space::*;
 use ::rust_extra::likely;
@@ -21,6 +19,7 @@ use ::std::collections::HashSet;
 use ::std::mem::forget;
 use ::std::mem::size_of;
 use ::std::mem::uninitialized;
+use ::std::os::unix::io::RawFd;
 use ::std::ptr::null;
 
 
