@@ -22,4 +22,3 @@ RDMA_OPTION_IB RDMA_OPTION_IB
 RDMA_UDP_ RDMA_UDP
 ibv_xrcd_init_attr_mask_IBV_XRCD_INIT_ATTR_ ibv_xrcd_init_attr_mask
 RDMA_IB_ RDMA_IB
-AF_IB AF

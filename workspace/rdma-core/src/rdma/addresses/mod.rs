@@ -2,6 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
+use ::libc::AF_IB;
 use ::libc::AF_INET;
 use ::libc::AF_INET6;
 use ::libc::c_uint;

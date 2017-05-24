@@ -35,7 +35,7 @@ impl SocketAddress for IpV6SocketAddress
 	#[inline(always)]
 	fn family(&self) -> sa_family_t
 	{
-		AF_INET6 as u8
+		AF_INET6 as sa_family_t
 	}
 	
 	#[inline(always)]

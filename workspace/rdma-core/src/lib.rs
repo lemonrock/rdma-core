@@ -16,7 +16,7 @@
 
 
 extern crate arrayvec;
-#[macro_use] extern crate bitflags;
+#[cfg(any(target_os="linux", target_os="android"))] #[macro_use] extern crate bitflags;
 extern crate errno;
 extern crate libc;
 extern crate rdma_core_sys;
@@ -35,11 +35,11 @@ include!("panic_on_error.rs");
 include!("panic_on_null.rs");
 
 
-pub mod rdma;
-pub mod verbs;
+#[cfg(any(target_os="linux", target_os="android"))] pub mod rdma;
+#[cfg(any(target_os="linux", target_os="android"))] pub mod verbs;
 
 
-include!("FileDescriptor.rs");
+#[cfg(unix)] include!("FileDescriptor.rs");
 include!("GlobalRoutingHeader.rs");
 include!("GUID.rs");
 include!("LocalIdentifier.rs");

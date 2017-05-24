@@ -36,7 +36,7 @@ impl SocketAddress for InfinibandSocketAddress
 	#[inline(always)]
 	fn family(&self) -> sa_family_t
 	{
-		AF_IB
+		AF_IB as sa_family_t
 	}
 	
 	#[inline(always)]
@@ -67,7 +67,7 @@ impl SocketAddressCreator for InfinibandSocketAddress
 		{
 			inner: sockaddr_ib
 			{
-				sib_family: AF_IB as u16,
+				sib_family: AF_IB as sa_family_t,
 				sib_pkey: 0xFFFFu16.to_be(),
 				sib_flowinfo: 0u32.to_be(),
 				sib_addr: ib_addr

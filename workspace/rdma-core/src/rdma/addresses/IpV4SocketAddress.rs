@@ -35,7 +35,7 @@ impl SocketAddress for IpV4SocketAddress
 	#[inline(always)]
 	fn family(&self) -> sa_family_t
 	{
-		AF_INET as u8
+		AF_INET as sa_family_t
 	}
 	
 	#[inline(always)]
