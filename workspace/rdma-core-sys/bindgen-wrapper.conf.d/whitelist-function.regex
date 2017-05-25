@@ -2,3 +2,6 @@ ibv_.*
 rust_ibv_.*
 rdma_.*
 rust_rdma_.*
+epoll_create1
+epoll_wait
+epoll_ctl

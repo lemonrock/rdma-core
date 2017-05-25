@@ -5,6 +5,7 @@
 include!("bindgen/structs/_bindgen_ty_3.rs");
 include!("bindgen/structs/_bindgen_ty_4.rs");
 include!("bindgen/structs/_ibv_device_ops.rs");
+include!("bindgen/structs/epoll_event.rs");
 include!("bindgen/structs/ib_addr.rs");
 include!("bindgen/structs/ibv_access_flags.rs");
 include!("bindgen/structs/ibv_ah.rs");

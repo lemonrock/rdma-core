@@ -7,6 +7,7 @@ include!("bindgen/functions/channel.rs");
 include!("bindgen/functions/context.rs");
 include!("bindgen/functions/cq.rs");
 include!("bindgen/functions/device.rs");
+include!("bindgen/functions/epoll.rs");
 include!("bindgen/functions/event.rs");
 include!("bindgen/functions/fork.rs");
 include!("bindgen/functions/mr.rs");

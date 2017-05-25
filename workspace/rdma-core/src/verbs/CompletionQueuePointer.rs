@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait CompletionQueuePointer: HasContextPointer
+pub trait CompletionQueuePointer: HasContextPointer + HasVerbsPointer
 {
 	#[inline(always)]
 	fn pointer(self) -> *mut ibv_cq;

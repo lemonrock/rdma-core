@@ -20,6 +20,9 @@ use ::syscall_alt::constants::linux_like::_NSIG;
 use ::syscall_alt::syscalls::Syscall;
 
 
+include!("EPollContext.rs");
+include!("EPollEvents.rs");
 include!("EPollFileDescriptor.rs");
 include!("MaximumEvents.rs");
 include!("RawEPollFileDescriptor.rs");
+include!("RawFdEx.rs");

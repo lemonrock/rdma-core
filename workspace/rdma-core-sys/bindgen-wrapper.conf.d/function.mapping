@@ -61,3 +61,4 @@ rdma_create_id rdma_event_channel
 rdma_destroy_event_channel rdma_event_channel
 rdma_get_cm_event rdma_event_channel
 rdma_ rdma_cm_id
+epoll_ epoll

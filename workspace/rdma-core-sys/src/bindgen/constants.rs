@@ -4,6 +4,9 @@
 
 include!("bindgen/constants/CREATE_CQ_SUP_WC_FLAGS.rs");
 include!("bindgen/constants/DEVICE.rs");
+include!("bindgen/constants/EPOLL.rs");
+include!("bindgen/constants/EPOLL_CTL.rs");
+include!("bindgen/constants/EPOLL_FLAGS.rs");
 include!("bindgen/constants/IBV_PATH_FLAG.rs");
 include!("bindgen/constants/IBV_PATH_RECORD.rs");
 include!("bindgen/constants/LINK_LAYER.rs");

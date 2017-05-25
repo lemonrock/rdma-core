@@ -2,6 +2,28 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/types/_bindgen_ty_2.rs");
-include!("bindgen/types/_bindgen_ty_5.rs");
-include!("bindgen/types/epoll_data_t.rs");
+#[repr(C, packed)]
+#[derive(Copy)]
+pub struct epoll_event
+{
+	pub events: u32,
+	pub data: epoll_data_t,
+}
+
+impl Clone for epoll_event
+{
+	#[inline(always)]
+	fn clone(&self) -> Self
+	{
+		*self
+	}
+}
+
+impl Default for epoll_event
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}

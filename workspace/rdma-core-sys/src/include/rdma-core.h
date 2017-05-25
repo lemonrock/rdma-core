@@ -6,3 +6,4 @@
 #include "rdma-verbs-static-inline.h"
 #include "rdma-cma-static-inline.h"
 #include "infiniband/ib.h"
+#include <sys/epoll.h>

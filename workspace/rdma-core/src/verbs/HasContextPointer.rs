@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait HasContextPointer: HasVerbsPointer
+pub trait HasContextPointer: Sized
 {
 	#[inline(always)]
 	fn context(self) -> *mut c_void;
@@ -26,6 +26,25 @@ pub trait HasContextPointer: HasVerbsPointer
 		debug_assert!(!context.is_null(), "context is null");
 		
 		unsafe { Box::from_raw(context as *mut Box<T>) }
+	}
+}
+
+impl HasContextPointer for *mut epoll_event
+{
+	#[inline(always)]
+	fn context(self) -> *mut c_void
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).data.ptr }
+	}
+	
+	#[inline(always)]
+	fn setContext(self, context: *mut c_void)
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).data.ptr = context };
 	}
 }
 

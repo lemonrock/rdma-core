@@ -4,12 +4,14 @@
       <w>appendv</w>
       <w>bindgen</w>
       <w>chunksize</w>
+      <w>cloexec</w>
       <w>cvlan</w>
       <w>datagrams</w>
       <w>dlid</w>
       <w>ebusy</w>
       <w>edeadlk</w>
       <w>einval</w>
+      <w>epfd</w>
       <w>epoll</w>
       <w>errormsg</w>
       <w>failover</w>
@@ -28,6 +30,7 @@
       <w>isystem</w>
       <w>libfabric</w>
       <w>libibverbs</w>
+      <w>maxevents</w>
       <w>mblkpool</w>
       <w>mcond</w>
       <w>mellanox</w>
@@ -44,6 +47,7 @@
       <w>musl</w>
       <w>nack</w>
       <w>nbyte</w>
+      <w>nonblock</w>
       <w>nonoverlapping</w>
       <w>nvml</w>
       <w>oflags</w>
@@ -57,11 +61,14 @@
       <w>pobj</w>
       <w>poolsize</w>
       <w>pthread</w>
+      <w>pwait</w>
       <w>qkey</w>
       <w>rdma</w>
       <w>recv</w>
       <w>refcnt</w>
       <w>rwlock</w>
+      <w>sigmask</w>
+      <w>sigs</w>
       <w>sockaddr</w>
       <w>strdup</w>
       <w>timewait</w>

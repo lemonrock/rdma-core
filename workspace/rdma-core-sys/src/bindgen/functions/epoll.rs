@@ -2,6 +2,9 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/types/_bindgen_ty_2.rs");
-include!("bindgen/types/_bindgen_ty_5.rs");
-include!("bindgen/types/epoll_data_t.rs");
+extern "C"
+{
+	pub fn epoll_create1(arg1: c_int) -> c_int;
+	pub fn epoll_ctl(arg1: c_int, arg2: c_int, arg3: c_int, arg4: *mut epoll_event) -> c_int;
+	pub fn epoll_wait(arg1: c_int, arg2: *mut epoll_event, arg3: c_int, arg4: c_int) -> c_int;
+}

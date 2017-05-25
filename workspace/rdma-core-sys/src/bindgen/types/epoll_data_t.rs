@@ -2,6 +2,4 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/types/_bindgen_ty_2.rs");
-include!("bindgen/types/_bindgen_ty_5.rs");
-include!("bindgen/types/epoll_data_t.rs");
+pub type epoll_data_t = epoll_data;

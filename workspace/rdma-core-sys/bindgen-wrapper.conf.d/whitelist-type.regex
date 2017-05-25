@@ -3,3 +3,5 @@ _ibv_.*
 rdma_.*
 ib_addr
 sockaddr_ib
+epoll_event
+epoll_data.*
