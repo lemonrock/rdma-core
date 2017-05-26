@@ -3,7 +3,10 @@
 
 
 use super::*;
+use ::std::mem::forget;
+use ::verbs::completionQueueContexts::*;
 
 
-include!("UsefulVerbMapEntryCreator.rs");
-include!("VerbMapEntryCreator.rs");
+include!("CompletionChannel.rs");
+include!("EventChannelVerbMapEntry.rs");
+include!("VerbMapEntry.rs");

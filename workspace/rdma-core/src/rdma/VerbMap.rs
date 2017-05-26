@@ -4,16 +4,18 @@
 
 //noinspection SpellCheckingInspection
 /// A context can also be known as 'verbs' and as a 'device' (in RDMA-speak, not ibverbs-speak)
-pub struct VerbMap<VMEC: VerbMapEntryCreator>
+pub struct VerbMap<'a, VME: VerbMapEntry<'a>>
+where VME: 'a
 {
-	map: HashMap<*mut ibv_context, VMEC::Entry>
+	map: HashMap<*mut ibv_context, VME>,
+	phantomData: PhantomData<&'a u32>,
 }
 
 //noinspection SpellCheckingInspection
-impl<VMEC: VerbMapEntryCreator> VerbMap<VMEC>
+impl<'a, VME: VerbMapEntry<'a>> VerbMap<'a, VME>
 {
 	#[inline(always)]
-	pub fn new() -> Self
+	pub fn new(constructionParameters: &'a VME::ConstructionParameters) -> Self
 	{
 		let mut numberOfVerbs = unsafe { uninitialized() };
 		let listOfVerbs = panic_on_null!(rdma_get_devices, &mut numberOfVerbs);
@@ -22,7 +24,8 @@ impl<VMEC: VerbMapEntryCreator> VerbMap<VMEC>
 		
 		let mut result = Self
 		{
-			map: HashMap::with_capacity(numberOfVerbs as usize)
+			map: HashMap::with_capacity(numberOfVerbs as usize),
+			phantomData: PhantomData,
 		};
 		
 		unsafe { rdma_free_devices(listOfVerbs) };
@@ -31,7 +34,7 @@ impl<VMEC: VerbMapEntryCreator> VerbMap<VMEC>
 		let mut counter = 0;
 		while likely(!verbs.is_null())
 		{
-			result.map.insert(verbs, VMEC::create(verbs));
+			result.map.insert(verbs, VME::create(constructionParameters, verbs));
 			
 			verbs = unsafe { verbs.offset(1) };
 			counter = counter + 1;
@@ -42,7 +45,7 @@ impl<VMEC: VerbMapEntryCreator> VerbMap<VMEC>
 	}
 	
 	#[inline(always)]
-	pub fn get(&self, key: *mut ibv_context) -> Option<&VMEC::Entry>
+	pub fn get(&self, key: *mut ibv_context) -> Option<&VME>
 	{
 		self.map.get(&key)
 	}

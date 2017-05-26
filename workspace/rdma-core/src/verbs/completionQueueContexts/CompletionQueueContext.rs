@@ -2,23 +2,19 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait CompletionQueueContext<'a, UnderlyingCompletionQueueContext: Sized>
-where UnderlyingCompletionQueueContext: 'a
+pub trait CompletionQueueContext: Sized
 {
 	type WorkCompletion: WorkCompletion;
-	type PollIterator: Iterator<Item=Self::WorkCompletion>;
 	
 	#[inline(always)]
-	fn isExtended(&self) -> bool;
-	
-	#[inline(always)]
-	fn underlying(&mut self) -> &mut UnderlyingCompletionQueueContext;
+	fn new() -> Self;
 	
 	/// completionQueuePointerMaybeExtended can also be of type ibv_cq_ex
 	#[inline(always)]
 	fn destroy(&mut self, completionQueuePointerMaybeExtended: *mut ibv_cq);
 	
 	/// completionQueuePointerMaybeExtended can also be of type ibv_cq_ex
+	/// NOTE: WorkCompletions are only g'teed to be valid for the duration of the call to the workCompletionUser() closure when using extended completion queues
 	#[inline(always)]
-	fn iteratePoll(&'a mut self, completionQueuePointerMaybeExtended: *mut ibv_cq) -> Self::PollIterator;
+	fn pollToExhaustion<WorkCompletionUser: Fn(Self::WorkCompletion)>(&mut self, completionQueuePointerMaybeExtended: *mut ibv_cq, workCompletionUser: WorkCompletionUser);
 }

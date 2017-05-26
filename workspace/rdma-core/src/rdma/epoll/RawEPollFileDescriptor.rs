@@ -105,10 +105,12 @@ impl RawEPollFileDescriptor for RawFd
 		}
 		match result as PosixErrorNumber
 		{
+			NegativeE::EINTR => 0,
+			//NegativeE::EINTR => panic!("The call was interrupted by a signal handler before either any of the requested events occurred or the timeout expired"),
+			
 			NegativeE::ENOSYS => panic!("This is an ancient version of Linux that doesn't support SYS_epoll_pwait (ie older than 2.6.19)"),
 			NegativeE::EBADF => panic!("self is not an epoll file descriptor"),
 			NegativeE::EFAULT => panic!("The memory area pointed to by ev is not accessible with write permissions"),
-			NegativeE::EINTR => panic!("The call was interrupted by a signal handler before either any of the requested events occurred or the timeout expired"),
 			NegativeE::EINVAL => panic!("self is not an epoll file descriptor, or cnt is less than or equal to zero"),
 			
 			_ => panic!("Invalid negative errno '{}'", result),

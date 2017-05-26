@@ -38,7 +38,7 @@ pub trait rdma_cm_idEx
 impl HasContextPointer for *mut rdma_cm_id
 {
 	#[inline(always)]
-	fn context(self) -> *mut c_void
+	fn getContext(self) -> *mut c_void
 	{
 		debug_assert!(!self.is_null(), "self is null");
 		

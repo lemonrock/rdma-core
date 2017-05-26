@@ -5,5 +5,8 @@
 pub trait EPollContext
 {
 	#[inline(always)]
+	fn fileDescriptorForEPoll(&self) -> RawFd;
+	
+	#[inline(always)]
 	fn processEvents(&mut self);
 }

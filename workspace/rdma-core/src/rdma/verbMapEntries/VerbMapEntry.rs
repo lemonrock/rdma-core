@@ -2,16 +2,10 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>(&'a mut ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>, *mut ibv_cq_ex)
-	where UnderlyingCompletionQueueContext: 'a;
-
-impl<'a, UnderlyingCompletionQueueContext> Iterator for ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>
+pub trait VerbMapEntry<'a>: Sized
 {
-	type Item = ExtendedWorkCompletion;
+	type ConstructionParameters;
 	
 	#[inline(always)]
-	fn next(&mut self) -> Option<ExtendedWorkCompletion>
-	{
-		self.0.pollNext(self.1)
-	}
+	fn create(constructionParameters: &'a Self::ConstructionParameters, verbs: *mut ibv_context) -> Self;
 }

@@ -4,12 +4,17 @@
 
 use ::arrayvec::ArrayVec;
 use ::libc::c_int;
+use ::libc::close;
 use ::libc::sigset_t;
 use ::rdma_core_sys::*;
 use ::rust_extra::likely;
 use ::rust_extra::u31;
 use ::rust_extra::unlikely;
+use ::std::marker::PhantomData;
+use ::std::mem::forget;
+use ::std::mem::replace;
 use ::std::mem::transmute;
+use ::std::mem::uninitialized;
 use ::std::os::unix::io::RawFd;
 use ::std::ptr::null;
 use ::std::ptr::null_mut;
@@ -20,6 +25,7 @@ use ::syscall_alt::constants::linux_like::_NSIG;
 use ::syscall_alt::syscalls::Syscall;
 
 
+include!("EPoll.rs");
 include!("EPollContext.rs");
 include!("EPollEvents.rs");
 include!("EPollFileDescriptor.rs");

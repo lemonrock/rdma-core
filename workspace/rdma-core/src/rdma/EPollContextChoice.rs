@@ -2,30 +2,31 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub trait ibv_comp_channelEx: HasVerbsPointer
+pub enum EPollContextChoice<'a>
 {
-	#[inline(always)]
-	fn destroy(self);
-	
-	#[inline(always)]
-	fn fileDescriptorForEPoll(self) -> RawFd;
+	EventChannel(EventChannel<'a>),
+	CompletionChannel(CompletionChannel<'a>),
 }
 
-impl ibv_comp_channelEx for *mut ibv_comp_channel
+impl<'a> EPollContext for EPollContextChoice<'a>
 {
 	#[inline(always)]
-	fn destroy(self)
+	fn fileDescriptorForEPoll(&self) -> RawFd
 	{
-		debug_assert!(!self.is_null(), "self is null");
-		
-		panic_on_errno!(ibv_destroy_comp_channel, self)
+		match *self
+		{
+			EPollContextChoice::EventChannel(ref context) => context.fileDescriptorForEPoll(),
+			EPollContextChoice::CompletionChannel(ref context) => context.fileDescriptorForEPoll(),
+		}
 	}
 	
 	#[inline(always)]
-	fn fileDescriptorForEPoll(self) -> RawFd
+	fn processEvents(&mut self)
 	{
-		debug_assert!(!self.is_null(), "self is null");
-		
-		unsafe { (*self).fd }
+		match *self
+		{
+			EPollContextChoice::EventChannel(ref mut context) => context.processEvents(),
+			EPollContextChoice::CompletionChannel(ref mut context) => context.processEvents(),
+		}
 	}
 }

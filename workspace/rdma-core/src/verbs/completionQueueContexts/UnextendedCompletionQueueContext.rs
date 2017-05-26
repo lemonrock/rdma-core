@@ -2,27 +2,18 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext: Sized>
-{
-	underlying: UnderlyingCompletionQueueContext,
-}
+pub struct UnextendedCompletionQueueContext;
 
-impl<'a, UnderlyingCompletionQueueContext> CompletionQueueContext<'a, UnderlyingCompletionQueueContext> for UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext>
-where UnderlyingCompletionQueueContext: 'a
+const UnextendedCompletionQueuePollArraySize: usize = 32;
+
+impl CompletionQueueContext for UnextendedCompletionQueueContext
 {
 	type WorkCompletion = UnextendedWorkCompletion;
-	type PollIterator = IntoIter<[UnextendedWorkCompletion; UnextendedCompletionQueuePollArraySize]>;
 	
 	#[inline(always)]
-	fn isExtended(&self) -> bool
+	fn new() -> Self
 	{
-		false
-	}
-	
-	#[inline(always)]
-	fn underlying(&mut self) -> &mut UnderlyingCompletionQueueContext
-	{
-		&mut self.underlying
+		UnextendedCompletionQueueContext
 	}
 	
 	#[inline(always)]
@@ -32,45 +23,37 @@ where UnderlyingCompletionQueueContext: 'a
 	}
 	
 	#[inline(always)]
-	fn iteratePoll(&'a mut self, completionQueuePointerMaybeExtended: *mut ibv_cq) -> Self::PollIterator
+	fn pollToExhaustion<WorkCompletionUser: Fn(Self::WorkCompletion)>(&mut self, completionQueuePointerMaybeExtended: *mut ibv_cq, workCompletionUser: WorkCompletionUser)
 	{
-		let mut into = ArrayVec::new();
-		Self::poll(completionQueuePointerMaybeExtended, &mut into);
-		into.into_iter()
-	}
-}
-
-pub const UnextendedCompletionQueuePollArraySize: usize = 32;
-
-impl<UnderlyingCompletionQueueContext> UnextendedCompletionQueueContext<UnderlyingCompletionQueueContext>
-{
-	/// Returns number of additional work completions added; it is recommended that `into` is empty
-	#[inline(always)]
-	pub fn poll(completionQueuePointer: *mut ibv_cq, into: &mut ArrayVec<[UnextendedWorkCompletion; UnextendedCompletionQueuePollArraySize]>) -> usize
-	{
-		let length = into.len();
+		let mut into: [Self::WorkCompletion; UnextendedCompletionQueuePollArraySize] = unsafe { uninitialized() };
 		
-		let space = UnextendedCompletionQueuePollArraySize - length;
-		
-		if unlikely(space == 0)
+		loop
 		{
-			return 0;
+			let result = completionQueuePointerMaybeExtended.ibv_poll_cq(UnextendedCompletionQueuePollArraySize as i32, into.as_mut_ptr() as *mut _ as *mut _);
+			if unlikely(result < 0)
+			{
+				let errno = errno();
+				panic!("rust_ibv_poll_cq failed with result '{}' error number '{}' ('{}')", result, errno.0, errno);
+			}
+			else
+			{
+				let size = result as usize;
+				debug_assert!(size <= UnextendedCompletionQueuePollArraySize, "Overfilled; defect in ibv_poll_cq()");
+				let mut index = 0;
+				while index < size
+				{
+					let workCompletion = unsafe { replace(into.get_unchecked_mut(index), uninitialized()) };
+					workCompletionUser(workCompletion);
+					index += 1;
+				}
+				
+				if likely(size != UnextendedCompletionQueuePollArraySize)
+				{
+					break;
+				}
+			}
 		}
 		
-		let fillFrom = unsafe { transmute(into.as_mut_ptr().offset(length as isize)) };
-		
-		let result = completionQueuePointer.ibv_poll_cq(space as i32, fillFrom);
-		if likely(result >= 0)
-		{
-			debug_assert!(result as usize <= space, "Overfilled; defect in ibv_poll_cq()");
-			let increasedBy = result as usize;
-			unsafe { into.set_len(length + increasedBy) };
-			increasedBy
-		}
-		else
-		{
-			let errno = errno();
-			panic!("rust_ibv_poll_cq failed with result '{}' error number '{}' ('{}')", result, errno.0, errno);
-		}
+		forget(into);
 	}
 }

@@ -2,28 +2,22 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext: Sized>
+pub struct ExtendedCompletionQueueContext
 {
-	underlying: UnderlyingCompletionQueueContext,
 	isCurrentlyBeingPolled: bool,
 }
 
-impl<'a, UnderlyingCompletionQueueContext> CompletionQueueContext<'a, UnderlyingCompletionQueueContext> for ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
-where UnderlyingCompletionQueueContext: 'a
+impl CompletionQueueContext for ExtendedCompletionQueueContext
 {
 	type WorkCompletion = ExtendedWorkCompletion;
-	type PollIterator = ExtendedCompletionQueueContextIterator<'a, UnderlyingCompletionQueueContext>;
 	
 	#[inline(always)]
-	fn isExtended(&self) -> bool
+	fn new() -> Self
 	{
-		true
-	}
-	
-	#[inline(always)]
-	fn underlying(&mut self) -> &mut UnderlyingCompletionQueueContext
-	{
-		&mut self.underlying
+		Self
+		{
+			isCurrentlyBeingPolled: false
+		}
 	}
 	
 	#[inline(always)]
@@ -39,74 +33,72 @@ where UnderlyingCompletionQueueContext: 'a
 	}
 	
 	#[inline(always)]
-	fn iteratePoll(&'a mut self, completionQueuePointerMaybeExtended: *mut ibv_cq) -> Self::PollIterator
+	fn pollToExhaustion<WorkCompletionUser: Fn(Self::WorkCompletion)>(&mut self, completionQueuePointerMaybeExtended: *mut ibv_cq, workCompletionUser: WorkCompletionUser)
 	{
-		ExtendedCompletionQueueContextIterator(self, completionQueuePointerMaybeExtended as *mut ibv_cq_ex)
+		let extendedCompletionQueuePointer = completionQueuePointerMaybeExtended as *mut ibv_cq_ex;
+		
+		loop
+		{
+			if likely(self.isCurrentlyBeingPolled)
+			{
+				let result = extendedCompletionQueuePointer.ibv_next_poll();
+				debug_assert!(result >= 0, "result was negative '{}'", result);
+				if likely(result == 0)
+				{
+					workCompletionUser(ExtendedWorkCompletion(extendedCompletionQueuePointer))
+				}
+				else
+				{
+					self.endPolling(extendedCompletionQueuePointer);
+					self.isCurrentlyBeingPolled = false;
+					
+					if likely(result == E::ENOENT)
+					{
+						break;
+					}
+					else
+					{
+						panic!("ibv_next_poll() returned an error number '{}'", result);
+					}
+				}
+			}
+			else
+			{
+				let mut attributes = ibv_poll_cq_attr
+				{
+					comp_mask: 0
+				};
+				
+				let result = extendedCompletionQueuePointer.ibv_start_poll(&mut attributes);
+				debug_assert!(result >= 0, "result was negative '{}'", result);
+				if likely(result == 0)
+				{
+					self.isCurrentlyBeingPolled = false;
+					workCompletionUser(ExtendedWorkCompletion(extendedCompletionQueuePointer));
+				}
+				else
+				{
+					// NOTE: We MUST NOT call self.endPolling() here
+					
+					if likely(result == E::ENOENT)
+					{
+						break;
+					}
+					else
+					{
+						panic!("ibv_start_poll() returned an error number '{}'", result);
+					}
+				}
+			}
+		}
 	}
 }
 
-impl<UnderlyingCompletionQueueContext> ExtendedCompletionQueueContext<UnderlyingCompletionQueueContext>
+impl ExtendedCompletionQueueContext
 {
-	/// NOTE WELL: Once poll() is called, the previous item will be invalid
 	#[inline(always)]
-	pub fn pollNext(&mut self, completionQueuePointer: *mut ibv_cq_ex) -> Option<ExtendedWorkCompletion>
+	fn endPolling(&mut self, extendedCompletionQueuePointer: *mut ibv_cq_ex)
 	{
-		if likely(self.isCurrentlyBeingPolled)
-		{
-			let result = completionQueuePointer.ibv_next_poll();
-			debug_assert!(result >= 0, "result was negative '{}'", result);
-			if likely(result == 0)
-			{
-				Some(ExtendedWorkCompletion(completionQueuePointer))
-			}
-			else
-			{
-				self.endPolling(completionQueuePointer);
-				self.isCurrentlyBeingPolled = false;
-				
-				if likely(result == E::ENOENT)
-				{
-					None
-				}
-				else
-				{
-					panic!("ibv_next_poll() returned an error number '{}'", result);
-				}
-			}
-		}
-		else
-		{
-			let mut attributes = ibv_poll_cq_attr
-			{
-				comp_mask: 0
-			};
-			
-			let result = completionQueuePointer.ibv_start_poll(&mut attributes);
-			debug_assert!(result >= 0, "result was negative '{}'", result);
-			if likely(result == 0)
-			{
-				self.isCurrentlyBeingPolled = false;
-				Some(ExtendedWorkCompletion(completionQueuePointer))
-			}
-			else
-			{
-				// NOTE: We MUST NOT call self.endPolling() here
-				
-				if likely(result == E::ENOENT)
-				{
-					None
-				}
-				else
-				{
-					panic!("ibv_start_poll() returned an error number '{}'", result);
-				}
-			}
-		}
-	}
-	
-	#[inline(always)]
-	fn endPolling(&mut self, completionQueuePointer: *mut ibv_cq_ex)
-	{
-		completionQueuePointer.ibv_end_poll()
+		extendedCompletionQueuePointer.ibv_end_poll()
 	}
 }

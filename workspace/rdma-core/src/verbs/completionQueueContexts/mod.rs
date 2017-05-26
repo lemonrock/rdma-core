@@ -4,9 +4,9 @@
 
 use super::*;
 use self::workCompletions::*;
-use ::arrayvec::ArrayVec;
-use ::arrayvec::IntoIter;
 use ::errno::errno;
+use ::std::mem::forget;
+use ::std::mem::replace;
 use ::syscall_alt::constants::E;
 
 
@@ -14,6 +14,6 @@ pub mod workCompletions;
 
 
 include!("CompletionQueueContext.rs");
+include!("CompletionQueueContextChoice.rs");
 include!("ExtendedCompletionQueueContext.rs");
-include!("ExtendedCompletionQueueContextIterator.rs");
 include!("UnextendedCompletionQueueContext.rs");

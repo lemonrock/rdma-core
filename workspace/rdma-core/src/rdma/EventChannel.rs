@@ -2,32 +2,40 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-/// Recommendation: One per core
-pub struct EventChannel
+pub struct EventChannel<'a>
 {
-	pointer: *mut rdma_event_channel,
-	verbMap: VerbMap<UsefulVerbMapEntryCreator>,
-	listening: HashSet<*mut rdma_cm_id>,
+	ePoll: &'a EPoll<EPollContextChoice<'a>>,
+	eventChannel: *mut rdma_event_channel,
+	listeners: HashSet<*mut rdma_cm_id>,
+	verbMap: VerbMap<'a, EventChannelVerbMapEntry<'a>>
 }
 
-impl Drop for EventChannel
+impl<'a> Drop for EventChannel<'a>
 {
 	#[inline(always)]
 	fn drop(&mut self)
 	{
-		for listener in self.listening.drain()
+		self.verbMap.destroy();
+		
+		for listener in self.listeners.drain()
 		{
 			listener.destroy();
 		}
 		
-		self.verbMap.destroy();
-		
-		self.pointer.destroy();
+		let fileDescriptor = self.fileDescriptorForEPoll();
+		self.ePoll.deregister(fileDescriptor);
+		self.eventChannel.destroy();
 	}
 }
 
-impl EPollContext for EventChannel
+impl<'a> EPollContext for EventChannel<'a>
 {
+	#[inline(always)]
+	fn fileDescriptorForEPoll(&self) -> RawFd
+	{
+		self.eventChannel.fileDescriptorForEPoll()
+	}
+	
 	#[inline(always)]
 	fn processEvents(&mut self)
 	{
@@ -35,7 +43,7 @@ impl EPollContext for EventChannel
 		{
 			let mut event = unsafe { uninitialized() };
 			
-			let result = unsafe { rdma_get_cm_event(self.pointer, &mut event) };
+			let result = unsafe { rdma_get_cm_event(self.eventChannel, &mut event) };
 			debug_assert!(result == 0 || result == -1, "rdma_get_cm_event returned a result '{}' which was not 0 or -1", result);
 			
 			if unlikely(result == -1)
@@ -246,38 +254,26 @@ impl EPollContext for EventChannel
 	}
 }
 
-impl EventChannel
+impl<'a> EventChannel<'a>
 {
 	#[inline(always)]
-	pub fn assignNewEventChannelToEPoll(epollFileDescriptor: RawFd, mut listeners: Vec<Listener>) -> RawFd
+	pub fn assignNewEventChannelToEPoll(ePoll: &'a EPoll<EPollContextChoice<'a>>, mut listeners: Vec<Listener>) -> Box<EPollContextChoice>
 	{
 		let pointer = panic_on_null!(rdma_create_event_channel);
-		
-		let mut eventChannel = Box::new(EventChannel
+
+		let mut eventChannel = EventChannel
 		{
-			pointer: pointer,
-			verbMap: VerbMap::new(),
-			listening: HashSet::with_capacity(listeners.len()),
-		});
-		
+			ePoll: ePoll,
+			eventChannel: pointer,
+			verbMap: VerbMap::new(ePoll),
+			listeners: HashSet::with_capacity(listeners.len()),
+		};
+
 		for listener in listeners.drain(..)
 		{
-			eventChannel.listening.insert(listener.to_rdma_cm_id(pointer));
+			eventChannel.listeners.insert(listener.to_rdma_cm_id(pointer));
 		}
 		
-		let mut data = epoll_event
-		{
-			events: (EPollEvents::EdgeTriggered | EPollEvents::In).bits(),
-			data: epoll_data_t
-			{
-				ptr: Box::into_raw(eventChannel) as *mut c_void
-			}
-		};
-		
-		let fileDescriptorForEPoll = pointer.fileDescriptorForEPoll();
-		fileDescriptorForEPoll.makeNonBlocking();
-		
-		epollFileDescriptor.add(fileDescriptorForEPoll, &mut data);
-		fileDescriptorForEPoll
+		ePoll.registerEdgeTriggeredIn(EPollContextChoice::EventChannel(eventChannel))
 	}
 }
