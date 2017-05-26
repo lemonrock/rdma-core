@@ -5,6 +5,7 @@
 pub struct EventChannelVerbMapEntry<'a>
 {
 	protectionDomain: *mut ibv_pd,
+	extendedReliableConnectionDomain: *mut ibv_xrcd,
 	completionChannel: Box<EPollContextChoice<'a>>,
 }
 
@@ -13,6 +14,7 @@ impl<'a> Drop for EventChannelVerbMapEntry<'a>
 	#[inline(always)]
 	fn drop(&mut self)
 	{
+		self.extendedReliableConnectionDomain.destroy();
 		self.protectionDomain.destroy();
 	}
 }
@@ -27,7 +29,8 @@ impl<'a> VerbMapEntry<'a> for EventChannelVerbMapEntry<'a>
 		Self
 		{
 			protectionDomain: verbs.allocateProtectionDomain(),
-			completionChannel: CompletionChannel::new(constructionParameters, verbs)
+			extendedReliableConnectionDomain: verbs.createExtendedReliableConnectionDomainWithoutInode(),
+			completionChannel: CompletionChannel::new(constructionParameters, verbs),
 		}
 	}
 }

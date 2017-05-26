@@ -43,6 +43,12 @@ pub trait ibv_contextEx: Sized
 	fn allocateProtectionDomain(self) -> *mut ibv_pd;
 	
 	#[inline(always)]
+	fn createExtendedReliableConnectionDomainWithoutInode(self) -> *mut ibv_xrcd;
+	
+	#[inline(always)]
+	fn createExtendedReliableConnectionDomain(self, fileDescriptor: RawFd, create: bool, exclusive: bool) -> *mut ibv_xrcd;
+	
+	#[inline(always)]
 	fn createCompletionChannel(self) -> *mut ibv_comp_channel;
 	
 	#[inline(always)]
@@ -169,6 +175,50 @@ impl ibv_contextEx for *mut ibv_context
 		debug_assert!(!self.is_null(), "self is null");
 		
 		panic_on_null!(ibv_alloc_pd, self)
+	}
+	
+	#[inline(always)]
+	fn createExtendedReliableConnectionDomainWithoutInode(self) -> *mut ibv_xrcd
+	{
+		self.createExtendedReliableConnectionDomain(-1, true, false)
+	}
+	
+	#[inline(always)]
+	fn createExtendedReliableConnectionDomain(self, fileDescriptor: RawFd, create: bool, exclusive: bool) -> *mut ibv_xrcd
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		const IBV_XRCD_INIT_ATTR_FD: u32 = 1;
+		const IBV_XRCD_INIT_ATTR_OFLAGS: u32 = 2;
+		
+		const AllCurrentFields: u32 = IBV_XRCD_INIT_ATTR_FD | IBV_XRCD_INIT_ATTR_OFLAGS;
+		
+		let mut openFlags = 0;
+		if create
+		{
+			openFlags = openFlags | O_CREAT;
+		}
+		if exclusive
+		{
+			openFlags = openFlags | O_EXCL;
+		}
+		
+		if unlikely(fileDescriptor == -1 && !create)
+		{
+			panic!("create must be true if fileDescriptor is -1");
+		}
+		if unlikely(fileDescriptor == -1 && exclusive)
+		{
+			panic!("exclusive must be false if fileDescriptor is -1");
+		}
+		
+		let mut attributes = ibv_xrcd_init_attr
+		{
+			comp_mask: AllCurrentFields,
+			fd: fileDescriptor,
+			oflags: openFlags,
+		};
+		panic_on_null!(rust_ibv_open_xrcd, self, &mut attributes)
 	}
 	
 	#[inline(always)]

@@ -72,6 +72,8 @@ pub trait CommunicationIdentifierContext: Drop
 		/*
 		void register_memory(struct connection *conn)
 {
+// use dpdk numa-aware malloc...
+
   conn->send_region = malloc(BUFFER_SIZE);
   conn->recv_region = malloc(BUFFER_SIZE);
 
