@@ -7,3 +7,6 @@
 [submodule "workspace/rdma-core-sys/tools/bindgen-wrapper"]
 	path = workspace/rdma-core-sys/tools/bindgen-wrapper
 	url = https://github.com/lemonrock/bindgen-wrapper.git
+[submodule "workspace/openshmem-reference-sys/lib/openshmem"]
+	path = workspace/openshmem-reference-sys/lib/openshmem
+	url = https://github.com/openshmem-org/openshmem.git
