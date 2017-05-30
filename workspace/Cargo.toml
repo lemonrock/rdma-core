@@ -4,6 +4,7 @@
 
 [workspace]
 members = [
+	"openshmem-reference-sys",
     "rdma-core",
 	"rdma-core-sys",
 ]

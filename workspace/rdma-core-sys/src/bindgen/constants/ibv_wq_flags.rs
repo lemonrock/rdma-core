@@ -2,29 +2,6 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(C)]
-#[derive(Debug, Copy)]
-pub struct ibv_flow_spec_action_tag
-{
-	pub type_: ibv_flow_spec_type,
-	pub size: u16,
-	pub tag_id: u32,
-}
-
-impl Clone for ibv_flow_spec_action_tag
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Default for ibv_flow_spec_action_tag
-{
-	#[inline(always)]
-	fn default() -> Self
-	{
-		unsafe { zeroed() }
-	}
-}
+pub const ibv_wq_flags_IBV_WQ_FLAGS_CVLAN_STRIPPING: ibv_wq_flags = ibv_wq_flags(1);
+pub const ibv_wq_flags_IBV_WQ_FLAGS_RESERVED: ibv_wq_flags = ibv_wq_flags(4);
+pub const ibv_wq_flags_IBV_WQ_FLAGS_SCATTER_FCS: ibv_wq_flags = ibv_wq_flags(2);

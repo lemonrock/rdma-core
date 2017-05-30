@@ -3,21 +3,5 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
-pub struct ibv_qp_cap
-{
-	pub max_send_wr: u32,
-	pub max_recv_wr: u32,
-	pub max_send_sge: u32,
-	pub max_recv_sge: u32,
-	pub max_inline_data: u32,
-}
-
-impl Clone for ibv_qp_cap
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ibv_wq_flags(pub c_uint);

@@ -16,5 +16,6 @@ link_kind='static-nobundle'
 
 final_chance_to_tweak()
 {
+	echo HELLOWORLD 1>&2
 	:
 }

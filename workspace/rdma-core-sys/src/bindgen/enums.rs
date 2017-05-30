@@ -36,7 +36,6 @@ include!("bindgen/enums/ibv_values_mask.rs");
 include!("bindgen/enums/ibv_wc_opcode.rs");
 include!("bindgen/enums/ibv_wc_status.rs");
 include!("bindgen/enums/ibv_wq_attr_mask.rs");
-include!("bindgen/enums/ibv_wq_flags.rs");
 include!("bindgen/enums/ibv_wq_init_attr_mask.rs");
 include!("bindgen/enums/ibv_wq_state.rs");
 include!("bindgen/enums/ibv_wq_type.rs");

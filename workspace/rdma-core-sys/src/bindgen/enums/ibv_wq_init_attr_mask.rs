@@ -9,3 +9,12 @@ pub enum ibv_wq_init_attr_mask
 	IBV_WQ_INIT_ATTR_FLAGS = 1,
 	IBV_WQ_INIT_ATTR_RESERVED = 2,
 }
+
+impl ::core::ops::BitOr<ibv_wq_flags> for ibv_wq_flags
+{
+	type Output = Self;
+	fn bitor(self, other: Self) -> Self
+	{
+		ibv_wq_flags(self.0 | other.0)
+	}
+}

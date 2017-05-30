@@ -94,6 +94,7 @@ include!("bindgen/structs/ibv_wc.rs");
 include!("bindgen/structs/ibv_wc_flags.rs");
 include!("bindgen/structs/ibv_wq.rs");
 include!("bindgen/structs/ibv_wq_attr.rs");
+include!("bindgen/structs/ibv_wq_flags.rs");
 include!("bindgen/structs/ibv_wq_init_attr.rs");
 include!("bindgen/structs/ibv_xrcd.rs");
 include!("bindgen/structs/ibv_xrcd_init_attr.rs");

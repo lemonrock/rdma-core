@@ -89,7 +89,9 @@ build_under_cargo_fail()
 
 build_under_cargo_generatingRustBindings()
 {
+	echo HELLO 1>&2
 	"$homeFolder"/tools/bindgen-wrapper/bindgen-wrapper
+	echo BYE 1>&2
 }
 
 build_under_cargo_outputCargoKeyValuePairs()
