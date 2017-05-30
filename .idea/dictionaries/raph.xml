@@ -48,6 +48,7 @@
       <w>musl</w>
       <w>nack</w>
       <w>nbyte</w>
+      <w>nelems</w>
       <w>nonblock</w>
       <w>nonoverlapping</w>
       <w>nvml</w>
@@ -68,6 +69,7 @@
       <w>recv</w>
       <w>refcnt</w>
       <w>rwlock</w>
+      <w>shmem</w>
       <w>sigmask</w>
       <w>sigs</w>
       <w>sockaddr</w>

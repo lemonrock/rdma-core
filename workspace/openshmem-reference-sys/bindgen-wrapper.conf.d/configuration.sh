@@ -8,14 +8,12 @@ rootIncludeFileName='openshmem-reference.h'
 macosXHomebrewPackageNames='clang-format'
 alpineLinuxPackageNames='rsync make gcc linux-headers libunwind-dev linux-grsec-dev'
 clangAdditionalArguments=''
-headersFolderPath="$homeFolder"/src/include
-libFolderPath="$homeFolder"src/lib
+headersFolderPath="$homeFolder"/lib/openshmem/src
+libFolderPath="$homeFolder"/lib/openshmem/src
 link=''
 link_kind='static-nobundle'
 
-
 final_chance_to_tweak()
 {
-	echo HELLOWORLD 1>&2
 	:
 }
