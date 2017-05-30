@@ -104,7 +104,6 @@ impl HasContextPointer for *mut ibv_cq
 		unsafe { (*self.pointer()).cq_context = context };
 	}
 }
-
 impl HasContextPointer for *mut ibv_cq_ex
 {
 	#[doc(hidden)]
@@ -144,6 +143,27 @@ impl HasContextPointer for *mut ibv_qp
 		debug_assert!(!self.is_null(), "self is null");
 		
 		unsafe { (*self).qp_context = context };
+	}
+}
+
+impl HasContextPointer for *mut ibv_rwq_ind_table
+{
+	#[doc(hidden)]
+	#[inline(always)]
+	fn getContext(self) -> *mut c_void
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context }
+	}
+	
+	#[doc(hidden)]
+	#[inline(always)]
+	fn setContext(self, context: *mut c_void)
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context = context };
 	}
 }
 

@@ -32,6 +32,7 @@
       <w>libibverbs</w>
       <w>maxevents</w>
       <w>mblkpool</w>
+      <w>mcast</w>
       <w>mcond</w>
       <w>mellanox</w>
       <w>memcpy</w>

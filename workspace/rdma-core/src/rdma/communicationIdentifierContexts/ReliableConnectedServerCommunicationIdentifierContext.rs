@@ -67,7 +67,7 @@ pub trait CommunicationIdentifierContext: Drop
 	#[inline(always)]
 	fn reliableConnectionRequest(&mut self, newCommunicationIdentifierWithNoContextYet: *mut rdma_cm_id, eventData: RequestedConnectionEventData, privateDataBuffer: &mut [u8; 256]) -> (u8, Result<ConnectionAcceptance, ()>)
 	{
-		// actually rdma_create_qp_ex
+		// actually rdma_create_qp_ex   https://www.mankier.com/3/ibv_create_qp_ex
 		// rdma_create_qp before rdma_accept!
 		/*
 		void register_memory(struct connection *conn)

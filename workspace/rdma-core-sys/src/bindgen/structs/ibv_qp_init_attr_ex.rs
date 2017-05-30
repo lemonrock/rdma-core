@@ -39,3 +39,13 @@ impl Default for ibv_qp_init_attr_ex
 		unsafe { zeroed() }
 	}
 }
+
+impl ::core::ops::BitOr<ibv_qp_open_attr_mask> for ibv_qp_open_attr_mask
+{
+	type Output = Self;
+	#[inline(always)]
+	fn bitor(self, other: Self) -> Self
+	{
+		ibv_qp_open_attr_mask(self.0 | other.0)
+	}
+}

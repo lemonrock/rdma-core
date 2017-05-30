@@ -48,6 +48,7 @@ include!("MemoryRegionWriteAccess.rs");
 include!("PartitionKey.rs");
 include!("PartitionKeyIndex.rs");
 include!("QueuePairNumber.rs");
+include!("QueuePairCapabilities.rs");
 include!("ServiceLevel.rs");
 include!("SharedReceiveQueueNumber.rs");
 include!("SharedReceiveQueueSettings.rs");

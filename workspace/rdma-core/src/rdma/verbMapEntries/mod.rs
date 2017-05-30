@@ -4,6 +4,7 @@
 
 use super::*;
 use ::std::mem::forget;
+use ::std::ptr::null_mut;
 use ::verbs::completionQueueContexts::*;
 
 

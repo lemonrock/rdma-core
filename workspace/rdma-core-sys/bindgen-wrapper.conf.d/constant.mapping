@@ -26,3 +26,6 @@ EPOLL_CTL_ EPOLL_CTL
 EPOLL_CLOEXEC EPOLL_FLAGS
 EPOLL_NONBLOCK EPOLL_FLAGS
 EPOLL EPOLL
+ibv_qp_create_flags_ ibv_qp_create_flags
+ibv_qp_init_attr_mask_ ibv_qp_init_attr_mask
+ibv_wq_flags_ ibv_wq_flags

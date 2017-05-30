@@ -2,11 +2,8 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(u32)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ibv_qp_create_flags
-{
-	IBV_QP_CREATE_BLOCK_SELF_MCAST_LB = 2,
-	IBV_QP_CREATE_SCATTER_FCS = 256,
-	IBV_QP_CREATE_CVLAN_STRIPPING = 512,
-}
+pub const ibv_qp_open_attr_mask_IBV_QP_OPEN_ATTR_CONTEXT: ibv_qp_open_attr_mask = ibv_qp_open_attr_mask(4);
+pub const ibv_qp_open_attr_mask_IBV_QP_OPEN_ATTR_NUM: ibv_qp_open_attr_mask = ibv_qp_open_attr_mask(1);
+pub const ibv_qp_open_attr_mask_IBV_QP_OPEN_ATTR_RESERVED: ibv_qp_open_attr_mask = ibv_qp_open_attr_mask(16);
+pub const ibv_qp_open_attr_mask_IBV_QP_OPEN_ATTR_TYPE: ibv_qp_open_attr_mask = ibv_qp_open_attr_mask(8);
+pub const ibv_qp_open_attr_mask_IBV_QP_OPEN_ATTR_XRCD: ibv_qp_open_attr_mask = ibv_qp_open_attr_mask(2);
