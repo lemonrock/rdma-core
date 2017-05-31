@@ -13,3 +13,9 @@
 [submodule "workspace/openshmem-reference-sys/tools/bindgen-wrapper"]
 	path = workspace/openshmem-reference-sys/tools/bindgen-wrapper
 	url = https://github.com/lemonrock/bindgen-wrapper.git
+[submodule "workspace/gaspi-reference-sys/lib/GASPI-Standard"]
+	path = workspace/gaspi-reference-sys/lib/GASPI-Standard
+	url = https://github.com/GASPI-Forum/GASPI-Standard.git
+[submodule "workspace/gaspi-reference-sys/tools/bindgen-wrapper"]
+	path = workspace/gaspi-reference-sys/tools/bindgen-wrapper
+	url = https://github.com/lemonrock/bindgen-wrapper.git

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/workspace/gaspi-reference-sys/gaspi-reference-sys.iml" filepath="$PROJECT_DIR$/workspace/gaspi-reference-sys/gaspi-reference-sys.iml" />
       <module fileurl="file://$PROJECT_DIR$/workspace/openshmem-reference-sys/openshmem-reference-sys.iml" filepath="$PROJECT_DIR$/workspace/openshmem-reference-sys/openshmem-reference-sys.iml" />
       <module fileurl="file://$PROJECT_DIR$/workspace/rdma-core/rdma-core.iml" filepath="$PROJECT_DIR$/workspace/rdma-core/rdma-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/workspace/rdma-core-sys/rdma-core-sys.iml" filepath="$PROJECT_DIR$/workspace/rdma-core-sys/rdma-core-sys.iml" />
