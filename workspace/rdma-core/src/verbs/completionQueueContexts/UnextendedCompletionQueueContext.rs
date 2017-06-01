@@ -27,6 +27,7 @@ impl CompletionQueueContext for UnextendedCompletionQueueContext
 	{
 		let mut into: [Self::WorkCompletion; UnextendedCompletionQueuePollArraySize] = unsafe { uninitialized() };
 		
+		#[allow(trivial_casts)]
 		loop
 		{
 			let result = completionQueuePointerMaybeExtended.ibv_poll_cq(UnextendedCompletionQueuePollArraySize as i32, into.as_mut_ptr() as *mut _ as *mut _);

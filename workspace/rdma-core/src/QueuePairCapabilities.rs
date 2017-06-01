@@ -10,7 +10,7 @@ impl QueuePairCapabilities
 	#[inline(always)]
 	fn from(attributes: &ibv_qp_init_attr_ex) -> Self
 	{
-		Self(attributes.cap)
+		QueuePairCapabilities(attributes.cap)
 	}
 	
 	#[inline(always)]
@@ -23,7 +23,7 @@ impl QueuePairCapabilities
 		maximumNumberOfInlineDataBytesThatCanPostedInTheSendQueue: u32,
 	) -> Self
 	{
-		Self
+		QueuePairCapabilities
 		(
 			ibv_qp_cap
 			{

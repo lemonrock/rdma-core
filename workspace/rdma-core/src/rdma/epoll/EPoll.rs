@@ -29,6 +29,7 @@ impl<EPC: EPollContext> EPoll<EPC>
 		}
 	}
 	
+	#[allow(trivial_casts)]
 	#[inline(always)]
 	pub fn registerEdgeTriggeredIn(&self, registrant: EPC) -> Box<EPC>
 	{
@@ -49,6 +50,7 @@ impl<EPC: EPollContext> EPoll<EPC>
 		context
 	}
 	
+	#[allow(trivial_casts)]
 	#[inline(always)]
 	pub fn processAnyEventsWithoutWaitingUntilExhausted(&self)
 	{

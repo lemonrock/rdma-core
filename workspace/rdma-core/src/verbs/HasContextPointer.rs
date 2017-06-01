@@ -22,6 +22,7 @@ pub trait HasContextPointer: Sized
 		unsafe { Box::from_raw(context as *mut T) }
 	}
 	
+	#[allow(trivial_casts)]
 	#[inline(always)]
 	fn setBoxPointerContext<T>(self, context: Box<T>)
 	{
@@ -143,27 +144,6 @@ impl HasContextPointer for *mut ibv_qp
 		debug_assert!(!self.is_null(), "self is null");
 		
 		unsafe { (*self).qp_context = context };
-	}
-}
-
-impl HasContextPointer for *mut ibv_rwq_ind_table
-{
-	#[doc(hidden)]
-	#[inline(always)]
-	fn getContext(self) -> *mut c_void
-	{
-		debug_assert!(!self.is_null(), "self is null");
-		
-		unsafe { (*self).context }
-	}
-	
-	#[doc(hidden)]
-	#[inline(always)]
-	fn setContext(self, context: *mut c_void)
-	{
-		debug_assert!(!self.is_null(), "self is null");
-		
-		unsafe { (*self).context = context };
 	}
 }
 

@@ -59,20 +59,20 @@ impl<'a> EventChannelVerbMapEntry<'a>
 	
 	// TODO: Must call ibv_destroy_qp()
 	/// maximumTsoHeaderSize is only supported By Mellanox mlx5 drivers
-	/// I suspect scatterFcs and cvLanStripping is likewise only support by mlx5
+	/// I suspect scatterFrameCheckSequence and cvLanStripping is likewise only support by mlx5
 	#[inline(always)]
-	pub fn createReliablyConnectedExtendedQueuePair(&mut self, queuePairContext: *mut c_void, sendCompletionQueue: *mut ibv_cq, receiveCompletionQueue: *mut ibv_cq, eachWorkRequestSubmittedToTheSendQueueGeneratesACompletionEntry: bool, queuePairCapabilities: &QueuePairCapabilities, scatterFcs: bool, cvLanStripping: bool, maximumTsoHeaderSize: u16) -> (*mut ibv_qp, QueuePairCapabilities)
+	pub fn createReliablyConnectedExtendedQueuePair(&mut self, queuePairContext: *mut c_void, sendCompletionQueue: *mut ibv_cq, receiveCompletionQueue: *mut ibv_cq, eachWorkRequestSubmittedToTheSendQueueGeneratesACompletionEntry: bool, queuePairCapabilities: &QueuePairCapabilities, scatterFrameCheckSequence: bool, cvLanStripping: bool, maximumTsoHeaderSize: u16) -> (*mut ibv_qp, QueuePairCapabilities)
 	{
 		debug_assert!(!sendCompletionQueue.is_null(), "sendCompletionQueue is null");
 		debug_assert!(!receiveCompletionQueue.is_null(), "receiveCompletionQueue is null");
 		
 		let verbs = self.protectionDomain.verbs();
 		
-		const IBV_QP_CREATE_BLOCK_SELF_MCAST_LB: u32 = 2;
+		#[allow(dead_code)] const IBV_QP_CREATE_BLOCK_SELF_MCAST_LB: u32 = 2;
 		const IBV_QP_CREATE_SCATTER_FCS: u32 = 256;
 		const IBV_QP_CREATE_CVLAN_STRIPPING: u32 = 512;
 		
-		let mut creationFlags = if unlikely(scatterFcs)
+		let mut creationFlags = if unlikely(scatterFrameCheckSequence)
 		{
 			IBV_QP_CREATE_SCATTER_FCS
 		}
@@ -89,8 +89,8 @@ impl<'a> EventChannelVerbMapEntry<'a>
 		const IBV_QP_INIT_ATTR_XRCD: u32 = 2;
 		const IBV_QP_INIT_ATTR_CREATE_FLAGS: u32 = 4;
 		const IBV_QP_INIT_ATTR_MAX_TSO_HEADER: u32 = 8;
-		const IBV_QP_INIT_ATTR_IND_TABLE: u32 = 16;
-		const IBV_QP_INIT_ATTR_RX_HASH: u32 = 32;
+		#[allow(dead_code)] const IBV_QP_INIT_ATTR_IND_TABLE: u32 = 16;
+		#[allow(dead_code)] const IBV_QP_INIT_ATTR_RX_HASH: u32 = 32;
 		
 		let mut compMask = IBV_QP_INIT_ATTR_PD | IBV_QP_INIT_ATTR_XRCD | IBV_QP_INIT_ATTR_CREATE_FLAGS;
 		if maximumTsoHeaderSize > 0
@@ -129,7 +129,7 @@ impl<'a> EventChannelVerbMapEntry<'a>
 			},
 		};
 		
-		let queuePairPointer = panic_on_null!(ibv_create_qp_ex, verbs, &mut attributes);
-		(queuePairPointer, QueuePairCapabilities(attributes))
+		let queuePairPointer = panic_on_null!(rust_ibv_create_qp_ex, verbs, &mut attributes);
+		(queuePairPointer, QueuePairCapabilities::from(&attributes))
 	}
 }

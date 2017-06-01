@@ -106,6 +106,18 @@ impl HasVerbsPointer for *mut ibv_pd
 	}
 }
 
+impl HasVerbsPointer for *mut ibv_rwq_ind_table
+{
+	#[doc(hidden)]
+	#[inline(always)]
+	fn verbs(self) -> *mut ibv_context
+	{
+		debug_assert!(!self.is_null(), "self is null");
+		
+		unsafe { (*self).context }
+	}
+}
+
 impl HasVerbsPointer for *mut ibv_qp
 {
 	#[inline(always)]
