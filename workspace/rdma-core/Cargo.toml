@@ -15,14 +15,14 @@ exclude = ["*"]
 include = ["README.md", "LICENSE", "COPYRIGHT", "src/**/*.rs", "benches/**/*.rs", "examples/**/*.rs", "tests/**/*.rs", "Cargo.toml", "rustfmt.toml", "clippy.toml"]
 # Relative to Cargo.toml
 readme = "README.md"
-publish = false
-version = "0.0.0"
+publish = true
+version = "0.0.1"
 
 [dependencies]
 arrayvec = "0.3.21"
 bitflags = "0.8"
 errno = "0.2"
 libc = "0.2"
-rdma-core-sys = { path = "../rdma-core-sys", version = "0.0.0" }
+rdma-core-sys = { path = "../rdma-core-sys", version = "0.0.1" }
 rust-extra = "0.0.13"
 syscall-alt = "0.0.14"
