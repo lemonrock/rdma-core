@@ -5,7 +5,7 @@
 [package]
 name = "gaspi-reference-sys"
 description = "GASPI 2 Reference C API FFI bindings. You will need to supply an implementation of GASPI to link against (usually GPI-2)"
-keywords = ["GASPI", "PGAS", "shared memory", "RDMA", "InfiniBand"]
+keywords = ["GASPI", "PGAS", "memory", "RDMA", "InfiniBand"]
 license = "MIT"
 authors = ["Raphael Cohn <raphael.cohn@stormmq.com>"]
 documentation = "https://github.com/lemonrock/rdma-core/blob/master/README.md"

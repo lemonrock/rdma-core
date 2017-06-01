@@ -5,7 +5,7 @@
 [package]
 name = "rdma-core"
 description = "rdma-core mid-level bindings"
-keywords = ["rdma-core", "RDMA", "Infiniband", "RoCE"]
+keywords = ["rdma-core", "RDMA", "InfiniBand", "RoCE"]
 license = "MIT"
 authors = ["Raphael Cohn <raphael.cohn@stormmq.com>"]
 documentation = "https://github.com/lemonrock/rdma-core/blob/master/README.md"

@@ -5,7 +5,7 @@
 [package]
 name = "openshmem-reference-sys"
 description = "OpenSHMEM 1.3 Reference C API FFI bindings. You will need to supply an implementation of OpenSHMEM to link against (of which there are several)"
-keywords = ["OpenSHMEM", "SHMEM", "shared memory", "RDMA", "InfiniBand"]
+keywords = ["OpenSHMEM", "SHMEM", "memory", "RDMA", "InfiniBand"]
 license = "MIT"
 authors = ["Raphael Cohn <raphael.cohn@stormmq.com>"]
 documentation = "https://github.com/lemonrock/rdma-core/blob/master/README.md"
