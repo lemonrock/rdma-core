@@ -15,5 +15,6 @@ link_kind='static-nobundle'
 
 final_chance_to_tweak()
 {
-	:
+	mv "$outputFolderPath"/structs/'__BindgenComplex<T>.rs' "$outputFolderPath"/structs/'__BindgenComplex.rs'
+	sed -i -e 's/<T>//g' "$outputFolderPath"/structs.rs
 }
