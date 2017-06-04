@@ -19,3 +19,6 @@
 [submodule "workspace/gaspi-reference-sys/tools/bindgen-wrapper"]
 	path = workspace/gaspi-reference-sys/tools/bindgen-wrapper
 	url = https://github.com/lemonrock/bindgen-wrapper.git
+[submodule "workspace/mxm-reference-sys/tools/bindgen-wrapper"]
+	path = workspace/mxm-reference-sys/tools/bindgen-wrapper
+	url = https://github.com/lemonrock/bindgen-wrapper.git
