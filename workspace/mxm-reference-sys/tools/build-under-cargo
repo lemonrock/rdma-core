@@ -1,0 +1,164 @@
+#!/usr/bin/env sh
+# This file is part of rdma-core. It is subject to the license terms in the COPYRIGHT file found in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT. No part of rdma-core, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the COPYRIGHT file.
+# Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
+
+
+# This script exists because doing complex builds of non-Rust code under Cargo is tedious and error-prone
+# Not least because Cargo does not display stdout and stderr 'as it goes'
+# This script exists to allow testing of the build without running Cargo
+
+
+set -e
+set -u
+set -f
+
+
+_program_path_find()
+{
+    if [ "${_program_fattening_program_path+set}" = 'set' ]; then
+        printf '%s\n' "$_program_fattening_program_path"
+
+    elif [ "${0%/*}" = "$0" ]; then
+
+        # We've been invoked by the interpreter as, say, bash program
+        if [ -r "$0" ]; then
+            pwd -P
+        # Clutching at straws; probably run via a download, anonymous script, etc, weird execve, etc
+        else
+            printf '\n'
+        fi
+
+    else
+
+        # We've been invoked with a relative or absolute path (also when invoked via PATH in a shell)
+
+        _program_path_find_parentPath()
+        {
+            parentPath="${scriptPath%/*}"
+            if [ -z "$parentPath" ]; then
+                parentPath='/'
+            fi
+            cd "$parentPath" 1>/dev/null
+        }
+
+        # pdksh / mksh have problems with unsetting a variable that was never set...
+        if [ "${CDPATH+set}" = 'set' ]; then
+            unset CDPATH
+        fi
+
+        if command -v realpath 1>/dev/null 2>/dev/null; then
+            (
+                scriptPath="$(realpath "$0")"
+
+                _program_path_find_parentPath
+                pwd -P
+            )
+        elif command -v readlink 1>/dev/null 2>/dev/null; then
+            (
+                scriptPath="$0"
+
+                while [ -L "$scriptPath" ]
+                do
+                    _program_path_find_parentPath
+                    scriptPath="$(readlink "$scriptPath")"
+                done
+
+                _program_path_find_parentPath
+                pwd -P
+            )
+        else
+            # This approach will fail in corner cases where the script itself is a symlink in a path not parallel with the concrete script
+            (
+                scriptPath="$0"
+
+                _program_path_find_parentPath
+                pwd -P
+            )
+        fi
+
+    fi
+}
+
+build_under_cargo_fail()
+{
+	local message="$1"
+	
+	printf 'build-under-cargo:FAIL:%s\n' "$message" 1>&2
+	exit 1
+}
+
+build_under_cargo_generatingRustBindings()
+{
+	"$homeFolder"/tools/bindgen-wrapper/bindgen-wrapper
+}
+
+build_under_cargo_outputCargoKeyValuePairs()
+{
+	# Search path
+	#printf 'cargo:rustc-link-search=native=%s\n' "$libFolderPath"
+	
+	printf 'cargo:rustc-link-lib=static-nobundle=mxm\n'
+	
+	# Not used by us, but useful for downstream potentially
+	#printf 'cargo:root=%s\n' "$rootFolderPath"
+	printf 'cargo:include=%s\n' "$includeFolderPath"
+	#printf 'cargo:libdir=%s\n' "$libFolderPath"
+}
+
+build_under_cargo_steps()
+{
+	local srcFolderPath="$homeFolder"/src
+	local includeFolderPath="$srcFolderPath"/include
+	local rustBindingsFolderPath="$srcFolderPath"/bindgen
+	
+	build_under_cargo_generatingRustBindings
+	
+	build_under_cargo_outputCargoKeyValuePairs
+}
+
+build_under_cargo_main()
+{
+	case "$#" in
+		
+		0)
+			:
+		;;
+		
+		1)
+			case "$1" in
+				
+				-h|--help)
+					printf './build\n'
+					printf './build -h|--help\n'
+					exit 0
+				;;
+				
+				*)
+					build_under_cargo_fail "Does not take any arguments"
+				;;
+				
+			esac
+		;;
+		
+		*)
+			build_under_cargo_fail "Does not take any arguments"
+		;;
+		
+	esac
+	
+	local programPath="$(_program_path_find)"
+	cd "$programPath"/.. 1>/dev/null 2>/dev/null
+		local homeFolder="$(pwd)"
+	cd - 1>/dev/null 2>/dev/null
+	
+	if [ -z "{CARGO_MANIFEST_DIR+defined}" ]; then
+		:
+	else
+		export CARGO_MANIFEST_DIR="$homeFolder"
+		printf 'build-under-cargo:%s\n' "Whilst this script is designed to be run under cargo, it can run independently. We're setting CARGO_MANIFEST_DIR to '$CARGO_MANIFEST_DIR'" 1>&2
+	fi
+	
+	build_under_cargo_steps
+}
+
+build_under_cargo_main "$@"

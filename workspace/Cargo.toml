@@ -5,6 +5,7 @@
 [workspace]
 members = [
 	"gaspi-reference-sys",
+	"mxm-reference-sys",
 	"openshmem-reference-sys",
     "rdma-core",
 	"rdma-core-sys",

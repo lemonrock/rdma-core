@@ -3,8 +3,8 @@
 # Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-bindingsName='gaspi-reference'
-rootIncludeFileName='gaspi-reference.h'
+bindingsName='gaspi-reference-sys'
+rootIncludeFileName='gaspi-reference-sys.h'
 macosXHomebrewPackageNames='clang-format'
 alpineLinuxPackageNames='rsync make gcc linux-headers libunwind-dev linux-grsec-dev'
 clangAdditionalArguments=''
