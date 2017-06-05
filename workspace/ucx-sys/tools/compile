@@ -1,0 +1,331 @@
+#!/usr/bin/env sh
+# This file is part of rdma-core. It is subject to the license terms in the COPYRIGHT file found in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT. No part of rdma-core, including this file, may be copied, modified, propagated, or distributed except according to the terms contained in the COPYRIGHT file.
+# Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
+
+
+set -e
+set -u
+set -f
+
+
+_program_path_find()
+{
+    if [ "${_program_fattening_program_path+set}" = 'set' ]; then
+        printf '%s\n' "$_program_fattening_program_path"
+
+    elif [ "${0%/*}" = "$0" ]; then
+
+        # We've been invoked by the interpreter as, say, bash program
+        if [ -r "$0" ]; then
+            pwd -P
+        # Clutching at straws; probably run via a download, anonymous script, etc, weird execve, etc
+        else
+            printf '\n'
+        fi
+
+    else
+
+        # We've been invoked with a relative or absolute path (also when invoked via PATH in a shell)
+
+        _program_path_find_parentPath()
+        {
+            parentPath="${scriptPath%/*}"
+            if [ -z "$parentPath" ]; then
+                parentPath='/'
+            fi
+            cd "$parentPath" 1>/dev/null
+        }
+
+        # pdksh / mksh have problems with unsetting a variable that was never set...
+        if [ "${CDPATH+set}" = 'set' ]; then
+            unset CDPATH
+        fi
+
+        if command -v realpath 1>/dev/null 2>/dev/null; then
+            (
+                scriptPath="$(realpath "$0")"
+
+                _program_path_find_parentPath
+                pwd -P
+            )
+        elif command -v readlink 1>/dev/null 2>/dev/null; then
+            (
+                scriptPath="$0"
+
+                while [ -L "$scriptPath" ]
+                do
+                    _program_path_find_parentPath
+                    scriptPath="$(readlink "$scriptPath")"
+                done
+
+                _program_path_find_parentPath
+                pwd -P
+            )
+        else
+            # This approach will fail in corner cases where the script itself is a symlink in a path not parallel with the concrete script
+            (
+                scriptPath="$0"
+
+                _program_path_find_parentPath
+                pwd -P
+            )
+        fi
+
+    fi
+}
+
+compile_fail()
+{
+	local message="$1"
+
+	printf 'compile:FAIL:%s\n' "$message" 1>&2
+	exit 1
+}
+
+compile_ensureRequiredBinariesArePresent()
+{
+	local reason="$1"
+	shift 1
+
+	local binary
+	local missing=false
+	for binary in "$@"
+	do
+		if ! command -v "$binary" 1>/dev/null 2>/dev/null; then
+			printf 'compile:%s\n' "The binary '$binary' needs to be in the path" 1>&2
+			missing=true
+		fi
+	done
+
+	if $missing; then
+		compile_fail "Please make sure that the missing binaries are installed because '$reason'"
+	fi
+}
+
+_compile_prepareForMacOSX_brewInstall()
+{
+	compile_ensureRequiredBinariesArePresent brew
+
+	local packageName="$1"
+	if ! brew ls --versions "$packageName" 1>/dev/null 2>/dev/null; then
+		brew install "$packageName" 1>&2
+	fi
+}
+
+compile_prepareForMacOSX()
+{
+	_compile_prepareForMacOSX_brewInstall gnu-sed
+	_compile_prepareForMacOSX_brewInstall make
+	_compile_prepareForMacOSX_brewInstall libelf
+	_compile_prepareForMacOSX_brewInstall coreutils
+	_compile_prepareForMacOSX_brewInstall FiloSottile/musl-cross/musl-cross
+	
+	#_compile_prepareForMacOSX_brewInstall pkg-config
+	#_compile_prepareForMacOSX_brewInstall grep
+	_compile_prepareForMacOSX_brewInstall autoconf@2.69
+	_compile_prepareForMacOSX_brewInstall automake@1.15
+}
+
+compile_parseCommandLine()
+{
+	case "$#" in
+
+		0)
+			:
+		;;
+
+		1)
+			case "$1" in
+
+				-h|--help)
+					printf './compile\n'
+					printf './compile -h|--help\n'
+					printf 'Pass the environment variable NUM_JOBS to control the number of make jobs\n'
+					exit 0
+				;;
+
+				*)
+					compile_fail "Does not take any arguments"
+				;;
+
+			esac
+		;;
+
+		*)
+			compile_fail "Does not take any arguments"
+		;;
+
+	esac
+}
+
+compile_findFolderPaths()
+{
+	programFolderPath="$(_program_path_find)"
+
+	cd "$programFolderPath"/.. 1>/dev/null 2>/dev/null
+		homeFolderPath="$(pwd)"
+	cd - 1>/dev/null 2>/dev/null
+
+	configurationFolderPath="$homeFolderPath"/compile.conf.d
+}
+
+compile_createTemporaryFolder()
+{
+	temporaryFolderPath="$configurationFolderPath"/temporary
+	rm -rf "$temporaryFolderPath"
+	mkdir -m 0700 -p "$temporaryFolderPath"
+}
+
+compile_createTemporaryBinariesPath()
+{
+	rm -rf "$additionalPath"
+	mkdir -m 0700 -p "$additionalPath"
+	export PATH="$additionalPath":"$PATH"
+}
+
+compile_platformSpecificPreparation()
+{
+	compile_ensureRequiredBinariesArePresent uname
+	platform="$(uname)"
+
+	if [ -z "${NUM_JOBS+undefined}" ]; then
+		numberOfMakeJobs=0
+	else
+		numberOfMakeJobs="$NUM_JOBS"
+	fi
+
+	case "$platform" in
+
+		Darwin)
+			compile_prepareForMacOSX
+
+			compile_ensureRequiredBinariesArePresent brew
+
+			export PATH="$(brew --prefix coreutils)"/libexec/gnubin:"$(brew --prefix gnu-sed)"/libexec/gnubin:"$PATH"
+			
+			#ln -s /usr/local/bin/ggrep "$additionalPath"/grep
+
+			muslIncludeFolderPath="$(brew --prefix musl-cross)"/libexec/x86_64-linux-musl/include
+
+			if [ $numberOfMakeJobs -eq 0 ]; then
+				compile_ensureRequiredBinariesArePresent sysctl
+				numberOfMakeJobs="$(sysctl -n hw.ncpu)"
+			fi
+		;;
+
+		Linux)
+			compile_ensureRequiredBinariesArePresent make sed x86_64-linux-musl-gcc x86_64-linux-musl-ar rm mkdir rsync cat
+			muslIncludeFolderPath='/usr/include'
+
+			if [ $numberOfMakeJobs -eq 0 ]; then
+				compile_ensureRequiredBinariesArePresent grep
+				numberOfMakeJobs="$(grep -c '^processor' /proc/cpuinfo)"
+			fi
+		;;
+
+		*)
+			compile_fail "Only Darwin (Mac OS X) and Linux (specifically, Alpine Linux) are supported at this time"
+		;;
+
+	esac
+}
+
+compile_makeCopyToAlter()
+{
+	rsync --archive --quiet --exclude=.git "$homeFolderPath"/lib/ucx/ "$temporaryFolderPath"/
+}
+
+compile_autoreconf()
+{
+	cd "$temporaryFolderPath" 1>/dev/null 2>/dev/null
+		
+		autoreconf -ivf
+		
+	cd - 1>/dev/null 2>/dev/null
+}
+
+compile_configure()
+{
+	printf '\n\n\n\n\n\nWARNING: DISABLING SUPPORT for libnuma FOR NOW\n\n\n\n\n\n' 1>&2
+	
+	cd "$temporaryFolderPath" 1>/dev/null 2>/dev/null
+		
+		# --disable-numa
+		# --disable-openmp
+		# --enable-tuning
+		# --enable-mt
+		# --with-verbs=/path/to/sysroot
+		# --with-rc
+		# --with-ud
+		# --with-cm
+		# --with-mpi[=MPIHOME] (testing only)
+		# --with-ugni(=SYSROOT)
+		# --with-rte(=SYSROOT)
+		./configure --prefix=/usr --host="$configureHost" --disable-shared --enable-static --disable-dependency-tracking --disable-silent-rules --enable-fast-install \
+			--enable-optimizations \
+			--disable-backtrace-detail \
+			--disable-logging \
+			--disable-assertions \
+			--disable-symbol-override \
+			--disable-cma \
+			--disable-frame-pointer \
+			--disable-fault-injection \
+			--disable-params-check \
+			--disable-debug-data \
+			--disable-doxygen-doc \
+			--with-avx \
+			--with-sse41 \
+			--with-sse42 \
+			--with-allocator=ptmalloc286 \
+			--with-dc \
+			--with-ib-hw-tm \
+			--with-knem=no \
+			--with-xpmem=no \
+			--disable-numa
+		
+	cd - 1>/dev/null 2>/dev/null
+}
+
+compile_make()
+{
+	cd "$temporaryFolderPath" 1>/dev/null 2>/dev/null
+
+		make -j "$numberOfMakeJobs" 1>&2
+		make -j "$numberOfMakeJobs" install DESTDIR="$temporaryFolderPath" 1>&2
+		
+	cd - 1>/dev/null 2>/dev/null
+}
+
+compile_main()
+{
+	local configureHost='x86_64-linux-musl'
+	local compilerPrefix="${configureHost}"-
+	
+	compile_parseCommandLine "$@"
+	
+	local programFolderPath
+	local homeFolderPath
+	local configurationFolderPath
+	compile_findFolderPaths
+
+	local temporaryFolderPath
+	compile_createTemporaryFolder
+	
+	local additionalPath="$temporaryFolderPath"/PATH
+	compile_createTemporaryBinariesPath
+
+	local platform
+	local muslIncludeFolderPath
+	local numberOfMakeJobs
+	compile_platformSpecificPreparation
+	
+	compile_makeCopyToAlter
+	
+	compile_autoreconf
+	compile_configure
+	compile_make
+	
+	printf '\n\n\nFINISHED\n\n\n' 1>&2
+}
+
+compile_main "$@"

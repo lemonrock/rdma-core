@@ -22,3 +22,12 @@
 [submodule "workspace/mxm-reference-sys/tools/bindgen-wrapper"]
 	path = workspace/mxm-reference-sys/tools/bindgen-wrapper
 	url = https://github.com/lemonrock/bindgen-wrapper.git
+[submodule "workspace/ucx-sys/tools/bindgen-wrapper"]
+	path = workspace/ucx-sys/tools/bindgen-wrapper
+	url = https://github.com/lemonrock/bindgen-wrapper.git
+[submodule "workspace/ucx-sys/lib/ucx"]
+	path = workspace/ucx-sys/lib/ucx
+	url = https://github.com/openucx/ucx.git
+[submodule "workspace/ucx-sys/lib/numactl"]
+	path = workspace/ucx-sys/lib/numactl
+	url = https://github.com/numactl/numactl.git

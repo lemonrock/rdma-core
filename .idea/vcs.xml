@@ -6,11 +6,14 @@
     <mapping directory="$PROJECT_DIR$/workspace/gaspi-reference-sys/.cargo" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/gaspi-reference-sys/lib/GASPI-Standard" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/gaspi-reference-sys/tools/bindgen-wrapper" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/workspace/mxm-reference-sys/.cargo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/workspace/mxm-reference-sys/tools/bindgen-wrapper" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/openshmem-reference-sys/.cargo" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/openshmem-reference-sys/lib/openshmem" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/openshmem-reference-sys/tools/bindgen-wrapper" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/rdma-core-sys/.cargo" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/rdma-core-sys/lib/rdma-core" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/rdma-core-sys/tools/bindgen-wrapper" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/workspace/rdma-core/.cargo" vcs="Git" />
   </component>
 </project>
