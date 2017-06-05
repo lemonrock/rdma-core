@@ -5,8 +5,10 @@
 use super::*;
 use ::libc::c_void;
 use ::rust_extra::likely;
+use ::rust_extra::unlikely;
 use ::std::marker::PhantomData;
 use ::std::mem::forget;
+use ::std::mem::uninitialized;
 use ::std::panic::AssertUnwindSafe;
 use ::std::panic::catch_unwind;
 use ::std::ptr::null_mut;
@@ -50,19 +52,55 @@ pub trait Deserialiser<T: Sized>
 	fn start(&mut self, buffer: *mut c_void, count: usize) -> Self::U;
 }
 
-pub struct GenericDataTypeOperations<T: Sized, S: Serialiser<T>, D: Deserialiser<T>>
+pub struct GenericDataType<T: Sized, S: Serialiser<T>, D: Deserialiser<T>>
+{
+	// NOTE: In the current ucp code, dataType is actually a pointer which references ops and context with UCP_DATATYPE_GENERIC or'd onto the bottom (since this is 3 bits, and pointers are 64-bit aligned, this works but seems horrible)
+	context: *mut GenericDataTypeCreator<T, S, D>,
+	dataType: ucp_datatype_t,
+}
+
+impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> Drop for GenericDataType<T, S, D>
+{
+	#[inline(always)]
+	fn drop(&mut self)
+	{
+		unsafe { ucp_dt_destroy(self.dataType) };
+		
+		unsafe { Box::from_raw(self.context) };
+	}
+}
+
+impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataType<T, S, D>
+{
+	#[inline(always)]
+	pub fn genericDataType(&self) -> ucp_datatype_t
+	{
+		self.dataType
+	}
+}
+
+#[allow(dead_code)]
+pub struct GenericDataTypeCreator<T: Sized, S: Serialiser<T>, D: Deserialiser<T>>
 {
 	serializer: S,
 	deserializer: D,
 	marker: PhantomData<T>,
 }
 
-impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeOperations<T, S, D>
+#[allow(dead_code)]
+impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeCreator<T, S, D>
 {
 	#[inline(always)]
-	pub fn as_ucp_generic_dt_ops(&mut self) -> ucp_generic_dt_ops
+	fn create(serializer: S, deserializer: D) -> GenericDataType<T, S, D>
 	{
-		ucp_generic_dt_ops
+		let this = Box::new(Self
+		{
+			serializer: serializer,
+			deserializer: deserializer,
+			marker: PhantomData,
+		});
+		
+		let ops = ucp_generic_dt_ops
 		{
 			start_pack: Some(Self::start_pack),
 			start_unpack: Some(Self::start_unpack),
@@ -70,6 +108,23 @@ impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeOperations<T
 			pack: Some(Self::pack),
 			unpack: Some(Self::unpack),
 			finish: Some(Self::finish),
+		};
+		
+		let mut dataType = unsafe { uninitialized() };
+		
+		let context = Box::into_raw(this);
+		
+		let result = unsafe { ucp_dt_create_generic(&ops, context as *mut c_void, &mut dataType) };
+		if unlikely(result != ucs_status_t::UCS_OK)
+		{
+			drop(unsafe { Box::from_raw(context) });
+			panic!("ucp_dt_create_generic failed with error code '{:?}'", result);
+		}
+		
+		GenericDataType
+		{
+			context: context,
+			dataType: dataType,
 		}
 	}
 	
