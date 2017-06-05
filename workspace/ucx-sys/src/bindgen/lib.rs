@@ -21,5 +21,6 @@ include!("bindgen/functions.rs");
 include!("bindgen/statics.rs");
 include!("bindgen/structs.rs");
 include!("bindgen/types.rs");
+include!("bindgen/unions.rs");
 include!("bindgen/uses.rs");
 include!("bindgen/opaques.rs");

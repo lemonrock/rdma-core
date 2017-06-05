@@ -2,6 +2,10 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
+include!("bindgen/functions/UcmConfiguration.rs");
+include!("bindgen/functions/UcmEventHandler.rs");
+include!("bindgen/functions/UcmMemoryAllocator.rs");
+include!("bindgen/functions/UcmOriginal.rs");
 include!("bindgen/functions/UcsAsynchronous.rs");
 include!("bindgen/functions/UcsCallbackQueue.rs");
 include!("bindgen/functions/UcsMemoryAllocator.rs");

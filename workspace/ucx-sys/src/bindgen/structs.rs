@@ -4,6 +4,13 @@
 
 include!("bindgen/structs/_bindgen_ty_1.rs");
 include!("bindgen/structs/_bindgen_ty_2.rs");
+include!("bindgen/structs/ucm_event__bindgen_ty_1.rs");
+include!("bindgen/structs/ucm_event__bindgen_ty_2.rs");
+include!("bindgen/structs/ucm_event__bindgen_ty_3.rs");
+include!("bindgen/structs/ucm_event__bindgen_ty_4.rs");
+include!("bindgen/structs/ucm_event__bindgen_ty_5.rs");
+include!("bindgen/structs/ucm_event__bindgen_ty_6.rs");
+include!("bindgen/structs/ucm_event__bindgen_ty_7.rs");
 include!("bindgen/structs/ucs_async_context.rs");
 include!("bindgen/structs/ucs_callbackq.rs");
 include!("bindgen/structs/ucs_callbackq_elem.rs");

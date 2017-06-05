@@ -2,6 +2,7 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
+include!("bindgen/enums/ucm_event_type.rs");
 include!("bindgen/enums/ucs_async_mode_t.rs");
 include!("bindgen/enums/ucs_handle_error_t.rs");
 include!("bindgen/enums/ucs_log_level_t.rs");

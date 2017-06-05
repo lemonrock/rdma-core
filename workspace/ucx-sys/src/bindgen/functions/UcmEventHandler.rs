@@ -2,7 +2,10 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/uses/ucm_event_type_t.rs");
-include!("bindgen/uses/ucs_ternary_value_t.rs");
-include!("bindgen/uses/uct_am_trace_type_t.rs");
-include!("bindgen/uses/uct_mem_advice_t.rs");
+extern "C"
+{
+	pub fn ucm_set_event_handler(events: c_int, priority: c_int, cb: ucm_event_callback_t, arg: *mut c_void) -> ucs_status_t;
+	pub fn ucm_set_external_event(events: c_int);
+	pub fn ucm_unset_event_handler(events: c_int, cb: ucm_event_callback_t, arg: *mut c_void);
+	pub fn ucm_unset_external_event(events: c_int);
+}

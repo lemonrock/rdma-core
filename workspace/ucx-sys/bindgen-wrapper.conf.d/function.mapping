@@ -14,3 +14,8 @@ uct_mem_ UcsMemoryAllocator
 uct_query_md_ UctMemoryResources
 uct_release_md_ UctMemoryResources
 uct_release_tl_ UctTransportLayerResources
+ucm_config_ UcmConfiguration
+ucm_orig_ UcmOriginal
+ucm_set_ UcmEventHandler
+ucm_unset_ UcmEventHandler
+ucm_ UcmMemoryAllocator
