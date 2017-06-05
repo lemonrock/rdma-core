@@ -2,30 +2,34 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-extern crate libc;
-extern crate libc_extra;
-extern crate rust_extra;
-extern crate ucx_sys;
+#[derive(Debug)]
+pub struct RemoteAccessKeyBuffer<'a>
+{
+	address: *mut c_void,
+	length: usize,
+	mappedMemory: &'a MappedMemory<'a>
+}
 
+impl<'a> Drop for RemoteAccessKeyBuffer<'a>
+{
+	#[inline(always)]
+	fn drop(&mut self)
+	{
+		unsafe { ucp_rkey_buffer_release(self.address) }
+	}
+}
 
-include!("panic_on_error.rs");
-include!("panic_on_error_with_clean_up.rs");
-
-
-use ::libc::c_void;
-use ::libc::FILE;
-use ::libc_extra::stderr;
-use ::std::ffi::CStr;
-use ::std::ffi::CString;
-use ::std::mem::uninitialized;
-use ::std::ptr::null;
-use ::ucx_sys::*;
-
-
-pub mod genericDataTypes;
-
-
-include!("ApplicationContext.rs");
-include!("Configuration.rs");
-include!("MappedMemory.rs");
-include!("RemoteAccessKeyBuffer.rs");
+impl<'a> RemoteAccessKeyBuffer<'a>
+{
+	#[inline(always)]
+	pub fn address(&self) -> *mut c_void
+	{
+		self.address
+	}
+	
+	#[inline(always)]
+	pub fn length(&self) -> usize
+	{
+		self.length
+	}
+}

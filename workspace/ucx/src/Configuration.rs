@@ -5,7 +5,7 @@
 #[derive(Debug)]
 pub struct Configuration
 {
-	config_p: *mut ucp_config_t,
+	handle: *mut ucp_config_t,
 }
 
 impl Drop for Configuration
@@ -13,7 +13,7 @@ impl Drop for Configuration
 	#[inline(always)]
 	fn drop(&mut self)
 	{
-		unsafe { ucp_config_release(self.config_p) };
+		unsafe { ucp_config_release(self.handle) };
 	}
 }
 
@@ -36,15 +36,16 @@ impl Configuration
 		
 		Configuration
 		{
-			config_p: config_p,
+			handle: config_p,
 		}
 	}
 	
+	// See ucx-sys/src/bindgen/constants/UcsConfiguration.rs for ucs_config_print_flags_t constants
 	#[inline(always)]
 	pub fn printInformationToStandardError(&self, title: &str, printFlags: ucs_config_print_flags_t)
 	{
 		let title = CString::new(title).expect("Not a valid CStr");
-		unsafe { ucp_config_print(self.config_p, stderr as *mut FILE, title.as_ptr(), printFlags) };
+		unsafe { ucp_config_print(self.handle, stderr as *mut FILE, title.as_ptr(), printFlags) };
 	}
 	
 	/// See the static `ucp_config_table` in ucp_context.c for potential values of name and value
@@ -53,17 +54,17 @@ impl Configuration
 	{
 		let name = CString::new(name).expect("Not a valid CStr");
 		let value = CString::new(value).expect("Not a valid CStr");
-		panic_on_error!(ucp_config_modify, self.config_p, name.as_ptr(), value.as_ptr());
+		panic_on_error!(ucp_config_modify, self.handle, name.as_ptr(), value.as_ptr());
 	}
 	
 	#[inline(always)]
 	pub fn initialiseApplicationContext(&self, parameters: &ucp_params_t) -> ApplicationContext
 	{
-		let mut context_p = unsafe { uninitialized() };
-		panic_on_error!(ucp_init_version, UCP_API_MAJOR, UCP_API_MINOR, parameters, self.config_p, &mut context_p);
+		let mut context = unsafe { uninitialized() };
+		panic_on_error!(ucp_init_version, UCP_API_MAJOR, UCP_API_MINOR, parameters, self.handle, &mut context);
 		ApplicationContext
 		{
-			context_p: context_p,
+			handle: context,
 		}
 	}
 }
