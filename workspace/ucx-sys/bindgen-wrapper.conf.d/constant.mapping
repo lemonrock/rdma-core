@@ -20,3 +20,7 @@ uct_alloc_method_t_ uct_alloc_method_t
 uct_cb_flags_UCT_CB_FLAG_ UctCallbackFlags
 uct_event_types_UCP_EVENT_ UcpEventTypes
 uct_wakeup_event_types_UCT_WAKEUP_ UctWakeUpEventTypes
+UCP_API_ UcpVersioning
+UCP_VERSION_ UcpVersioning
+UCP_MEM_MAP_ UcpMemoryMapFlags
+ucp_dt_type_UCP_DATATYPE_ ucp_dt_type

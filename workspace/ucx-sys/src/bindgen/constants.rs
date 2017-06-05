@@ -3,6 +3,8 @@
 
 
 include!("bindgen/constants/UcpEventTypes.rs");
+include!("bindgen/constants/UcpMemoryMapFlags.rs");
+include!("bindgen/constants/UcpVersioning.rs");
 include!("bindgen/constants/UcsActiveMessageCallbackFlags.rs");
 include!("bindgen/constants/UcsConfiguration.rs");
 include!("bindgen/constants/UcsConfigurationMemoryUnits.rs");
@@ -16,4 +18,5 @@ include!("bindgen/constants/UctPrivilegeLengths.rs");
 include!("bindgen/constants/UctTransportLayer.rs");
 include!("bindgen/constants/UctVersioning.rs");
 include!("bindgen/constants/UctWakeUpEventTypes.rs");
+include!("bindgen/constants/ucp_dt_type.rs");
 include!("bindgen/constants/uct_alloc_method_t.rs");

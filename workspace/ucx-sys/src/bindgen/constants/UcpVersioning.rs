@@ -2,9 +2,8 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/uses/ucm_event_type_t.rs");
-include!("bindgen/uses/ucp_mem_advice_t.rs");
-include!("bindgen/uses/ucp_wakeup_event_t.rs");
-include!("bindgen/uses/ucs_ternary_value_t.rs");
-include!("bindgen/uses/uct_am_trace_type_t.rs");
-include!("bindgen/uses/uct_mem_advice_t.rs");
+pub const UCP_API_MAJOR: c_uint = 1;
+pub const UCP_API_MINOR: c_uint = 3;
+pub const UCP_API_RELEASE: c_uint = 2938;
+pub const UCP_VERSION_MAJOR_SHIFT: c_uint = 24;
+pub const UCP_VERSION_MINOR_SHIFT: c_uint = 16;

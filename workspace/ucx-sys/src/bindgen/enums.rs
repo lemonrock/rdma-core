@@ -3,6 +3,21 @@
 
 
 include!("bindgen/enums/ucm_event_type.rs");
+include!("bindgen/enums/ucp_atomic_fetch_op_t.rs");
+include!("bindgen/enums/ucp_atomic_post_op_t.rs");
+include!("bindgen/enums/ucp_context_attr_field.rs");
+include!("bindgen/enums/ucp_dt_type.rs");
+include!("bindgen/enums/ucp_ep_params_field.rs");
+include!("bindgen/enums/ucp_err_handling_mode_t.rs");
+include!("bindgen/enums/ucp_feature.rs");
+include!("bindgen/enums/ucp_mem_advice.rs");
+include!("bindgen/enums/ucp_mem_advise_params_field.rs");
+include!("bindgen/enums/ucp_mem_attr_field.rs");
+include!("bindgen/enums/ucp_mem_map_params_field.rs");
+include!("bindgen/enums/ucp_params_field.rs");
+include!("bindgen/enums/ucp_wakeup_event_types.rs");
+include!("bindgen/enums/ucp_worker_attr_field.rs");
+include!("bindgen/enums/ucp_worker_params_field.rs");
 include!("bindgen/enums/ucs_async_mode_t.rs");
 include!("bindgen/enums/ucs_handle_error_t.rs");
 include!("bindgen/enums/ucs_log_level_t.rs");

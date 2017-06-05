@@ -2,9 +2,8 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/uses/ucm_event_type_t.rs");
-include!("bindgen/uses/ucp_mem_advice_t.rs");
-include!("bindgen/uses/ucp_wakeup_event_t.rs");
-include!("bindgen/uses/ucs_ternary_value_t.rs");
-include!("bindgen/uses/uct_am_trace_type_t.rs");
-include!("bindgen/uses/uct_mem_advice_t.rs");
+extern "C"
+{
+	pub fn ucp_dt_create_generic(ops: *const ucp_generic_dt_ops_t, context: *mut c_void, datatype_p: *mut ucp_datatype_t) -> ucs_status_t;
+	pub fn ucp_dt_destroy(datatype: ucp_datatype_t);
+}

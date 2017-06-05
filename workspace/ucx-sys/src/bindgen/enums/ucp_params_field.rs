@@ -2,9 +2,15 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/uses/ucm_event_type_t.rs");
-include!("bindgen/uses/ucp_mem_advice_t.rs");
-include!("bindgen/uses/ucp_wakeup_event_t.rs");
-include!("bindgen/uses/ucs_ternary_value_t.rs");
-include!("bindgen/uses/uct_am_trace_type_t.rs");
-include!("bindgen/uses/uct_mem_advice_t.rs");
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum ucp_params_field
+{
+	UCP_PARAM_FIELD_FEATURES = 1,
+	UCP_PARAM_FIELD_REQUEST_SIZE = 2,
+	UCP_PARAM_FIELD_REQUEST_INIT = 4,
+	UCP_PARAM_FIELD_REQUEST_CLEANUP = 8,
+	UCP_PARAM_FIELD_TAG_SENDER_MASK = 16,
+	UCP_PARAM_FIELD_MT_WORKERS_SHARED = 32,
+	UCP_PARAM_FIELD_ESTIMATED_NUM_EPS = 64,
+}
