@@ -22,6 +22,6 @@ version = "0.0.0"
 #bitflags = "0.8"
 #errno = "0.2"
 libc = "0.2"
-ucx-sys = { path = "../ucx-sys", version = "0.0.0" }
+ucx-sys = { path = "../ucx-sys", version = "0.0.1" }
 rust-extra = "0.0.13"
 #syscall-alt = "0.0.14"
