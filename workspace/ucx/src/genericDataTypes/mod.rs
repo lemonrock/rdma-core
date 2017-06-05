@@ -5,7 +5,6 @@
 use super::*;
 use ::libc::c_void;
 use ::rust_extra::likely;
-use ::rust_extra::unlikely;
 use ::std::marker::PhantomData;
 use ::std::mem::forget;
 use ::std::mem::uninitialized;
@@ -114,12 +113,13 @@ impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeCreator<T, S
 		
 		let context = Box::into_raw(this);
 		
-		let result = unsafe { ucp_dt_create_generic(&ops, context as *mut c_void, &mut dataType) };
-		if unlikely(result != ucs_status_t::UCS_OK)
-		{
-			drop(unsafe { Box::from_raw(context) });
-			panic!("ucp_dt_create_generic failed with error code '{:?}'", result);
-		}
+		panic_on_error_with_clean_up!
+		(
+			{
+				drop(unsafe { Box::from_raw(context) })
+			},
+			ucp_dt_create_generic, &ops, context as *mut c_void, &mut dataType
+		);
 		
 		GenericDataType
 		{

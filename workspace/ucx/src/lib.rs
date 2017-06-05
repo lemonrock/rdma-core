@@ -14,12 +14,4 @@
 #![warn(unused_import_braces)]
 
 
-#[cfg(any(target_os="linux", target_os="android"))] extern crate libc;
-#[cfg(any(target_os="linux", target_os="android"))] extern crate rust_extra;
-#[cfg(any(target_os="linux", target_os="android"))] extern crate ucx_sys;
-
-
-#[cfg(any(target_os="linux", target_os="android"))] use ::ucx_sys::*;
-
-
-#[cfg(any(target_os="linux", target_os="android"))] pub mod genericDataTypes;
+#[cfg(any(target_os="linux", target_os="android"))] include!("lib.linux.rs");
