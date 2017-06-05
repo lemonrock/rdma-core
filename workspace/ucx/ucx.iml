@@ -13,5 +13,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Rust &lt;rdma-core&gt;" level="project" />
     <orderEntry type="library" name="Cargo &lt;rdma-core&gt;" level="project" />
+    <orderEntry type="library" name="Rust &lt;ucx&gt;" level="project" />
+    <orderEntry type="library" name="Cargo &lt;ucx&gt;" level="project" />
   </component>
 </module>

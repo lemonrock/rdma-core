@@ -9,6 +9,7 @@ members = [
 	"openshmem-reference-sys",
     "rdma-core",
 	"rdma-core-sys",
+	"ucx",
 	"ucx-sys",
 ]
 

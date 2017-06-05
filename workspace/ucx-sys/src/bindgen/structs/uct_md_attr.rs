@@ -3,7 +3,7 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
+#[derive(Copy)]
 pub struct uct_md_attr
 {
 	pub cap: uct_md_attr__bindgen_ty_1,

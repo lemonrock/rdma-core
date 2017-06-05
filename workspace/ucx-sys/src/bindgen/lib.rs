@@ -14,6 +14,10 @@ use ::libc::c_uint;
 use ::libc::c_ulong;
 use ::libc::c_void;
 
+use ::libc::cpu_set_t;
+use ::libc::FILE;
+use ::libc::off_t;
+
 
 include!("bindgen/constants.rs");
 include!("bindgen/enums.rs");

@@ -16,5 +16,5 @@ link_kind='static-nobundle'
 
 final_chance_to_tweak()
 {
-	:
+	sed -i -e 's/#\[derive(Debug, Default, Copy)\]/#[derive(Copy)]/g' "$outputFolderPath"/structs/uct_md_attr.rs
 }
