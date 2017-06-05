@@ -4,5 +4,7 @@
 
 extern "C"
 {
-	pub fn ucp_mem_query(memh: ucp_mem_h, attr: *mut ucp_mem_attr_t) -> ucs_status_t;
+	pub fn ucp_ep_destroy(ep: ucp_ep_h);
+	pub fn ucp_request_is_completed(request: *mut c_void) -> c_int;
+	pub fn ucp_request_release(request: *mut c_void);
 }

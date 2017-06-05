@@ -10,6 +10,7 @@ include!("bindgen/types/ucp_context_attr_t.rs");
 include!("bindgen/types/ucp_context_h.rs");
 include!("bindgen/types/ucp_datatype_t.rs");
 include!("bindgen/types/ucp_dt_iov_t.rs");
+include!("bindgen/types/ucp_dt_type.rs");
 include!("bindgen/types/ucp_ep_h.rs");
 include!("bindgen/types/ucp_ep_params_t.rs");
 include!("bindgen/types/ucp_err_handler_cb_t.rs");

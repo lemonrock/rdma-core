@@ -5,8 +5,6 @@
 extern "C"
 {
 	pub fn ucp_disconnect_nb(ep: ucp_ep_h) -> ucs_status_ptr_t;
-	pub fn ucp_ep_create(worker: ucp_worker_h, params: *const ucp_ep_params_t, ep_p: *mut ucp_ep_h) -> ucs_status_t;
-	pub fn ucp_ep_destroy(ep: ucp_ep_h);
 	pub fn ucp_ep_flush(ep: ucp_ep_h) -> ucs_status_t;
 	pub fn ucp_ep_print_info(ep: ucp_ep_h, stream: *mut FILE);
 	pub fn ucp_ep_rkey_unpack(ep: ucp_ep_h, rkey_buffer: *mut c_void, rkey_p: *mut ucp_rkey_h) -> ucs_status_t;

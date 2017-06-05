@@ -4,10 +4,6 @@
 
 extern "C"
 {
-	pub fn ucp_get(ep: ucp_ep_h, buffer: *mut c_void, length: usize, remote_addr: u64, rkey: ucp_rkey_h) -> ucs_status_t;
-	pub fn ucp_get_nbi(ep: ucp_ep_h, buffer: *mut c_void, length: usize, remote_addr: u64, rkey: ucp_rkey_h) -> ucs_status_t;
 	pub fn ucp_get_version(major_version: *mut c_uint, minor_version: *mut c_uint, release_number: *mut c_uint);
 	pub fn ucp_get_version_string() -> *const c_char;
-	pub fn ucp_put(ep: ucp_ep_h, buffer: *const c_void, length: usize, remote_addr: u64, rkey: ucp_rkey_h) -> ucs_status_t;
-	pub fn ucp_put_nbi(ep: ucp_ep_h, buffer: *const c_void, length: usize, remote_addr: u64, rkey: ucp_rkey_h) -> ucs_status_t;
 }

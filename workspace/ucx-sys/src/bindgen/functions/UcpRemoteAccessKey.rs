@@ -4,7 +4,5 @@
 
 extern "C"
 {
-	pub fn ucp_rkey_buffer_release(rkey_buffer: *mut c_void);
 	pub fn ucp_rkey_destroy(rkey: ucp_rkey_h);
-	pub fn ucp_rkey_pack(context: ucp_context_h, memh: ucp_mem_h, rkey_buffer_p: *mut *mut c_void, size_p: *mut usize) -> ucs_status_t;
 }

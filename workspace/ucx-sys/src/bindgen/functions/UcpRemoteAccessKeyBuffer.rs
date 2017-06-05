@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	pub fn ucp_mem_query(memh: ucp_mem_h, attr: *mut ucp_mem_attr_t) -> ucs_status_t;
+	pub fn ucp_rkey_buffer_release(rkey_buffer: *mut c_void);
 }

@@ -5,7 +5,6 @@
 extern "C"
 {
 	pub fn ucp_worker_arm(worker: ucp_worker_h) -> ucs_status_t;
-	pub fn ucp_worker_create(context: ucp_context_h, params: *const ucp_worker_params_t, worker_p: *mut ucp_worker_h) -> ucs_status_t;
 	pub fn ucp_worker_destroy(worker: ucp_worker_h);
 	pub fn ucp_worker_fence(worker: ucp_worker_h) -> ucs_status_t;
 	pub fn ucp_worker_flush(worker: ucp_worker_h) -> ucs_status_t;

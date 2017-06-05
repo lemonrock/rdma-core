@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	pub fn ucp_mem_query(memh: ucp_mem_h, attr: *mut ucp_mem_attr_t) -> ucs_status_t;
+	pub fn ucp_ep_create(worker: ucp_worker_h, params: *const ucp_ep_params_t, ep_p: *mut ucp_ep_h) -> ucs_status_t;
 }

@@ -4,9 +4,6 @@
 
 extern "C"
 {
-	pub fn ucp_request_cancel(worker: ucp_worker_h, request: *mut c_void);
 	pub fn ucp_request_free(request: *mut c_void);
-	pub fn ucp_request_is_completed(request: *mut c_void) -> c_int;
-	pub fn ucp_request_release(request: *mut c_void);
 	pub fn ucp_request_test(request: *mut c_void, info: *mut ucp_tag_recv_info_t) -> ucs_status_t;
 }

@@ -2,16 +2,7 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(u32)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ucp_dt_type
-{
-	UCP_DATATYPE_CONTIG = 0,
-	UCP_DATATYPE_STRIDED = 1,
-	UCP_DATATYPE_IOV = 2,
-	UCP_DATATYPE_GENERIC = 7,
-	UCP_DATATYPE_SHIFT = 3,
-}
+pub type ucp_dt_type = c_uint;
 
 impl ::core::ops::BitOr<_bindgen_ty_3> for _bindgen_ty_3
 {

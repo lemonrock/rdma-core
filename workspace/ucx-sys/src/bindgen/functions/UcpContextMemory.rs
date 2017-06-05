@@ -4,5 +4,7 @@
 
 extern "C"
 {
-	pub fn ucp_mem_query(memh: ucp_mem_h, attr: *mut ucp_mem_attr_t) -> ucs_status_t;
+	pub fn ucp_mem_advise(context: ucp_context_h, memh: ucp_mem_h, params: *mut ucp_mem_advise_params_t) -> ucs_status_t;
+	pub fn ucp_mem_map(context: ucp_context_h, params: *const ucp_mem_map_params_t, memh_p: *mut ucp_mem_h) -> ucs_status_t;
+	pub fn ucp_mem_unmap(context: ucp_context_h, memh: ucp_mem_h) -> ucs_status_t;
 }
