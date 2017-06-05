@@ -2,4 +2,5 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/mxm_empty_mem_key.rs");
+pub const MXM_MEM_MAP_ODP_REG: _bindgen_ty_3 = _bindgen_ty_3::MXM_MEM_MAP_ODP_REG;
+pub const MXM_MEM_UNMAP_MARK_INVALID: _bindgen_ty_3 = _bindgen_ty_3::MXM_MEM_UNMAP_MARK_INVALID;

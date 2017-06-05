@@ -2,4 +2,7 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/mxm_empty_mem_key.rs");
+extern "C"
+{
+	#[link_name = "mxm_empty_mem_key"] pub static mut mxm_empty_mem_key: mxm_mem_key_t;
+}

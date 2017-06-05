@@ -14,5 +14,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Rust &lt;gaspi-reference-sys&gt;" level="project" />
     <orderEntry type="library" name="Cargo &lt;gaspi-reference-sys&gt;" level="project" />
+    <orderEntry type="library" name="Rust &lt;mxm-reference-sys&gt;" level="project" />
+    <orderEntry type="library" name="Cargo &lt;mxm-reference-sys&gt;" level="project" />
   </component>
 </module>

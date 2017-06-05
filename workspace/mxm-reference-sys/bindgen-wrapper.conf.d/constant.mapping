@@ -1,0 +1,11 @@
+MXM_AM_FLAG_ ActiveMessagingFlags
+MXM_API Versioning
+MXM_ATOMIC_OP_ORDER_ AtomicOperationOrder
+MXM_CONFIG_PRINT_ ConfigurationPrintKey
+MXM_LOG_CATEGORY_ LogCategories
+MXM_MAJOR_BIT Versioning
+MXM_MINOR_BIT Versioning
+MXM_MEM_ MemoryMapping
+MXM_VERNO_ Versioning
+MXM_REQ_DATA_MAX_IOV MXM_REQ_DATA_MAX_IOV
+mxm_tl_id_MXM_TL_SELF MXM_TL_SELF

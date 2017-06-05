@@ -2,4 +2,6 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/mxm_empty_mem_key.rs");
+pub const MXM_AM_FLAG_CONTEXT_SAFE: _bindgen_ty_2 = _bindgen_ty_2::MXM_AM_FLAG_CONTEXT_SAFE;
+pub const MXM_AM_FLAG_DEFAULT: _bindgen_ty_2 = _bindgen_ty_2::MXM_AM_FLAG_DEFAULT;
+pub const MXM_AM_FLAG_THREAD_SAFE: _bindgen_ty_2 = _bindgen_ty_2::MXM_AM_FLAG_THREAD_SAFE;
