@@ -2,5 +2,9 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/Ucs.rs");
-include!("bindgen/statics/Uct.rs");
+pub const UCT_MD_FLAG_ADVISE: _bindgen_ty_1 = _bindgen_ty_1(16);
+pub const UCT_MD_FLAG_ALLOC: _bindgen_ty_1 = _bindgen_ty_1(1);
+pub const UCT_MD_FLAG_FIXED: _bindgen_ty_1 = _bindgen_ty_1(32);
+pub const UCT_MD_FLAG_NEED_MEMH: _bindgen_ty_1 = _bindgen_ty_1(4);
+pub const UCT_MD_FLAG_NEED_RKEY: _bindgen_ty_1 = _bindgen_ty_1(8);
+pub const UCT_MD_FLAG_REG: _bindgen_ty_1 = _bindgen_ty_1(2);

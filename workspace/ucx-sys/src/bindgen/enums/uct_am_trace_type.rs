@@ -12,3 +12,37 @@ pub enum uct_am_trace_type
 	UCT_AM_TRACE_TYPE_RECV_DROP = 3,
 	UCT_AM_TRACE_TYPE_LAST = 4,
 }
+
+impl ::core::ops::BitOr<uct_cb_flags> for uct_cb_flags
+{
+	type Output = Self;
+	fn bitor(self, other: Self) -> Self
+	{
+		uct_cb_flags(self.0 | other.0)
+	}
+}
+
+impl ::core::ops::BitOrAssign for uct_cb_flags
+{
+	fn bitor_assign(&mut self, rhs: uct_cb_flags)
+	{
+		self.0 |= rhs.0;
+	}
+}
+
+impl ::core::ops::BitAnd<uct_cb_flags> for uct_cb_flags
+{
+	type Output = Self;
+	fn bitand(self, other: Self) -> Self
+	{
+		uct_cb_flags(self.0 & other.0)
+	}
+}
+
+impl ::core::ops::BitAndAssign for uct_cb_flags
+{
+	fn bitand_assign(&mut self, rhs: uct_cb_flags)
+	{
+		self.0 &= rhs.0;
+	}
+}

@@ -2,5 +2,5 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/Ucs.rs");
-include!("bindgen/statics/Uct.rs");
+pub const UCT_PENDING_REQ_PRIV_LEN: c_uint = 32;
+pub const UCT_TAG_PRIV_LEN: c_uint = 32;

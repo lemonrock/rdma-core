@@ -2,5 +2,7 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/Ucs.rs");
-include!("bindgen/statics/Uct.rs");
+extern "C"
+{
+	#[link_name = "uct_alloc_method_names"] pub static mut uct_alloc_method_names: [*const c_char; 0usize];
+}

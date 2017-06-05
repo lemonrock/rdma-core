@@ -12,3 +12,37 @@ pub enum uct_alloc_method_t
 	UCT_ALLOC_METHOD_HUGE = 3,
 	UCT_ALLOC_METHOD_LAST = 4,
 }
+
+impl ::core::ops::BitOr<uct_wakeup_event_types> for uct_wakeup_event_types
+{
+	type Output = Self;
+	fn bitor(self, other: Self) -> Self
+	{
+		uct_wakeup_event_types(self.0 | other.0)
+	}
+}
+
+impl ::core::ops::BitOrAssign for uct_wakeup_event_types
+{
+	fn bitor_assign(&mut self, rhs: uct_wakeup_event_types)
+	{
+		self.0 |= rhs.0;
+	}
+}
+
+impl ::core::ops::BitAnd<uct_wakeup_event_types> for uct_wakeup_event_types
+{
+	type Output = Self;
+	fn bitand(self, other: Self) -> Self
+	{
+		uct_wakeup_event_types(self.0 & other.0)
+	}
+}
+
+impl ::core::ops::BitAndAssign for uct_wakeup_event_types
+{
+	fn bitand_assign(&mut self, rhs: uct_wakeup_event_types)
+	{
+		self.0 &= rhs.0;
+	}
+}

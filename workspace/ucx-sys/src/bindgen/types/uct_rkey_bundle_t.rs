@@ -3,3 +3,37 @@
 
 
 pub type uct_rkey_bundle_t = uct_rkey_bundle;
+
+impl ::core::ops::BitOr<uct_am_cb_cap> for uct_am_cb_cap
+{
+	type Output = Self;
+	fn bitor(self, other: Self) -> Self
+	{
+		uct_am_cb_cap(self.0 | other.0)
+	}
+}
+
+impl ::core::ops::BitOrAssign for uct_am_cb_cap
+{
+	fn bitor_assign(&mut self, rhs: uct_am_cb_cap)
+	{
+		self.0 |= rhs.0;
+	}
+}
+
+impl ::core::ops::BitAnd<uct_am_cb_cap> for uct_am_cb_cap
+{
+	type Output = Self;
+	fn bitand(self, other: Self) -> Self
+	{
+		uct_am_cb_cap(self.0 & other.0)
+	}
+}
+
+impl ::core::ops::BitAndAssign for uct_am_cb_cap
+{
+	fn bitand_assign(&mut self, rhs: uct_am_cb_cap)
+	{
+		self.0 &= rhs.0;
+	}
+}

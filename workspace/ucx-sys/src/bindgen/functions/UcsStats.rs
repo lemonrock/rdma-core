@@ -2,5 +2,7 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/Ucs.rs");
-include!("bindgen/statics/Uct.rs");
+extern "C"
+{
+	pub fn ucs_stats_get_root() -> *mut ucs_stats_node_t;
+}

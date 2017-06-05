@@ -2,5 +2,5 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/Ucs.rs");
-include!("bindgen/statics/Uct.rs");
+pub const uct_am_cb_cap_UCT_AM_CB_FLAG_ASYNC: uct_am_cb_cap = uct_am_cb_cap(4);
+pub const uct_am_cb_cap_UCT_AM_CB_FLAG_SYNC: uct_am_cb_cap = uct_am_cb_cap(2);

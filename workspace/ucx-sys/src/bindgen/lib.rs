@@ -10,13 +10,8 @@ use ::core::mem::zeroed;
 use ::core::option::Option;
 use ::libc::c_char;
 use ::libc::c_int;
-use ::libc::c_long;
-use ::libc::c_longlong;
-use ::libc::c_uchar;
 use ::libc::c_uint;
 use ::libc::c_ulong;
-use ::libc::c_ulonglong;
-use ::libc::c_ushort;
 use ::libc::c_void;
 
 
@@ -26,6 +21,5 @@ include!("bindgen/functions.rs");
 include!("bindgen/statics.rs");
 include!("bindgen/structs.rs");
 include!("bindgen/types.rs");
-include!("bindgen/unions.rs");
 include!("bindgen/uses.rs");
 include!("bindgen/opaques.rs");

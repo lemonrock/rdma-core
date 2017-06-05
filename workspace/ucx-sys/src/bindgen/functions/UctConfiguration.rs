@@ -2,5 +2,9 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/Ucs.rs");
-include!("bindgen/statics/Uct.rs");
+extern "C"
+{
+	pub fn uct_config_modify(config: *mut c_void, name: *const c_char, value: *const c_char) -> ucs_status_t;
+	pub fn uct_config_print(config: *const c_void, stream: *mut FILE, title: *const c_char, print_flags: ucs_config_print_flags_t);
+	pub fn uct_config_release(config: *mut c_void);
+}

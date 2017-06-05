@@ -15,5 +15,10 @@
     <mapping directory="$PROJECT_DIR$/workspace/rdma-core-sys/lib/rdma-core" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/rdma-core-sys/tools/bindgen-wrapper" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/workspace/rdma-core/.cargo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/workspace/ucx-sys/.cargo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/workspace/ucx-sys/lib/numactl" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/workspace/ucx-sys/lib/ucx" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/workspace/ucx-sys/tools/bindgen-wrapper" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/workspace/ucx/.cargo" vcs="Git" />
   </component>
 </project>

@@ -2,5 +2,5 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-include!("bindgen/statics/Ucs.rs");
-include!("bindgen/statics/Uct.rs");
+pub const UCS_CONFIG_MEMUNITS_AUTO: c_int = -2;
+pub const UCS_CONFIG_MEMUNITS_INF: c_int = -1;

@@ -2,37 +2,43 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub type ucs_status_ptr_t = *mut c_void;
+#[repr(C)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct _bindgen_ty_1(pub c_uint);
 
-impl ::core::ops::BitOr<uct_event_types> for uct_event_types
+impl ::core::ops::BitOr<_bindgen_ty_2> for _bindgen_ty_2
 {
 	type Output = Self;
+	#[inline(always)]
 	fn bitor(self, other: Self) -> Self
 	{
-		uct_event_types(self.0 | other.0)
+		_bindgen_ty_2(self.0 | other.0)
 	}
 }
 
-impl ::core::ops::BitOrAssign for uct_event_types
+impl ::core::ops::BitOrAssign for _bindgen_ty_2
 {
-	fn bitor_assign(&mut self, rhs: uct_event_types)
+	#[inline(always)]
+	fn bitor_assign(&mut self, rhs: _bindgen_ty_2)
 	{
 		self.0 |= rhs.0;
 	}
 }
 
-impl ::core::ops::BitAnd<uct_event_types> for uct_event_types
+impl ::core::ops::BitAnd<_bindgen_ty_2> for _bindgen_ty_2
 {
 	type Output = Self;
+	#[inline(always)]
 	fn bitand(self, other: Self) -> Self
 	{
-		uct_event_types(self.0 & other.0)
+		_bindgen_ty_2(self.0 & other.0)
 	}
 }
 
-impl ::core::ops::BitAndAssign for uct_event_types
+impl ::core::ops::BitAndAssign for _bindgen_ty_2
 {
-	fn bitand_assign(&mut self, rhs: uct_event_types)
+	#[inline(always)]
+	fn bitand_assign(&mut self, rhs: _bindgen_ty_2)
 	{
 		self.0 &= rhs.0;
 	}
