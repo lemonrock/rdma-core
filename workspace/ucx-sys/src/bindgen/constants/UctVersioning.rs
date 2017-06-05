@@ -8,5 +8,5 @@ pub const UCT_MINOR_BIT: c_uint = 16;
 pub const UCT_VERNO_MAJOR: c_uint = 1;
 pub const UCT_VERNO_MICRO: c_uint = 2938;
 pub const UCT_VERNO_MINOR: c_uint = 3;
-pub const UCT_VERNO_REV: &'static [u8; 8usize] = b"caa0e11\x00";
+pub const UCT_VERNO_REV: &'static [u8; 8usize] = b"5ec7d9d\x00";
 pub const UCT_VERNO_STRING: &'static [u8; 9usize] = b"1.3.2938\x00";

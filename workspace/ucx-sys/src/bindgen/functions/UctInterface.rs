@@ -12,6 +12,8 @@ extern "C"
 	pub fn uct_iface_mem_alloc(iface: uct_iface_h, length: usize, flags: c_uint, name: *const c_char, mem: *mut uct_allocated_memory_t) -> ucs_status_t;
 	pub fn uct_iface_mem_free(mem: *const uct_allocated_memory_t);
 	pub fn uct_iface_open(md: uct_md_h, worker: uct_worker_h, params: *const uct_iface_params_t, config: *const uct_iface_config_t, iface_p: *mut uct_iface_h) -> ucs_status_t;
+	pub fn uct_iface_progress_disable(iface: uct_iface_h, flags: c_uint);
+	pub fn uct_iface_progress_enable(iface: uct_iface_h, flags: c_uint);
 	pub fn uct_iface_query(iface: uct_iface_h, iface_attr: *mut uct_iface_attr_t) -> ucs_status_t;
 	pub fn uct_iface_set_am_handler(iface: uct_iface_h, id: u8, cb: uct_am_callback_t, arg: *mut c_void, flags: u32) -> ucs_status_t;
 	pub fn uct_iface_set_am_tracer(iface: uct_iface_h, tracer: uct_am_tracer_t, arg: *mut c_void) -> ucs_status_t;

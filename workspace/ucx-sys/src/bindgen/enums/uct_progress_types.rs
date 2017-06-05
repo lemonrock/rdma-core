@@ -4,45 +4,41 @@
 
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum uct_alloc_method_t
+pub enum uct_progress_types
 {
-	UCT_ALLOC_METHOD_THP = 0,
-	UCT_ALLOC_METHOD_MD = 1,
-	UCT_ALLOC_METHOD_HEAP = 2,
-	UCT_ALLOC_METHOD_MMAP = 3,
-	UCT_ALLOC_METHOD_HUGE = 4,
-	UCT_ALLOC_METHOD_LAST = 5,
+	UCT_PROGRESS_RX = 1,
+	UCT_PROGRESS_TX = 2,
 }
 
-impl ::core::ops::BitOr<uct_wakeup_event_types> for uct_wakeup_event_types
+impl ::core::ops::BitOr<uct_am_cb_cap> for uct_am_cb_cap
 {
 	type Output = Self;
 	fn bitor(self, other: Self) -> Self
 	{
-		uct_wakeup_event_types(self.0 | other.0)
+		uct_am_cb_cap(self.0 | other.0)
 	}
 }
 
-impl ::core::ops::BitOrAssign for uct_wakeup_event_types
+impl ::core::ops::BitOrAssign for uct_am_cb_cap
 {
-	fn bitor_assign(&mut self, rhs: uct_wakeup_event_types)
+	fn bitor_assign(&mut self, rhs: uct_am_cb_cap)
 	{
 		self.0 |= rhs.0;
 	}
 }
 
-impl ::core::ops::BitAnd<uct_wakeup_event_types> for uct_wakeup_event_types
+impl ::core::ops::BitAnd<uct_am_cb_cap> for uct_am_cb_cap
 {
 	type Output = Self;
 	fn bitand(self, other: Self) -> Self
 	{
-		uct_wakeup_event_types(self.0 & other.0)
+		uct_am_cb_cap(self.0 & other.0)
 	}
 }
 
-impl ::core::ops::BitAndAssign for uct_wakeup_event_types
+impl ::core::ops::BitAndAssign for uct_am_cb_cap
 {
-	fn bitand_assign(&mut self, rhs: uct_wakeup_event_types)
+	fn bitand_assign(&mut self, rhs: uct_am_cb_cap)
 	{
 		self.0 &= rhs.0;
 	}

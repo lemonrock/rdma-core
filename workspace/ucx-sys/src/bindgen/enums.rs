@@ -13,3 +13,4 @@ include!("bindgen/enums/uct_alloc_method_t.rs");
 include!("bindgen/enums/uct_am_trace_type.rs");
 include!("bindgen/enums/uct_device_type_t.rs");
 include!("bindgen/enums/uct_mem_advice.rs");
+include!("bindgen/enums/uct_progress_types.rs");
