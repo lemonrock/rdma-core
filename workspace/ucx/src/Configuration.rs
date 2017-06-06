@@ -60,11 +60,38 @@ impl Configuration
 		panic_on_error!(ucp_config_modify, self.handle, name.as_ptr(), value.as_ptr());
 	}
 	
+	/// applicationContextFeaturesIdeallySupported and contextWillBeSharedByMultipleWorkersFromDifferentThreads are programmer choices; how the code will be designed
+	/// tagSenderMask and estimatedNumberOfEndPoints are configuration / per-invocation choices
+	/// contextWillBeSharedByMultipleWorkersFromDifferentThreads should ideally be false
 	#[inline(always)]
-	pub fn initialiseApplicationContext(&self, parameters: &ucp_params_t) -> ApplicationContext
+	pub fn initialiseApplicationContext(&self, applicationContextFeaturesIdeallySupported: &ApplicationContextFeaturesIdeallySupported, contextWillBeSharedByMultipleWorkersFromDifferentThreads: bool, tagSenderMask: u64, estimatedNumberOfEndPoints: usize) -> ApplicationContext
 	{
+		use ucp_params_field::*;
+		
+		let parameters = ucp_params_t
+		{
+			field_mask: UCP_PARAM_FIELD_FEATURES as u64 | UCP_PARAM_FIELD_REQUEST_SIZE as u64 | UCP_PARAM_FIELD_REQUEST_INIT as u64 | UCP_PARAM_FIELD_REQUEST_CLEANUP as u64 | UCP_PARAM_FIELD_TAG_SENDER_MASK as u64 | UCP_PARAM_FIELD_MT_WORKERS_SHARED as u64 | UCP_PARAM_FIELD_ESTIMATED_NUM_EPS as u64,
+			features: applicationContextFeaturesIdeallySupported.as_u64(tagSenderMask),
+			
+			// Really of use to MPI
+			request_size: 0, // reservedSpaceInNonBlockingRequests,
+			request_init: None,
+			request_cleanup: None,
+			
+			tag_sender_mask: tagSenderMask,
+			mt_workers_shared: if contextWillBeSharedByMultipleWorkersFromDifferentThreads
+			{
+				1
+			}
+			else
+			{
+				0
+			},
+			estimated_num_eps: estimatedNumberOfEndPoints,
+		};
+		
 		let mut context = unsafe { uninitialized() };
-		panic_on_error!(ucp_init_version, UCP_API_MAJOR, UCP_API_MINOR, parameters, self.handle, &mut context);
+		panic_on_error!(ucp_init_version, UCP_API_MAJOR, UCP_API_MINOR, &parameters, self.handle, &mut context);
 		ApplicationContext
 		{
 			handle: context,

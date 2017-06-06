@@ -18,6 +18,7 @@ use ::errno::errno;
 use ::libc::c_void;
 use ::libc::FILE;
 use ::libc_extra::stderr;
+use ::rust_extra::likely;
 use ::rust_extra::unlikely;
 use ::std::cmp::Eq;
 use ::std::cmp::Ord;
@@ -57,6 +58,7 @@ cfg_if!
 
 include!("ApplicationContext.rs");
 include!("ApplicationContextAttributes.rs");
+include!("ApplicationContextFeaturesIdeallySupported.rs");
 include!("Configuration.rs");
 include!("MappedMemory.rs");
 include!("MappedMemoryAttributes.rs");

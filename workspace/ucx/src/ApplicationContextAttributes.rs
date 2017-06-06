@@ -29,7 +29,7 @@ impl ApplicationContextAttributes
 	}
 	
 	#[inline(always)]
-	pub fn requestSize(&self) -> usize
+	pub fn reservedSpaceInNonBlockingRequests(&self) -> usize
 	{
 		self.0.request_size
 	}
@@ -40,7 +40,7 @@ impl PartialEq for ApplicationContextAttributes
 	#[inline(always)]
 	fn eq(&self, other: &ApplicationContextAttributes) -> bool
 	{
-		self.threadMode() == other.threadMode() && self.requestSize() == other.requestSize()
+		self.threadMode() == other.threadMode() && self.reservedSpaceInNonBlockingRequests() == other.reservedSpaceInNonBlockingRequests()
 	}
 }
 
@@ -62,7 +62,7 @@ impl Ord for ApplicationContextAttributes
 	#[inline(always)]
 	fn cmp(&self, other: &ApplicationContextAttributes) -> Ordering
 	{
-		self.workerThreadMode().cmp(&other.workerThreadMode()).then(self.requestSize().cmp(&other.requestSize()))
+		self.workerThreadMode().cmp(&other.workerThreadMode()).then(self.reservedSpaceInNonBlockingRequests().cmp(&other.reservedSpaceInNonBlockingRequests()))
 	}
 }
 
@@ -72,6 +72,6 @@ impl Hash for ApplicationContextAttributes
 	fn hash<H: Hasher>(&self, state: &mut H)
 	{
 		self.threadMode().hash(state);
-		self.requestSize().hash(state);
+		self.reservedSpaceInNonBlockingRequests().hash(state);
 	}
 }
