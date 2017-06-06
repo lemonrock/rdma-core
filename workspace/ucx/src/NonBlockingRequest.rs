@@ -41,6 +41,7 @@ impl NonBlockingRequest
 		else
 		{
 			// This is only relevant for receive operations; we should consider having a separate implementation in that case
+			// Only really useful for non-blocking receive probe, so we can find out the message tag and its size
 			let mut information = unsafe { uninitialized() };
 			let result = unsafe { ucp_request_test(self.0, &mut information) };
 			if unlikely(result == ucs_status_t::UCS_INPROGRESS)
