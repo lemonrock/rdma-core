@@ -98,6 +98,12 @@ impl<'a> Worker<'a>
 	}
 	
 	#[inline(always)]
+	pub fn flushAllOutstandingRemoteMemoryAccessAndAtomicOperations(&self)
+	{
+		panic_on_error!(ucp_worker_flush, self.handle);
+	}
+	
+	#[inline(always)]
 	pub fn getFileDescriptorSuitableForEPoll(&self) -> RawFd
 	{
 		let mut fileDescriptorSuitableForEPoll = unsafe { uninitialized() };

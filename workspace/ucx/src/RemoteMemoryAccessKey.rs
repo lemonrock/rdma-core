@@ -38,15 +38,15 @@ macro_rules! address_is_64_bit_aligned
 impl<'a, 'b, 'c, ErrorHandler: EndPointErrorHandler> RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler>
 where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 {
-	/// Sadly this isn't even implemented yet...
-	/// Presumably we need to have received a message telling us the remoteAddress... perhaps at the same time we get the rkey
-	#[inline(always)]
-	pub fn localMemoryAddressThatCanBeUsedToDirectLoadsAndStoresInRemoteMemory(&self, remoteAddress: *mut c_void) -> *mut c_void
-	{
-		let mut localAddress = unsafe { uninitialized() };
-		panic_on_error!(ucp_rmem_ptr, self.endPoint.handle, remoteAddress, self.handle, &mut localAddress);
-		localAddress
-	}
+//	/// Sadly this isn't even implemented yet...
+//	/// Presumably we need to have received a message telling us the remoteAddress... perhaps at the same time we get the rkey
+//	#[inline(always)]
+//	pub fn localMemoryAddressThatCanBeUsedToDirectLoadsAndStoresInRemoteMemory(&self, remoteAddress: *mut c_void) -> *mut c_void
+//	{
+//		let mut localAddress = unsafe { uninitialized() };
+//		panic_on_error!(ucp_rmem_ptr, self.endPoint.handle, remoteAddress, self.handle, &mut localAddress);
+//		localAddress
+//	}
 	
 	#[inline(always)]
 	pub fn putBlocking(&self, fromLocalBuffer: *const c_void, length: usize, remoteAddress: u64)
@@ -55,7 +55,7 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 		panic_on_error!(ucp_put, self.endPoint.handle, fromLocalBuffer, length, remoteAddress, self.handle);
 	}
 	
-	/// The user MUST call flush() on the parent worker before touching or freeing the fromLocalBuffer
+	/// The user MUST call flush() on the parent worker (not endpoint) before touching or freeing the fromLocalBuffer
 	#[inline(always)]
 	pub fn putNonBlocking(&self, fromLocalBuffer: *const c_void, length: usize, remoteAddress: u64)
 	{
@@ -70,7 +70,7 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 		panic_on_error!(ucp_get, self.endPoint.handle, intoLocalBuffer, length, remoteAddress, self.handle);
 	}
 	
-	/// The user MUST call flush() on the parent worker before touching or freeing the intoLocalBuffer
+	/// The user MUST call flush() on the parent worker (not endpoint) before touching or freeing the intoLocalBuffer
 	#[inline(always)]
 	pub fn getNonBlocking(&self, intoLocalBuffer: *mut c_void, length: usize, remoteAddress: u64)
 	{
@@ -78,7 +78,7 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 		panic_on_error!(ucp_get_nbi, self.endPoint.handle, intoLocalBuffer, length, remoteAddress, self.handle);
 	}
 	
-	/// The user MUST call flush() on the parent worker to be certain the operation has completed
+	/// The user MUST call flush() on the parent worker (not endpoint) to be certain the operation has completed
 	#[inline(always)]
 	pub fn putAtomic32AddNonBlocking(&self, amountToAdd: u32, remoteAddress: u64)
 	{
@@ -88,7 +88,7 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 		panic_on_error!(ucp_atomic_add32, self.endPoint.handle, amountToAdd, remoteAddress, self.handle);
 	}
 	
-	/// The user MUST call flush() on the parent worker to be certain the operation has completed
+	/// The user MUST call flush() on the parent worker (not endpoint) to be certain the operation has completed
 	#[inline(always)]
 	pub fn putAtomic64AddNonBlocking(&self, amountToAdd: u64, remoteAddress: u64)
 	{
@@ -171,4 +171,6 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 		panic_on_error!(ucp_atomic_cswap64, self.endPoint.handle, compareRemoteWith, swapRemoteWith, remoteAddress, self.handle, &mut result);
 		result
 	}
+	
+	// ucp_atomic_post() / ucp_atomic_fetch_nb() (true request-non-blocking variant) => non-blocking variants of all atomic functions above...
 }
