@@ -24,6 +24,7 @@ use ::std::ffi::CString;
 use ::std::mem::size_of_val;
 use ::std::mem::uninitialized;
 use ::std::mem::zeroed;
+use ::std::os::unix::io::RawFd;
 use ::std::ptr::null;
 use ::std::ptr::null_mut;
 use ::ucx_sys::*;

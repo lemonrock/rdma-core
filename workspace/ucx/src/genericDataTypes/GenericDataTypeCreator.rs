@@ -39,6 +39,7 @@ impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeCreator<T, S
 		
 		panic_on_error_with_clean_up!
 		(
+			status,
 			{
 				drop(unsafe { Box::from_raw(context) })
 			},
@@ -111,7 +112,7 @@ impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeCreator<T, S
 			match *taggedState
 			{
 				TaggedState::Pack(ref mut state, _) => state.packedSize(),
-				TaggedState::Unpack(_, _) => panic!("Should not be possible"),
+				TaggedState::Unpack(_, _) => unreachable!(),
 			}
 		}))
 		{
@@ -142,7 +143,7 @@ impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeCreator<T, S
 						debug_assert!(size <= max_length, "size '{}' exceeds max_length '{}'", size, max_length);
 						size
 					},
-				TaggedState::Unpack(_, _) => panic!("Should not be possible"),
+				TaggedState::Unpack(_, _) => unreachable!(),
 			}
 		}))
 		{
@@ -167,7 +168,7 @@ impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeCreator<T, S
 		{
 			match *taggedState
 			{
-				TaggedState::Pack(_, _) => panic!("Should not be possible"),
+				TaggedState::Pack(_, _) => unreachable!(),
 				TaggedState::Unpack(ref mut state, _) =>
 					{
 						if likely(state.unpack(offset, src, count))

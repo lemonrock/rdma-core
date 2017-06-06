@@ -7,7 +7,7 @@ macro_rules! panic_on_error
 	($function: path$(,$argument: expr)*) =>
 	{
 		{
-			panic_on_error_with_clean_up!({}, $function$(,$argument)*);
+			panic_on_error_with_clean_up!(status, {}, $function$(,$argument)*);
 		}
 	}
 }

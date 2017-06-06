@@ -4,15 +4,15 @@
 
 macro_rules! panic_on_error_with_clean_up
 {
-	($cleanUp: block, $function: path$(,$argument: expr)*) =>
+	($status: ident, $failureBlock: block, $function: path$(,$argument: expr)*) =>
 	{
 		{
-			let status = unsafe { $function($($argument),*) };
-			if $crate::rust_extra::unlikely(status != ucs_status_t::UCS_OK)
+			let $status = unsafe { $function($($argument),*) };
+			if $crate::rust_extra::unlikely($status != ucs_status_t::UCS_OK)
 			{
-				$cleanUp
-				let description = unsafe { CStr::from_ptr(ucs_status_string(status)) };
-				panic!("{} failed with status code '{:?}' ({:?})", stringify!($function), status, description);
+				$failureBlock
+				let description = unsafe { CStr::from_ptr(ucs_status_string($status)) };
+				panic!("{} failed with status code '{:?}' ({:?})", stringify!($function), $status, description);
 			}
 		}
 	}
