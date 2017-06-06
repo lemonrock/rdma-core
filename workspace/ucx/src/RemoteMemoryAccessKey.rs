@@ -48,6 +48,19 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 //		localAddress
 //	}
 	
+	
+	
+	
+	
+	// TODO: Review panic_on_error! - we could be getting a disconnection event!!!! UCS_INPROGRESS!!!!
+	
+	
+	//ucp_atomic_fetch_nb() (true request-non-blocking variant) => non-blocking variants of all atomic functions above...
+	
+	
+	
+	
+	
 	#[inline(always)]
 	pub fn putBlocking(&self, fromLocalBuffer: *const c_void, length: usize, remoteAddress: u64)
 	{
@@ -78,6 +91,24 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 		panic_on_error!(ucp_get_nbi, self.endPoint.handle, intoLocalBuffer, length, remoteAddress, self.handle);
 	}
 	
+	#[inline(always)]
+	pub fn putAtomic32AddBlocking(&self, amountToAdd: u32, remoteAddress: u64)
+	{
+		address_is_32_bit_aligned!(remoteAddress);
+		
+		// TODO: Review panic_on_error! - we could be getting a disconnection event!!!!
+		panic_on_error!(ucp_atomic_post, self.endPoint.handle, ucp_atomic_post_op_t::UCP_ATOMIC_POST_OP_ADD, amountToAdd as u64, 4, remoteAddress, self.handle);
+	}
+	
+	#[inline(always)]
+	pub fn putAtomic64AddBlocking(&self, amountToAdd: u64, remoteAddress: u64)
+	{
+		address_is_32_bit_aligned!(remoteAddress);
+		
+		// TODO: Review panic_on_error! - we could be getting a disconnection event!!!!
+		panic_on_error!(ucp_atomic_post, self.endPoint.handle, ucp_atomic_post_op_t::UCP_ATOMIC_POST_OP_ADD, amountToAdd, 8, remoteAddress, self.handle);
+	}
+	
 	/// The user MUST call flush() on the parent worker (not endpoint) to be certain the operation has completed
 	#[inline(always)]
 	pub fn putAtomic32AddNonBlocking(&self, amountToAdd: u32, remoteAddress: u64)
@@ -104,7 +135,7 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 	{
 		address_is_32_bit_aligned!(remoteAddress);
 		
-		// TODO: Review panic_on_error! - we could be getting a disconnection event!!!!
+		// TODO: Review panic_on_error! - we could be getting a disconnection event!!!! UCS_INPROGRESS!!!!
 		let mut result = unsafe { uninitialized() };
 		panic_on_error!(ucp_atomic_fadd32, self.endPoint.handle, amountToAdd, remoteAddress, self.handle, &mut result);
 		result
@@ -171,6 +202,4 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 		panic_on_error!(ucp_atomic_cswap64, self.endPoint.handle, compareRemoteWith, swapRemoteWith, remoteAddress, self.handle, &mut result);
 		result
 	}
-	
-	// ucp_atomic_post() / ucp_atomic_fetch_nb() (true request-non-blocking variant) => non-blocking variants of all atomic functions above...
 }
