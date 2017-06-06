@@ -29,7 +29,7 @@ use ::std::ptr::null_mut;
 use ::ucx_sys::*;
 
 
-// This horrible piece of logic exists because of the incomplete state of Rust's libc wrapper. A good example of why development by pull request doesn't really work
+// This horrible piece of logic exists because of the incomplete state of Rust's libc wrapper; at some point sched_getcpu() for musl will be added
 cfg_if!
 {
     if #[cfg(target_env = "musl")]
@@ -45,8 +45,6 @@ cfg_if!
 		use ::libc::sched_getcpu;
     }
 }
-
-
 
 
 include!("ApplicationContext.rs");
