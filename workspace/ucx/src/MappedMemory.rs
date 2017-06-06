@@ -2,7 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-/// Mapped Memory is only needed for RMA and AMO
+/// Mapped Memory is only needed for RMA and AMO (atomic operations)
 #[derive(Debug)]
 pub struct MappedMemory<'a>
 {

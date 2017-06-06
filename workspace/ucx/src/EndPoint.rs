@@ -66,6 +66,8 @@ where 'a: 'b
 	#[inline(always)]
 	fn connectOrReconnect(&mut self, destinationAddress: *const ucp_address_t)
 	{
+		// TODO: Does reconnecting invalidate any rkey s created from this endpoint?
+		
 		debug_assert!(self.handle.is_null(), "handle is not null");
 		
 		self.parameters.address = destinationAddress;
