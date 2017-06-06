@@ -15,3 +15,4 @@
 
 
 #[cfg(any(target_os="linux", target_os="android"))] include!("lib.linux.rs");
+#[cfg(any(target_os="linux", target_os="android"))] pub mod genericDataTypes;

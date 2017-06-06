@@ -47,7 +47,6 @@ cfg_if!
 }
 
 
-pub mod genericDataTypes;
 
 
 include!("ApplicationContext.rs");

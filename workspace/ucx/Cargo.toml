@@ -18,12 +18,9 @@ publish = false
 version = "0.0.0"
 
 [dependencies]
-#arrayvec = "0.3.21"
-#bitflags = "0.8"
 cfg-if = "0.1"
 errno = "0.2"
 libc = "0.2"
 libc-extra = " 0.0.14"
 ucx-sys = { path = "../ucx-sys", version = "0.0.1" }
 rust-extra = "0.0.13"
-#syscall-alt = "0.0.14"

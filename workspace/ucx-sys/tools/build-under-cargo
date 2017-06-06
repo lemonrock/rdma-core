@@ -82,7 +82,7 @@ _program_path_find()
 build_under_cargo_fail()
 {
 	local message="$1"
-	
+
 	printf 'build-under-cargo:FAIL:%s\n' "$message" 1>&2
 	exit 1
 }
@@ -101,9 +101,9 @@ build_under_cargo_outputCargoKeyValuePairs()
 {
 	# Search path
 	#printf 'cargo:rustc-link-search=native=%s\n' "$libFolderPath"
-	
+
 	printf 'cargo:rustc-link-lib=static-nobundle=ucx\n'
-	
+
 	# Not used by us, but useful for downstream potentially
 	#printf 'cargo:root=%s\n' "$rootFolderPath"
 	printf 'cargo:include=%s\n' "$includeFolderPath"
@@ -115,56 +115,57 @@ build_under_cargo_steps()
 	local srcFolderPath="$homeFolder"/src
 	local includeFolderPath="$srcFolderPath"/include
 	local rustBindingsFolderPath="$srcFolderPath"/bindgen
-	
+
 	#build_under_cargo_compile
-	
-	build_under_cargo_generatingRustBindings
-	
+
+	if [ ! -e "$rustBindingsFolderPath"/lib.rs ]; then
+		build_under_cargo_generatingRustBindings
+	fi
 	build_under_cargo_outputCargoKeyValuePairs
 }
 
 build_under_cargo_main()
 {
 	case "$#" in
-		
+
 		0)
 			:
 		;;
-		
+
 		1)
 			case "$1" in
-				
+
 				-h|--help)
 					printf './build\n'
 					printf './build -h|--help\n'
 					exit 0
 				;;
-				
+
 				*)
 					build_under_cargo_fail "Does not take any arguments"
 				;;
-				
+
 			esac
 		;;
-		
+
 		*)
 			build_under_cargo_fail "Does not take any arguments"
 		;;
-		
+
 	esac
-	
+
 	local programPath="$(_program_path_find)"
 	cd "$programPath"/.. 1>/dev/null 2>/dev/null
 		local homeFolder="$(pwd)"
 	cd - 1>/dev/null 2>/dev/null
-	
+
 	if [ -z "{CARGO_MANIFEST_DIR+defined}" ]; then
 		:
 	else
 		export CARGO_MANIFEST_DIR="$homeFolder"
 		printf 'build-under-cargo:%s\n' "Whilst this script is designed to be run under cargo, it can run independently. We're setting CARGO_MANIFEST_DIR to '$CARGO_MANIFEST_DIR'" 1>&2
 	fi
-	
+
 	build_under_cargo_steps
 }
 

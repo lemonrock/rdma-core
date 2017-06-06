@@ -7,6 +7,7 @@
       <w>cloexec</w>
       <w>cvlan</w>
       <w>datagrams</w>
+      <w>datatype</w>
       <w>deserialise</w>
       <w>deserialiser</w>
       <w>dlid</w>
