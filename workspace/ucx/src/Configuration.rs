@@ -17,6 +17,17 @@ impl Drop for Configuration
 	}
 }
 
+impl PrintInformation for Configuration
+{
+	#[inline(always)]
+	fn printInformationToStream(&self, stream: *mut FILE)
+	{
+		let printFlags = ucs_config_print_flags_t_UCS_CONFIG_PRINT_CONFIG | ucs_config_print_flags_t_UCS_CONFIG_PRINT_DOC | ucs_config_print_flags_t_UCS_CONFIG_PRINT_HEADER | ucs_config_print_flags_t_UCS_CONFIG_PRINT_HIDDEN;
+		let title = CString::new("UCP Configuration").expect("Not a valid CStr");
+		unsafe { ucp_config_print(self.handle, stream, title.as_ptr(), printFlags) };
+	}
+}
+
 impl Configuration
 {
 	#[inline(always)]
@@ -38,14 +49,6 @@ impl Configuration
 		{
 			handle: config_p,
 		}
-	}
-	
-	// See ucx-sys/src/bindgen/constants/UcsConfiguration.rs for ucs_config_print_flags_t constants
-	#[inline(always)]
-	pub fn printInformationToStandardError(&self, title: &str, printFlags: ucs_config_print_flags_t)
-	{
-		let title = CString::new(title).expect("Not a valid CStr");
-		unsafe { ucp_config_print(self.handle, stderr as *mut FILE, title.as_ptr(), printFlags) };
 	}
 	
 	/// See the static `ucp_config_table` in ucp_context.c for potential values of name and value

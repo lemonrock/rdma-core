@@ -18,8 +18,48 @@ impl<'a> Drop for Worker<'a>
 	}
 }
 
+impl<'a> PrintInformation for Worker<'a>
+{
+	#[inline(always)]
+	fn printInformationToStream(&self, stream: *mut FILE)
+	{
+		unsafe { ucp_worker_print_info(self.handle, stream) };
+	}
+}
+
+impl<'a> QueryAttributes for Worker<'a>
+{
+	type Attributes = WorkerAttributes;
+	
+	#[inline(always)]
+	fn queryAttributes(&self) -> Self::Attributes
+	{
+		use ucp_worker_attr_field::*;
+		
+		let mut attributes: ucp_worker_attr_t = unsafe { uninitialized() };
+		attributes.field_mask = UCP_WORKER_ATTR_FIELD_THREAD_MODE as u64;
+		panic_on_error!(ucp_worker_query, self.handle, &mut attributes);
+		WorkerAttributes(attributes)
+	}
+}
+
 impl<'a> Worker<'a>
 {
+	#[inline(always)]
+	pub fn addressHandle<'b>(&'b self) -> WorkerAddressHandle<'a, 'b>
+	where 'a: 'b
+	{
+		let mut addressHandle = unsafe { uninitialized() };
+		let mut addressHandleLength = unsafe { uninitialized() };
+		panic_on_error!(ucp_worker_get_address, self.handle, &mut addressHandle, &mut addressHandleLength);
+		WorkerAddressHandle
+		{
+			handle: addressHandle,
+			length: addressHandleLength,
+			worker: self,
+		}
+	}
+	
 	#[inline(always)]
 	pub fn getFileDescriptorSuitableForEPoll(&self) -> RawFd
 	{
@@ -55,5 +95,34 @@ impl<'a> Worker<'a>
 	pub fn blockingWaitForAMemoryEvent(&self, address: *mut c_void)
 	{
 		unsafe { ucp_worker_wait_mem(self.handle, address) }
+	}
+	
+	/// Returns 'true' if one should call ucp_worker_progress(), ie the worker can not arm because it is 'busy'
+	///
+	#[inline(always)]
+	pub fn arm(&self) -> bool
+	{
+		panic_on_error_with_clean_up!
+		(
+			status,
+			{
+				use ucs_status_t::*;
+				match status
+				{
+					UCS_ERR_BUSY  => return true,
+					_ => (),
+				};
+			},
+			ucp_worker_arm,
+			self.handle
+		);
+		false
+	}
+	
+	/// Wakes up a worker waiting in blockingWaitForAnyEvent(), blockingWaitForAnyEvent() or on epoll
+	#[inline(always)]
+	pub fn signal(&self)
+	{
+		panic_on_error!(ucp_worker_signal, self.handle);
 	}
 }

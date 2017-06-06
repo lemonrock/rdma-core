@@ -17,22 +17,33 @@ impl Drop for ApplicationContext
 	}
 }
 
-impl ApplicationContext
+impl PrintInformation for ApplicationContext
 {
 	#[inline(always)]
-	pub fn attributes(&self) -> ucp_context_attr_t
+	fn printInformationToStream(&self, stream: *mut FILE)
 	{
-		let mut attributes = unsafe { uninitialized() };
-		panic_on_error!(ucp_context_query, self.handle, &mut attributes);
-		attributes
+		unsafe { ucp_context_print_info(self.handle, stream) };
 	}
+}
+
+impl QueryAttributes for ApplicationContext
+{
+	type Attributes = ApplicationContextAttributes;
 	
 	#[inline(always)]
-	pub fn printInformationToStandardError(&self)
+	fn queryAttributes(&self) -> Self::Attributes
 	{
-		unsafe { ucp_context_print_info(self.handle, stderr as *mut FILE) };
+		use ucp_context_attr_field::*;
+		
+		let mut attributes: ucp_context_attr_t = unsafe { uninitialized() };
+		attributes.field_mask = UCP_ATTR_FIELD_REQUEST_SIZE as u64 | UCP_ATTR_FIELD_THREAD_MODE as u64;
+		panic_on_error!(ucp_context_query, self.handle, &mut attributes);
+		ApplicationContextAttributes(attributes)
 	}
-	
+}
+
+impl ApplicationContext
+{
 	#[inline(always)]
 	pub fn mapAndAllocateMemory<'a>(&'a self, length: usize) -> (MappedMemory<'a>, *mut c_void)
 	{

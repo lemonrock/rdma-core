@@ -19,8 +19,15 @@ use ::libc::c_void;
 use ::libc::FILE;
 use ::libc_extra::stderr;
 use ::rust_extra::unlikely;
+use ::std::cmp::Eq;
+use ::std::cmp::Ord;
+use ::std::cmp::Ordering;
+use ::std::cmp::PartialEq;
+use ::std::cmp::PartialOrd;
 use ::std::ffi::CStr;
 use ::std::ffi::CString;
+use ::std::hash::Hash;
+use ::std::hash::Hasher;
 use ::std::mem::size_of_val;
 use ::std::mem::uninitialized;
 use ::std::mem::zeroed;
@@ -49,9 +56,15 @@ cfg_if!
 
 
 include!("ApplicationContext.rs");
+include!("ApplicationContextAttributes.rs");
 include!("Configuration.rs");
 include!("MappedMemory.rs");
+include!("MappedMemoryAttributes.rs");
+include!("PrintInformation.rs");
+include!("QueryAttributes.rs");
 include!("RemoteAccessKeyBuffer.rs");
 include!("ucs_cpu_set_tEx.rs");
 include!("Worker.rs");
+include!("WorkerAddressHandle.rs");
+include!("WorkerAttributes.rs");
 include!("WorkerThreadMode.rs");

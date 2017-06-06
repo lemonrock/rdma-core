@@ -19,6 +19,23 @@ impl<'a> Drop for MappedMemory<'a>
 	}
 }
 
+impl<'a> QueryAttributes for MappedMemory<'a>
+{
+	type Attributes = MappedMemoryAttributes;
+	
+	#[inline(always)]
+	fn queryAttributes(&self) -> Self::Attributes
+	{
+		use ucp_mem_attr_field::*;
+		
+		let mut attributes: ucp_mem_attr_t = unsafe { uninitialized() };
+		attributes.field_mask = UCP_MEM_ATTR_FIELD_ADDRESS as u64 | UCP_MEM_ATTR_FIELD_LENGTH as u64;
+		
+		panic_on_error!(ucp_mem_query, self.handle, &mut attributes);
+		MappedMemoryAttributes(attributes)
+	}
+}
+
 impl<'a> MappedMemory<'a>
 {
 	// Need to look at ucp_mem_advise_params_field
@@ -26,14 +43,6 @@ impl<'a> MappedMemory<'a>
 	pub fn advise(&self, parameters: &mut ucp_mem_advise_params_t)
 	{
 		panic_on_error!(ucp_mem_advise, self.applicationContext.handle, self.handle, parameters);
-	}
-	
-	#[inline(always)]
-	pub fn attributes(&self) -> ucp_mem_attr_t
-	{
-		let mut attributes = unsafe { uninitialized() };
-		panic_on_error!(ucp_mem_query, self.handle, &mut attributes);
-		attributes
 	}
 	
 	#[inline(always)]
