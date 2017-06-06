@@ -145,4 +145,30 @@ where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 		panic_on_error!(ucp_atomic_swap64, self.endPoint.handle, swapRemoteWith, remoteAddress, self.handle, &mut result);
 		result
 	}
+	
+	/// Returns the original remote value before swapRemoteWith was sent; only updates remote it remote matches compareRemoteWith
+	/// This is compareRemoteWith == value returned => swap occurred
+	#[inline(always)]
+	pub fn putAtomic32CompareAndSwapBlocking(&self, compareRemoteWith: u32, swapRemoteWith: u32, remoteAddress: u64) -> u32
+	{
+		address_is_32_bit_aligned!(remoteAddress);
+		
+		// TODO: Review panic_on_error! - we could be getting a disconnection event!!!!
+		let mut result = unsafe { uninitialized() };
+		panic_on_error!(ucp_atomic_cswap32, self.endPoint.handle, compareRemoteWith, swapRemoteWith, remoteAddress, self.handle, &mut result);
+		result
+	}
+	
+	/// Returns the original remote value before swapRemoteWith was sent; only updates remote it remote matches compareRemoteWith
+	/// This is compareRemoteWith == value returned => swap occurred
+	#[inline(always)]
+	pub fn putAtomic64CompareAndSwapBlocking(&self, compareRemoteWith: u64, swapRemoteWith: u64, remoteAddress: u64) -> u64
+	{
+		address_is_64_bit_aligned!(remoteAddress);
+		
+		// TODO: Review panic_on_error! - we could be getting a disconnection event!!!!
+		let mut result = unsafe { uninitialized() };
+		panic_on_error!(ucp_atomic_cswap64, self.endPoint.handle, compareRemoteWith, swapRemoteWith, remoteAddress, self.handle, &mut result);
+		result
+	}
 }
