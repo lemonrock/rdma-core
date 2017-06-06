@@ -80,4 +80,18 @@ where 'a: 'b
 	{
 		panic_on_error!(ucp_ep_flush, self.handle);
 	}
+	
+	/// remoteMemoryAccessKeyBuffer should have been created by packing on a MappedMemory object on the remote side
+	/// We are the receiver
+	#[inline(always)]
+	pub fn unpackRemoteMemoryAccessKeyBuffer<'c>(&'c self, remoteMemoryAccessKeyBuffer: *mut c_void) -> RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler>
+	{
+		let mut handle = unsafe { uninitialized() };
+		panic_on_error!(ucp_ep_rkey_unpack, self.handle, remoteMemoryAccessKeyBuffer, &mut handle);
+		RemoteMemoryAccessKey
+		{
+			handle: handle,
+			endPoint: self,
+		}
+	}
 }

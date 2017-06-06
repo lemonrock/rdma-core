@@ -3,7 +3,7 @@
 
 
 #[derive(Debug)]
-pub struct RemoteAccessKeyBuffer<'a, 'b>
+pub struct RemoteMemoryAccessKeyBuffer<'a, 'b>
 where 'a: 'b
 {
 	address: *mut c_void,
@@ -11,7 +11,7 @@ where 'a: 'b
 	mappedMemory: &'b MappedMemory<'a>
 }
 
-impl<'a, 'b> Drop for RemoteAccessKeyBuffer<'a, 'b>
+impl<'a, 'b> Drop for RemoteMemoryAccessKeyBuffer<'a, 'b>
 where 'a: 'b
 {
 	#[inline(always)]
@@ -21,7 +21,7 @@ where 'a: 'b
 	}
 }
 
-impl<'a, 'b> RemoteAccessKeyBuffer<'a, 'b>
+impl<'a, 'b> RemoteMemoryAccessKeyBuffer<'a, 'b>
 where 'a: 'b
 {
 	#[inline(always)]

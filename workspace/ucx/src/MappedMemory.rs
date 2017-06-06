@@ -46,12 +46,12 @@ impl<'a> MappedMemory<'a>
 	}
 	
 	#[inline(always)]
-	pub fn packRemoteAccessKey<'b>(&'b self) -> RemoteAccessKeyBuffer<'a, 'b>
+	pub fn packRemoteMemoryAccessKey<'b>(&'b self) -> RemoteMemoryAccessKeyBuffer<'a, 'b>
 	{
 		let mut buffer = unsafe { uninitialized() };
 		let mut size = unsafe { uninitialized() };
 		panic_on_error!(ucp_rkey_pack, self.applicationContext.handle, self.handle, &mut buffer, &mut size);
-		RemoteAccessKeyBuffer
+		RemoteMemoryAccessKeyBuffer
 		{
 			address: buffer,
 			length: size,
