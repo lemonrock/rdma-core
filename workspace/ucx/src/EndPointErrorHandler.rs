@@ -2,37 +2,9 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug)]
-pub struct RemoteAccessKeyBuffer<'a, 'b>
-where 'a: 'b
+pub trait EndPointErrorHandler
 {
-	address: *mut c_void,
-	length: usize,
-	mappedMemory: &'b MappedMemory<'a>
-}
-
-impl<'a, 'b> Drop for RemoteAccessKeyBuffer<'a, 'b>
-where 'a: 'b
-{
+	/// Supply a non-null pointer for reconnection
 	#[inline(always)]
-	fn drop(&mut self)
-	{
-		unsafe { ucp_rkey_buffer_release(self.address) }
-	}
-}
-
-impl<'a, 'b> RemoteAccessKeyBuffer<'a, 'b>
-where 'a: 'b
-{
-	#[inline(always)]
-	pub fn address(&self) -> *mut c_void
-	{
-		self.address
-	}
-	
-	#[inline(always)]
-	pub fn length(&self) -> usize
-	{
-		self.length
-	}
+	fn shouldWeReconnect(&mut self, status: ucs_status_t) -> *const ucp_address_t;
 }

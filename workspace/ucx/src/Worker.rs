@@ -60,6 +60,43 @@ impl<'a> Worker<'a>
 		}
 	}
 	
+	// ucp_worker_get_address() is used to get destinationAddress
+	#[inline(always)]
+	pub fn createEndPoint<'b, ErrorHandler: EndPointErrorHandler>(&'b self, errorHandler: ErrorHandler, destinationAddress: *const ucp_address_t) -> Box<EndPoint<'a, 'b, ErrorHandler>>
+	{
+		assert!(!destinationAddress.is_null(), "destinationAddress is null");
+		
+		use ucp_ep_params_field::*;
+		use ucp_err_handling_mode_t::*;
+		
+		let mut endPoint = Box::new(EndPoint
+		{
+			handle: null_mut(),
+			worker: self,
+			parameters: ucp_ep_params_t
+			{
+				field_mask: UCP_EP_PARAM_FIELD_REMOTE_ADDRESS as u64 | UCP_EP_PARAM_FIELD_ERR_HANDLING_MODE as u64 | UCP_EP_PARAM_FIELD_ERR_HANDLER as u64,
+				address: null(),
+				err_mode: UCP_ERR_HANDLING_MODE_NONE,
+				err_handler: ucp_err_handler_t
+				{
+					cb: Some(EndPoint::<ErrorHandler>::errorHandlerCallback),
+					arg: null_mut(),
+				},
+			},
+			errorHandler: errorHandler,
+		});
+		
+		#[allow(trivial_casts)]
+		{
+			endPoint.parameters.err_handler.arg = endPoint.as_mut() as *mut _ as *mut c_void;
+		}
+		
+		endPoint.connectOrReconnect(destinationAddress);
+		
+		endPoint
+	}
+	
 	#[inline(always)]
 	pub fn getFileDescriptorSuitableForEPoll(&self) -> RawFd
 	{
