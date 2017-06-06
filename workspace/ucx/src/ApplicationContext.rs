@@ -34,16 +34,41 @@ impl ApplicationContext
 	}
 	
 	#[inline(always)]
+	pub fn mapAndAllocateMemory<'a>(&'a self, length: usize) -> (MappedMemory<'a>, *mut c_void)
+	{
+		debug_assert!(length != 0, "length is zero");
+		
+		use ucp_mem_map_params_field::*;
+		
+		let parameters = ucp_mem_map_params_t
+		{
+			field_mask: UCP_MEM_MAP_PARAM_FIELD_LENGTH as u64 | UCP_MEM_MAP_PARAM_FIELD_FLAGS as u64,
+			address: null_mut(),
+			length: length,
+			flags: UCP_MEM_MAP_ALLOCATE.0 | UCP_MEM_MAP_NONBLOCK.0,
+		};
+		
+		let mut memh = unsafe { uninitialized() };
+		panic_on_error!(ucp_mem_map, self.handle, &parameters, &mut memh);
+		let mappedMemory = MappedMemory
+		{
+			handle: memh,
+			applicationContext: self,
+		};
+		(mappedMemory, parameters.address)
+	}
+	
+	#[inline(always)]
 	pub fn mapMemory<'a>(&'a self, address: *mut c_void, length: usize) -> MappedMemory<'a>
 	{
 		debug_assert!(!address.is_null(), "address is null");
 		debug_assert!(length != 0, "length is zero");
 		
-		// Use ucp_mem_map_params_field::UCP_MEM_MAP_PARAM_FIELD_FLAGS as u64 and flags to force memory with allocation, too
+		use ucp_mem_map_params_field::*;
 		
 		let parameters = ucp_mem_map_params_t
 		{
-			field_mask: ucp_mem_map_params_field::UCP_MEM_MAP_PARAM_FIELD_ADDRESS as u64 | ucp_mem_map_params_field::UCP_MEM_MAP_PARAM_FIELD_LENGTH as u64,
+			field_mask: UCP_MEM_MAP_PARAM_FIELD_ADDRESS as u64 | UCP_MEM_MAP_PARAM_FIELD_LENGTH as u64,
 			address: address,
 			length: length,
 			flags: 0,
@@ -53,8 +78,31 @@ impl ApplicationContext
 		panic_on_error!(ucp_mem_map, self.handle, &parameters, &mut memh);
 		MappedMemory
 		{
-			applicationContext: self,
 			handle: memh,
+			applicationContext: self,
+		}
+	}
+	
+	#[inline(always)]
+	pub fn createWorker<'a>(&'a self, workerThreadMode: WorkerThreadMode) -> Worker<'a>
+	{
+		use ucp_worker_params_field::*;
+		use ucp_wakeup_event_types::*;
+		
+		let parameters = ucp_worker_params_t
+		{
+			field_mask: UCP_WORKER_PARAM_FIELD_THREAD_MODE as u64 | UCP_WORKER_PARAM_FIELD_CPU_MASK as u64 | UCP_WORKER_PARAM_FIELD_EVENTS as u64,
+			thread_mode: workerThreadMode.as_ucs_thread_mode_t(),
+			cpu_mask: ucs_cpu_set_t::createForCurrentCpuIndex(),
+			events: UCP_WAKEUP_RMA as u32 | UCP_WAKEUP_AMO as u32 | UCP_WAKEUP_TAG_SEND as u32 | UCP_WAKEUP_TAG_RECV as u32,
+		};
+		let mut worker = unsafe { uninitialized() };
+		panic_on_error!(ucp_worker_create, self.handle, &parameters, &mut worker);
+		
+		Worker
+		{
+			handle: worker,
+			applicationContext: self,
 		}
 	}
 }

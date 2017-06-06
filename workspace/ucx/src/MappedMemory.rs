@@ -5,8 +5,8 @@
 #[derive(Debug)]
 pub struct MappedMemory<'a>
 {
+	handle: ucp_mem_h,
 	applicationContext: &'a ApplicationContext,
-	handle: ucp_mem_h
 }
 
 impl<'a> Drop for MappedMemory<'a>
