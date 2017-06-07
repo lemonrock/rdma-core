@@ -31,23 +31,50 @@ impl PrintInformation for Configuration
 impl Configuration
 {
 	#[inline(always)]
-	pub fn read(environmentVariablePrefix: &str) -> Self
+	pub fn readFromEnvironmentVariables(environmentVariablePrefix: &str) -> Result<Self, ConfigurationError>
 	{
 		let mut config_p = unsafe { uninitialized() };
 		
-		if environmentVariablePrefix.is_empty()
+		let status = if environmentVariablePrefix.is_empty()
 		{
-			panic_on_error!(ucp_config_read, null(), null(), &mut config_p);
+			unsafe { ucp_config_read(null(), null(), &mut config_p) }
 		}
 		else
 		{
 			let prefix = CString::new(environmentVariablePrefix).expect("Not a valid CStr");
-			panic_on_error!(ucp_config_read, prefix.as_ptr(), null(), &mut config_p);
-		}
+			unsafe { ucp_config_read(prefix.as_ptr(), null(), &mut config_p) }
+		};
 		
-		Configuration
+		if likely(status.isOk())
 		{
-			handle: config_p,
+			Ok
+			(
+				Configuration
+				{
+					handle: config_p,
+				}
+			)
+		}
+		else
+		{
+			use self::UcpFailure::*;
+			use self::UcpPermanentFailureReason::*;
+			use self::ConfigurationError::*;
+			
+			let failure = UcpFailure::convertError(status);
+			
+			match failure
+			{
+				Permanent(reason) => match reason
+				{
+					NoTransportDeviceExists => return Err(NoTransportDevicesExistThatAreSuitable),
+					ElementDoesNotExist => return Err(NoTransportDevicesExistThatAreSuitable),
+					UnimplementedFunctionality => return Err(FunctionalityNotImplementedOrSupported),
+					UnsupportedSubSetOfFunctionality => return Err(FunctionalityNotImplementedOrSupported),
+					_ => panic!("Permanent failure to read configuration from environment variables because '{:?}'", reason)
+				},
+				_ => panic!("Inappropriate failure for UCP API '{}'", failure)
+			}
 		}
 	}
 	

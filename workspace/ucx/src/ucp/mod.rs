@@ -3,7 +3,9 @@
 
 
 use super::ucs_cpu_set_tEx;
+use super::ucs_status_tEx;
 use super::ucs_status_ptr_tEx;
+use self::failures::*;
 use ::libc::c_void;
 use ::libc::FILE;
 use ::libc_extra::stderr;
@@ -24,6 +26,7 @@ use ::std::ptr::null;
 use ::std::ptr::null_mut;
 use ::ucx_sys::*;
 
+
 include!("panic_on_error.rs");
 include!("panic_on_error_with_clean_up.rs");
 
@@ -36,6 +39,7 @@ include!("ApplicationContext.rs");
 include!("ApplicationContextAttributes.rs");
 include!("ApplicationContextFeaturesIdeallySupported.rs");
 include!("Configuration.rs");
+include!("ConfigurationError.rs");
 include!("EndPoint.rs");
 include!("EndPointErrorHandler.rs");
 include!("MappedMemory.rs");

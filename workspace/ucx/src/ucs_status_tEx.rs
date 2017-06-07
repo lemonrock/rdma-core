@@ -12,6 +12,9 @@ pub trait ucs_status_tEx
 	
 	#[inline(always)]
 	fn string(self) -> &'static CStr;
+	
+	#[inline(always)]
+	fn isOk(self) -> bool;
 }
 
 impl ucs_status_tEx for ucs_status_t
@@ -34,5 +37,11 @@ impl ucs_status_tEx for ucs_status_t
 	fn string(self) -> &'static CStr
 	{
 		unsafe { CStr::from_ptr(ucs_status_string(self)) }
+	}
+	
+	#[inline(always)]
+	fn isOk(self) -> bool
+	{
+		self == ucs_status_t_UCS_OK
 	}
 }

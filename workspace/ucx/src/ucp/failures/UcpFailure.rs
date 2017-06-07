@@ -7,10 +7,10 @@ quick_error!
 	#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 	pub enum UcpFailure
 	{
-//		Progress
-//		{
-//			display("In progress")
-//		}
+		InProgress
+		{
+			display("In progress")
+		}
 
 		/// Only relevant for received (tagged) messages, and, even then, can probably be avoided by using probe
 		ReceivedTaggedMessageWasTruncated
@@ -84,6 +84,7 @@ impl UcpFailure
 		
 		match *self
 		{
+			InProgress => ucs_status_t_UCS_INPROGRESS,
 			ReceivedTaggedMessageWasTruncated => ucs_status_t_UCS_ERR_MESSAGE_TRUNCATED,
 			CouldNotArmWorkerAsBusy => ucs_status_t_UCS_ERR_BUSY,
 			NonBlockingRequestCancelled => ucs_status_t_UCS_ERR_CANCELED,
@@ -101,16 +102,17 @@ impl UcpFailure
 	#[inline(always)]
 	pub fn convertError(status: ucs_status_t) -> Self
 	{
+		debug_assert!(status != ucs_status_t_UCS_OK, "status is OK");
+		
 		use self::UcpFailure::*;
 		use self::UcpTransientFailureReason::*;
 		use self::UcpRecoverableIfApplicationRestartedFailureReason::*;
 		use self::UcpPermanentFailureReason::*;
 		use self::UcpImpossibleFailureReason::*;
 		
-		debug_assert!(status < 0, "convert does not support UCS_OK or UCS_INPROGRESS");
-		
 		match status
 		{
+			ucs_status_t_UCS_INPROGRESS => InProgress,
 			ucs_status_t_UCS_ERR_NO_MESSAGE => Transient(NoPendingMessage),
 			ucs_status_t_UCS_ERR_NO_RESOURCE => Transient(NoResource),
 			ucs_status_t_UCS_ERR_IO_ERROR => RecoverableIfApplicationRestarted(UnderlyingEPollOrLibcIoOperationFailed),
