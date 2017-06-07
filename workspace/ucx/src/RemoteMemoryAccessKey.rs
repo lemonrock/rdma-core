@@ -37,7 +37,7 @@ macro_rules! address_is_64_bit_aligned
 
 #[repr(i8)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum TransientFailureReason
+pub enum UcpTransientFailureReason
 {
 	/// Only seems to be relevant to receiving
 	/// Does not seem to ever escape stats internal code
@@ -56,7 +56,7 @@ pub enum TransientFailureReason
 
 #[repr(i8)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum PermanentFailureReason
+pub enum UcpPermanentFailureReason
 {
 	OutOfMemory = ucs_status_t_UCS_ERR_NO_MEMORY,
 	
@@ -68,9 +68,6 @@ pub enum PermanentFailureReason
 	
 	UnimplementedFunctionality = ucs_status_t_UCS_ERR_NOT_IMPLEMENTED,
 	
-	/// Apart from configuration-time discovering that there are no devices (ucs_error), seems to indicate programming failure
-	NoSuchElement = ucs_status_t_UCS_ERR_NO_ELEM,
-	
 	/// Should occur quite early on; in essence, there are no suitable devices available for a given transport, eg we asked for InfiniBand and there are no InfiniBand cards / ports
 	NoTransportDeviceExists = ucs_status_t_UCS_ERR_NO_DEVICE,
 	
@@ -80,39 +77,53 @@ pub enum PermanentFailureReason
 	/// Is used for open, truncate, read, write, close and delete; hides errors from calls like open() and shmat()
 	/// Whilst in theory some of these errors are probably transient or recoverable, in practice, since we don't have any knowledge from ucx about what it was doing, we can't
 	PosixOrSysVSharedMemoryError = ucs_status_t_UCS_ERR_SHMEM_SEGMENT,
+	
+	/// Aside from dealing with an InfiniBand verbs interface which has exceeded its usage of tags, should not occur
+	IsEmptyOrIsFull	= ucs_status_t_UCS_ERR_EXCEEDS_LIMIT,
+	
+	/// Apart from configuration-time discovering that there are no devices (ucs_error), seems to indicate internal ucx programming failure
+	ElementDoesNotExist = ucs_status_t_UCS_ERR_NO_ELEM,
+	
+	/// Seems to indicate internal ucx programming failure
+	ElementAlreadyExists = ucs_status_t_UCS_ERR_ALREADY_EXISTS,
+	
+	/// Seems to indicate internal ucx programming failure; only used in stats code
+	IndexOutOfRangeOrNameTooLong = ucs_status_t_UCS_ERR_OUT_OF_RANGE,
 }
 
 /// Represents errors that just don't occur despite being defined in the API
 #[repr(i8)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum ImpossibleFailureReason
+pub enum UcpImpossibleFailureReason
 {
 	BufferTooSmall = ucs_status_t_UCS_ERR_BUFFER_TOO_SMALL,
 	
 	FailedToConnectToSomeOfTheRequestedEndPoints = ucs_status_t_UCS_ERR_SOME_CONNECTS_FAILED,
+	
+	OperationTimedOut = ucs_status_t_UCS_ERR_TIMED_OUT,
 }
 
 quick_error!
 {
 	#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-	pub enum RemoteMemoryAccessFailure
+	pub enum UcpFailure
 	{
 //		Progress
 //		{
 //			display("In progress")
 //		}
 
-		Transient(transientFailureReason: TransientFailureReason)
+		Transient(transientFailureReason: UcpTransientFailureReason)
 		{
 			display("Transient failure '{:?}'", transientFailureReason)
 		}
 		
-		Permanent(permanentFailureReason: PermanentFailureReason)
+		Permanent(permanentFailureReason: UcpPermanentFailureReason)
 		{
 			display("Permanent failure '{:?}'", permanentFailureReason)
 		}
 		
-		Impossible(impossibleFailureReason: ImpossibleFailureReason)
+		Impossible(impossibleFailureReason: UcpImpossibleFailureReason)
 		{
 			display("Impossible failure '{:?}'", impossibleFailureReason)
 		}
@@ -139,7 +150,7 @@ quick_error!
 	}
 }
 
-impl RemoteMemoryAccessFailure
+impl UcpFailure
 {
 	const FirstFutureError: ucs_status_t = ucs_status_t_UCS_ERR_UNSUPPORTED - 1;
 	
@@ -150,7 +161,7 @@ impl RemoteMemoryAccessFailure
 	#[inline(always)]
 	pub fn as_ucs_status_t(&self) -> ucs_status_t
 	{
-		use RemoteMemoryAccessFailure::*;
+		use UcpFailure::*;
 		
 		match *self
 		{
@@ -165,39 +176,44 @@ impl RemoteMemoryAccessFailure
 	}
 	
 	#[inline(always)]
-	pub fn convertError(status: ucs_status_t) -> RemoteMemoryAccessFailure
+	pub fn convertError(status: ucs_status_t) -> Self
 	{
+		use UcpFailure::*;
+		use UcpTransientFailureReason::*;
+		use UcpPermanentFailureReason::*;
+		use UcpImpossibleFailureReason::*;
+		
 		debug_assert!(status < 0, "convert does not support UCS_OK or UCS_INPROGRESS");
 		
 		match status
 		{
-			ucs_status_t_UCS_ERR_NO_MESSAGE => RemoteMemoryAccessFailure::Transient(TransientFailureReason::NoPendingMessage),
-			ucs_status_t_UCS_ERR_NO_RESOURCE => RemoteMemoryAccessFailure::Transient(TransientFailureReason::NoResource),
+			ucs_status_t_UCS_ERR_NO_MESSAGE => Transient(NoPendingMessage),
+			ucs_status_t_UCS_ERR_NO_RESOURCE => Transient(NoResource),
 //			ucs_status_t_UCS_ERR_IO_ERROR = -3,
-			ucs_status_t_UCS_ERR_NO_MEMORY => RemoteMemoryAccessFailure::Permanent(PermanentFailureReason::OutOfMemory),
-			ucs_status_t_UCS_ERR_INVALID_PARAM => RemoteMemoryAccessFailure::Permanent(PermanentFailureReason::InvalidParameter),
-			ucs_status_t_UCS_ERR_UNREACHABLE => RemoteMemoryAccessFailure::Transient(TransientFailureReason::DestinationAddressIsUnreachable),
-			ucs_status_t_UCS_ERR_INVALID_ADDR => RemoteMemoryAccessFailure::Permanent(PermanentFailureReason::InvalidRemoteAddressOrTcpAddressIsNotIpV6OrCanNotPackIntoRemoteAddressBuffer),
-			ucs_status_t_UCS_ERR_NOT_IMPLEMENTED => RemoteMemoryAccessFailure::Permanent(PermanentFailureReason::UnimplementedFunctionality),
+			ucs_status_t_UCS_ERR_NO_MEMORY => Permanent(OutOfMemory),
+			ucs_status_t_UCS_ERR_INVALID_PARAM => Permanent(InvalidParameter),
+			ucs_status_t_UCS_ERR_UNREACHABLE => Transient(DestinationAddressIsUnreachable),
+			ucs_status_t_UCS_ERR_INVALID_ADDR => Permanent(InvalidRemoteAddressOrTcpAddressIsNotIpV6OrCanNotPackIntoRemoteAddressBuffer),
+			ucs_status_t_UCS_ERR_NOT_IMPLEMENTED => Permanent(UnimplementedFunctionality),
 //			ucs_status_t_UCS_ERR_MESSAGE_TRUNCATED = -9,
 //			ucs_status_t_UCS_ERR_NO_PROGRESS = -10,
-			ucs_status_t_UCS_ERR_BUFFER_TOO_SMALL => RemoteMemoryAccessFailure::Impossible(ImpossibleFailureReason::BufferTooSmall),
-			ucs_status_t_UCS_ERR_NO_ELEM => RemoteMemoryAccessFailure::Permanent(PermanentFailureReason::NoSuchElement),
-			ucs_status_t_UCS_ERR_SOME_CONNECTS_FAILED => RemoteMemoryAccessFailure::Impossible(ImpossibleFailureReason::FailedToConnectToSomeOfTheRequestedEndPoints),
-			ucs_status_t_UCS_ERR_NO_DEVICE => RemoteMemoryAccessFailure::Permanent(PermanentFailureReason::NoTransportDeviceExists),
+			ucs_status_t_UCS_ERR_BUFFER_TOO_SMALL => Impossible(BufferTooSmall),
+			ucs_status_t_UCS_ERR_NO_ELEM => Permanent(ElementDoesNotExist),
+			ucs_status_t_UCS_ERR_SOME_CONNECTS_FAILED => Impossible(FailedToConnectToSomeOfTheRequestedEndPoints),
+			ucs_status_t_UCS_ERR_NO_DEVICE => Permanent(NoTransportDeviceExists),
 //			ucs_status_t_UCS_ERR_BUSY = -15,
 //			ucs_status_t_UCS_ERR_CANCELED = -16,
-			ucs_status_t_UCS_ERR_SHMEM_SEGMENT => RemoteMemoryAccessFailure::Permanent(PermanentFailureReason::PosixOrSysVSharedMemoryError),
-//			ucs_status_t_UCS_ERR_ALREADY_EXISTS = -18,
-//			ucs_status_t_UCS_ERR_OUT_OF_RANGE = -19,
-//			ucs_status_t_UCS_ERR_TIMED_OUT = -20,
-//			ucs_status_t_UCS_ERR_EXCEEDS_LIMIT = -21,
-			ucs_status_t_UCS_ERR_UNSUPPORTED => RemoteMemoryAccessFailure::Permanent(PermanentFailureReason::UnsupportedSubSetOfFunctionality),
-			Self::LastFutureError ... Self::FirstFutureError => RemoteMemoryAccessFailure::Future(-(status - Self::FirstFutureError) as u8),
-			ucs_status_t_UCS_ERR_LAST_LINK_FAILURE ... ucs_status_t_UCS_ERR_FIRST_LINK_FAILURE => RemoteMemoryAccessFailure::Link(-(status - ucs_status_t_UCS_ERR_FIRST_LINK_FAILURE) as u8),
-			ucs_status_t_UCS_ERR_LAST_ENDPOINT_FAILURE ... ucs_status_t_UCS_ERR_FIRST_ENDPOINT_FAILURE => RemoteMemoryAccessFailure::EndPoint(-(status - ucs_status_t_UCS_ERR_FIRST_ENDPOINT_FAILURE) as u8),
-			ucs_status_t_UCS_ERR_ENDPOINT_TIMEOUT => RemoteMemoryAccessFailure::Transient(TransientFailureReason::EndPointTimeOut),
-			ucs_status_t_UCS_ERR_LAST ... Self::FirstUnknownError => RemoteMemoryAccessFailure::Unknown(-(status - Self::FirstUnknownError) as u8),
+			ucs_status_t_UCS_ERR_SHMEM_SEGMENT => Permanent(PosixOrSysVSharedMemoryError),
+			ucs_status_t_UCS_ERR_ALREADY_EXISTS => Permanent(ElementAlreadyExists),
+			ucs_status_t_UCS_ERR_OUT_OF_RANGE => Permanent(IndexOutOfRangeOrNameTooLong),
+			ucs_status_t_UCS_ERR_TIMED_OUT => Impossible(OperationTimedOut),
+			ucs_status_t_UCS_ERR_EXCEEDS_LIMIT => Permanent(IsEmptyOrIsFull),
+			ucs_status_t_UCS_ERR_UNSUPPORTED => Permanent(UnsupportedSubSetOfFunctionality),
+			Self::LastFutureError ... Self::FirstFutureError => Future(-(status - Self::FirstFutureError) as u8),
+			ucs_status_t_UCS_ERR_LAST_LINK_FAILURE ... ucs_status_t_UCS_ERR_FIRST_LINK_FAILURE => Link(-(status - ucs_status_t_UCS_ERR_FIRST_LINK_FAILURE) as u8),
+			ucs_status_t_UCS_ERR_LAST_ENDPOINT_FAILURE ... ucs_status_t_UCS_ERR_FIRST_ENDPOINT_FAILURE => EndPoint(-(status - ucs_status_t_UCS_ERR_FIRST_ENDPOINT_FAILURE) as u8),
+			ucs_status_t_UCS_ERR_ENDPOINT_TIMEOUT => Transient(EndPointTimeOut),
+			ucs_status_t_UCS_ERR_LAST ... Self::FirstUnknownError => Unknown(-(status - Self::FirstUnknownError) as u8),
 			_ => panic!("Unknown status '{}'", status),
 		}
 	}
