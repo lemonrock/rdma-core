@@ -49,22 +49,22 @@ quick_error!
 		
 		Future(offset: u8)
 		{
-			display("offset was '{}'", offset)
+			display("Future failure: offset was '{}'", offset)
 		}
 		
 		Link(offset: u8)
 		{
-			display("offset was '{}'", offset)
+			display("Link failure: offset was '{}'", offset)
 		}
 		
 		EndPoint(offset: u8)
 		{
-			display("offset was '{}'", offset)
+			display("EndPoint failure: offset was '{}'", offset)
 		}
 		
 		Unknown(offset: u8)
 		{
-			display("offset was '{}'", offset)
+			display("Unknown failure: offset was '{}'", offset)
 		}
 	}
 }
