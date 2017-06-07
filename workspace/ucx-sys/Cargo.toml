@@ -16,7 +16,7 @@ include = ["README.md", "LICENSE", "COPYRIGHT", "src/**/*.rs", "benches/**/*.rs"
 build = "src/build.rs"
 readme = "README.md"
 publish = true
-version = "0.0.1"
+version = "0.0.2"
 
 [dependencies]
 libc = "0.2"

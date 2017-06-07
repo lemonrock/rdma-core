@@ -14,8 +14,8 @@ repository = "https://github.com/lemonrock/ucx.git"
 exclude = ["*"]
 include = ["README.md", "LICENSE", "COPYRIGHT", "src/**/*.rs", "benches/**/*.rs", "examples/**/*.rs", "tests/**/*.rs", "Cargo.toml", "rustfmt.toml", "clippy.toml"]
 readme = "README.md"
-publish = false
-version = "0.0.0"
+publish = true
+version = "0.0.1"
 
 [dependencies]
 cfg-if = "0.1"
@@ -25,5 +25,5 @@ libc = "0.2"
 libc-extra = " 0.0.14"
 ordermap = "^0.2"
 quick-error = "1.1"
-ucx-sys = { path = "../ucx-sys", version = "0.0.1" }
+ucx-sys = { path = "../ucx-sys", version = "0.0.2" }
 rust-extra = "0.0.13"
