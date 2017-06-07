@@ -160,7 +160,7 @@ impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeCreator<T, S
 	{
 		if state.is_null()
 		{
-			return ucs_status_t::UCS_ERR_IO_ERROR;
+			return ucs_status_t_UCS_ERR_IO_ERROR;
 		}
 		
 		let mut taggedState = Box::from_raw(state as *mut TaggedState<T, S::P, D::U>);
@@ -173,18 +173,18 @@ impl<T: Sized, S: Serialiser<T>, D: Deserialiser<T>> GenericDataTypeCreator<T, S
 					{
 						if likely(state.unpack(offset, src, count))
 						{
-							ucs_status_t::UCS_OK
+							ucs_status_t_UCS_OK
 						}
 						else
 						{
-							ucs_status_t::UCS_ERR_NO_MEMORY
+							ucs_status_t_UCS_ERR_NO_MEMORY
 						}
 					},
 			}
 		}))
 		{
 			Ok(size) => size,
-			Err(_) => ucs_status_t::UCS_ERR_INVALID_PARAM,
+			Err(_) => ucs_status_t_UCS_ERR_INVALID_PARAM,
 		};
 		
 		forget(taggedState);

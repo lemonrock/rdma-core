@@ -19,4 +19,5 @@ include!("bindgen/constants/UctTransportLayer.rs");
 include!("bindgen/constants/UctVersioning.rs");
 include!("bindgen/constants/UctWakeUpEventTypes.rs");
 include!("bindgen/constants/ucp_dt_type.rs");
+include!("bindgen/constants/ucs_status_t.rs");
 include!("bindgen/constants/uct_alloc_method_t.rs");

@@ -80,18 +80,18 @@ recreate_bindings_main()
 	cd "$programPath"/.. 1>/dev/null 2>/dev/null
 		local homeFolder="$(pwd)"
 	cd - 1>/dev/null 2>/dev/null
-	
+
 	cd "$homeFolder" 1>/dev/null 2>/dev/null
 	rm -rf src/bindgen
-	rm -rf src/include
+	#rm -rf src/include
 	rm -rf tools/bindgen/wrapper/temporary
 	rm -rf compile.conf.d/temporary
-	
+
 	cargo clean
 	rm -rf .cargo/target
-	
+
 	tools/build-under-cargo
-	
+
 	tools/compile-on-mac-os-x-using-cargo build
 }
 

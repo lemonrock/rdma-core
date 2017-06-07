@@ -3,8 +3,8 @@
 
 
 #![no_std]
-#![feature(static_nobundle)]
-#![feature(untagged_unions)]
+#![cfg_attr(any(target_os="linux", target_os="android"), feature(static_nobundle))]
+#![cfg_attr(any(target_os="linux", target_os="android"), feature(untagged_unions))]
 
 #![allow(missing_copy_implementations)]
 #![allow(missing_debug_implementations)]
@@ -15,4 +15,4 @@
 #![warn(unused_import_braces)]
 
 
-include!("bindgen/lib.rs");
+#[cfg(any(target_os="linux", target_os="android"))] include!("bindgen/lib.rs");

@@ -71,6 +71,7 @@
       <w>rdma</w>
       <w>recv</w>
       <w>refcnt</w>
+      <w>rkey</w>
       <w>rwlock</w>
       <w>serialiser</w>
       <w>shmem</w>

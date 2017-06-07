@@ -35,13 +35,13 @@ impl ucs_status_ptr_tEx for ucs_status_ptr_t
 	#[inline(always)]
 	fn UCS_PTR_IS_ERR(self) -> bool
 	{
-		(self as uintptr_t) >= (ucs_status_t::UCS_ERR_LAST as i8 as uintptr_t)
+		(self as uintptr_t) >= (ucs_status_t_UCS_ERR_LAST as i8 as uintptr_t)
 	}
 	
 	#[inline(always)]
 	fn UCS_PTR_IS_PTR(self) -> bool
 	{
-		((self as uintptr_t) - 1) < ((ucs_status_t::UCS_ERR_LAST as i8 as uintptr_t) - 1)
+		((self as uintptr_t) - 1) < ((ucs_status_t_UCS_ERR_LAST as i8 as uintptr_t) - 1)
 	}
 	
 	#[inline(always)]
@@ -54,7 +54,7 @@ impl ucs_status_ptr_tEx for ucs_status_ptr_t
 	fn ucsIsOk(self) -> bool
 	{
 		debug_assert!(self.UCS_PTR_IS_ERR(), "?");
-		debug_assert!(self as i8 == ucs_status_t::UCS_OK as i8, "?");
+		debug_assert!(self as i8 == ucs_status_t_UCS_OK as i8, "?");
 		
 		self.is_null()
 	}

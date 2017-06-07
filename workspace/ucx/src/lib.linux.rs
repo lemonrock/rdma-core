@@ -6,6 +6,7 @@
 extern crate errno;
 extern crate libc;
 extern crate libc_extra;
+#[macro_use] extern crate quick_error;
 extern crate rust_extra;
 extern crate ucx_sys;
 
@@ -70,8 +71,9 @@ include!("QueryAttributes.rs");
 include!("RemoteMemoryAccessKey.rs");
 include!("RemoteMemoryAccessKeyBuffer.rs");
 include!("ucs_cpu_set_tEx.rs");
+include!("ucs_status_ptr_tEx.rs");
+include!("ucs_status_tEx.rs");
 include!("Worker.rs");
 include!("WorkerAddressHandle.rs");
 include!("WorkerAttributes.rs");
 include!("WorkerThreadMode.rs");
-include!("ucs_status_ptr_tEx.rs");

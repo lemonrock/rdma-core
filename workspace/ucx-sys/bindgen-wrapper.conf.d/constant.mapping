@@ -24,3 +24,4 @@ UCP_API_ UcpVersioning
 UCP_VERSION_ UcpVersioning
 UCP_MEM_MAP_ UcpMemoryMapFlags
 ucp_dt_type_UCP_DATATYPE_ ucp_dt_type
+ucs_status_t_ ucs_status_t

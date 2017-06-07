@@ -119,7 +119,7 @@ compile_prepareForMacOSX()
 	_compile_prepareForMacOSX_brewInstall libelf
 	_compile_prepareForMacOSX_brewInstall coreutils
 	_compile_prepareForMacOSX_brewInstall FiloSottile/musl-cross/musl-cross
-	
+
 	#_compile_prepareForMacOSX_brewInstall pkg-config
 	#_compile_prepareForMacOSX_brewInstall grep
 	_compile_prepareForMacOSX_brewInstall autoconf@2.69
@@ -202,7 +202,7 @@ compile_platformSpecificPreparation()
 			compile_ensureRequiredBinariesArePresent brew
 
 			export PATH="$(brew --prefix coreutils)"/libexec/gnubin:"$(brew --prefix gnu-sed)"/libexec/gnubin:"$PATH"
-			
+
 			#ln -s /usr/local/bin/ggrep "$additionalPath"/grep
 
 			muslIncludeFolderPath="$(brew --prefix musl-cross)"/libexec/x86_64-linux-musl/include
@@ -238,18 +238,18 @@ compile_makeCopyToAlter()
 compile_autoreconf()
 {
 	cd "$temporaryFolderPath" 1>/dev/null 2>/dev/null
-		
+
 		autoreconf -ivf
-		
+
 	cd - 1>/dev/null 2>/dev/null
 }
 
 compile_configure()
 {
 	printf '\n\n\n\n\n\nWARNING: DISABLING SUPPORT for libnuma FOR NOW\n\n\n\n\n\n' 1>&2
-	
+
 	cd "$temporaryFolderPath" 1>/dev/null 2>/dev/null
-		
+
 		# --disable-numa
 		# --disable-openmp
 		# --enable-tuning
@@ -264,7 +264,8 @@ compile_configure()
 		./configure --prefix=/usr --host="$configureHost" --disable-shared --enable-static --disable-dependency-tracking --disable-silent-rules --enable-fast-install \
 			--enable-optimizations \
 			--disable-backtrace-detail \
-			--disable-logging \
+			--enable-logging \
+			--log-level=warn \
 			--disable-assertions \
 			--disable-symbol-override \
 			--disable-cma \
@@ -282,7 +283,7 @@ compile_configure()
 			--with-knem=no \
 			--with-xpmem=no \
 			--disable-numa
-		
+
 	cd - 1>/dev/null 2>/dev/null
 }
 
@@ -292,7 +293,7 @@ compile_make()
 
 		make -j "$numberOfMakeJobs" 1>&2
 		make -j "$numberOfMakeJobs" install DESTDIR="$temporaryFolderPath" 1>&2
-		
+
 	cd - 1>/dev/null 2>/dev/null
 }
 
@@ -300,9 +301,9 @@ compile_main()
 {
 	local configureHost='x86_64-linux-musl'
 	local compilerPrefix="${configureHost}"-
-	
+
 	compile_parseCommandLine "$@"
-	
+
 	local programFolderPath
 	local homeFolderPath
 	local configurationFolderPath
@@ -310,7 +311,7 @@ compile_main()
 
 	local temporaryFolderPath
 	compile_createTemporaryFolder
-	
+
 	local additionalPath="$temporaryFolderPath"/PATH
 	compile_createTemporaryBinariesPath
 
@@ -318,13 +319,13 @@ compile_main()
 	local muslIncludeFolderPath
 	local numberOfMakeJobs
 	compile_platformSpecificPreparation
-	
+
 	compile_makeCopyToAlter
-	
+
 	compile_autoreconf
 	compile_configure
 	compile_make
-	
+
 	printf '\n\n\nFINISHED\n\n\n' 1>&2
 }
 

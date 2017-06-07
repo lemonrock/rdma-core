@@ -10,6 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.cargo" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
       <excludeFolder url="file://$MODULE_DIR$/tools/bindgen-wrapper/temporary" />
+      <excludeFolder url="file://$MODULE_DIR$/compile.conf.d/temporary" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Rust &lt;gaspi-reference-sys&gt;" level="project" />

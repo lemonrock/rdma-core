@@ -40,7 +40,7 @@ where 'a: 'b
 	unsafe extern "C" fn errorHandlerCallback(arg: *mut c_void, ep: ucp_ep_h, status: ucs_status_t)
 	{
 		debug_assert!(!ep.is_null(), "ep is null");
-		debug_assert!(status != ucs_status_t::UCS_OK, "status is UCS_OK!");
+		debug_assert!(status != ucs_status_t_UCS_OK, "status is UCS_OK!");
 		
 		let mut endPoint = &mut *(arg as *mut Self);
 		endPoint.errorHandler(status);

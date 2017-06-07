@@ -119,11 +119,10 @@ impl<'a> Worker<'a>
 		(
 			status,
 			{
-				use ucs_status_t::*;
 				match status
 				{
-					UCS_ERR_IO_ERROR => return Err(()),
-					UCS_ERR_NO_MEMORY => panic!("Out of memory in 'ucp_worker_wait'"),
+					ucs_status_t_UCS_ERR_IO_ERROR => return Err(()),
+					ucs_status_t_UCS_ERR_NO_MEMORY => panic!("Out of memory in 'ucp_worker_wait'"),
 					_ => (),
 				};
 			},
@@ -149,10 +148,9 @@ impl<'a> Worker<'a>
 		(
 			status,
 			{
-				use ucs_status_t::*;
 				match status
 				{
-					UCS_ERR_BUSY  => return true,
+					ucs_status_t_UCS_ERR_BUSY  => return true,
 					_ => (),
 				};
 			},

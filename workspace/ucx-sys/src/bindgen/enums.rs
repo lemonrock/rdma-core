@@ -21,7 +21,6 @@ include!("bindgen/enums/ucs_async_mode_t.rs");
 include!("bindgen/enums/ucs_handle_error_t.rs");
 include!("bindgen/enums/ucs_log_level_t.rs");
 include!("bindgen/enums/ucs_stats_formats_t.rs");
-include!("bindgen/enums/ucs_status_t.rs");
 include!("bindgen/enums/ucs_ternary_value.rs");
 include!("bindgen/enums/ucs_thread_mode_t.rs");
 include!("bindgen/enums/uct_alloc_method_t.rs");

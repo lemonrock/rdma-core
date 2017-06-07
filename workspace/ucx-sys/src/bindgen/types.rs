@@ -46,6 +46,7 @@ include!("bindgen/types/ucs_stats_counter_t.rs");
 include!("bindgen/types/ucs_stats_filter_node_t.rs");
 include!("bindgen/types/ucs_stats_node_t.rs");
 include!("bindgen/types/ucs_status_ptr_t.rs");
+include!("bindgen/types/ucs_status_t.rs");
 include!("bindgen/types/ucs_time_t.rs");
 include!("bindgen/types/uct_allocated_memory_t.rs");
 include!("bindgen/types/uct_am_callback_t.rs");

@@ -8,7 +8,7 @@ macro_rules! panic_on_error_with_clean_up
 	{
 		{
 			let $status = unsafe { $function($($argument),*) };
-			if $crate::rust_extra::unlikely($status != ucs_status_t::UCS_OK)
+			if $crate::rust_extra::unlikely($status != ucs_status_t_UCS_OK)
 			{
 				$failureBlock
 				let description = unsafe { CStr::from_ptr(ucs_status_string($status)) };
