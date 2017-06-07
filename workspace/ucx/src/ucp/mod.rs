@@ -6,6 +6,7 @@ use super::ucs_cpu_set_tEx;
 use super::ucs_status_tEx;
 use super::ucs_status_ptr_tEx;
 use self::failures::*;
+use ::libc::c_char;
 use ::libc::c_void;
 use ::libc::FILE;
 use ::libc_extra::stderr;
@@ -31,6 +32,7 @@ include!("panic_on_error.rs");
 include!("panic_on_error_with_clean_up.rs");
 
 
+pub mod configuration;
 pub mod failures;
 pub mod genericDataTypes;
 

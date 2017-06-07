@@ -2,6 +2,7 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
+#[macro_use] extern crate const_cstr_fork;
 #[macro_use] extern crate cfg_if;
 extern crate errno;
 extern crate libc;

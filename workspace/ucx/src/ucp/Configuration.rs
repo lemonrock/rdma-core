@@ -81,11 +81,24 @@ impl Configuration
 	
 	/// See the static `ucp_config_table` in ucp_context.c for potential values of name and value
 	#[inline(always)]
-	pub fn modify(&self, name: &str, value: &str)
+	pub fn modify(&self, name: *const c_char, value: CString)
 	{
-		let name = CString::new(name).expect("Not a valid CStr");
-		let value = CString::new(value).expect("Not a valid CStr");
-		panic_on_error!(ucp_config_modify, self.handle, name.as_ptr(), value.as_ptr());
+		panic_on_error!(ucp_config_modify, self.handle, name, value.as_ptr());
+		
+		
+		
+		
+		
+			// better error handling
+			// create a list of key names
+		//xxxxx
+		
+		
+		
+		
+		
+		
+		
 	}
 	
 	/// applicationContextFeaturesIdeallySupported and contextWillBeSharedByMultipleWorkersFromDifferentThreads are programmer choices; how the code will be designed
