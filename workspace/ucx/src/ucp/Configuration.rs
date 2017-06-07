@@ -79,11 +79,18 @@ impl Configuration
 		}
 	}
 	
+	#[inline(always)]
+	pub fn set<'a, T: ConfigurationValueConverter>(&self, configurationSetting: &ConfigurationSetting<'a, T>)
+	where T: 'a
+	{
+		configurationSetting.set(self)
+	}
+	
 	/// See the static `ucp_config_table` in ucp_context.c for potential values of name and value
 	#[inline(always)]
-	pub fn modify(&self, name: *const c_char, value: CString)
+	fn modify(&self, name: &ConstCStr, value: &CStr)
 	{
-		panic_on_error!(ucp_config_modify, self.handle, name, value.as_ptr());
+		panic_on_error!(ucp_config_modify, self.handle, name.as_ptr(), value.as_ptr());
 		
 		
 		

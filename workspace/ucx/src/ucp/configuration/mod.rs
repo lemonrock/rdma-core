@@ -3,17 +3,22 @@
 
 
 use super::*;
+use ::const_cstr_fork::ConstCStr;
 use ::std::collections::HashSet;
 use ::std::ffi::CString;
-use ::libc::c_char;
+use ::std::string::ToString;
+use ::ordermap::OrderMap;
 
 
+include!("AtomicOperationsSynchronizationMode.rs");
 include!("ConfigurationKey.rs");
 include!("ConfigurationSetting.rs");
-include!("MemoryUnitsConfigurationKey.rs");
-include!("MemoryUnitsConfigurationSetting.rs");
-include!("StringArrayConfigurationSetting.rs");
-include!("StringArrayConfigurationKey.rs");
+include!("DeviceName.rs");
+include!("MemoryAllocatorPriority.rs");
+include!("MemoryDomain.rs");
+include!("MemoryUnit.rs");
+include!("ConfigurationValueConverter.rs");
+include!("TransportLayerCollectionName.rs");
 
 
 
@@ -36,14 +41,7 @@ ucs_offsetof(ucp_config_t, ctx.rndv_perf_diff), UCS_CONFIG_TYPE_DOUBLE},
 "          Otherwise the CPU mode is selected.",
 ucs_offsetof(ucp_config_t, ctx.atomic_mode), UCS_CONFIG_TYPE_ENUM(ucp_atomic_modes)},
 
-{"MAX_WORKER_NAME", UCS_PP_MAKE_STRING(UCP_WORKER_NAME_MAX),
-"Maximal length of worker name. Affects the size of worker address in debug builds.",
-ucs_offsetof(ucp_config_t, ctx.max_worker_name), UCS_CONFIG_TYPE_UINT},
 
-{"USE_MT_MUTEX", "n", "Use mutex for multithreading support in UCP.\n"
-"n      - Not use mutex for multithreading support in UCP (use spinlock by default).\n"
-"y      - Use mutex for multithreading support in UCP.\n",
-ucs_offsetof(ucp_config_t, ctx.use_mt_mutex), UCS_CONFIG_TYPE_BOOL},
 
 {NULL}
 };

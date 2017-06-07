@@ -2,20 +2,49 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug, Clone)]
-pub struct ConfigurationSetting<'a, T: ConfigurationValueConverter>
-where T: 'a
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum DeviceName
 {
-	key: &'a ConfigurationKey<T>,
-	value: T,
+	all,
+	Specific(String),
 }
 
-impl<'a, T: ConfigurationValueConverter> ConfigurationSetting<'a, T>
-where T: 'a
+impl ToString for DeviceName
 {
 	#[inline(always)]
-	pub fn set(&self, configuration: &Configuration)
+	fn to_string(&self) -> String
 	{
-		configuration.modify(self.key.name(), &ConfigurationValueConverter::convert(&self.value))
+		use self::DeviceName::*;
+		
+		match *self
+		{
+			all => "all",
+			Specific(ref value) => value,
+		}.to_owned()
+	}
+}
+
+impl DeviceName
+{
+	#[inline(always)]
+	pub fn fromString(value: &str) -> Option<DeviceName>
+	{
+		use self::DeviceName::*;
+		
+		if value.is_empty()
+		{
+			None
+		}
+		else
+		{
+			Some
+			(
+				match value
+				{
+					"all" => all,
+					_ => Specific(value.to_string()),
+				}
+			)
+		}
 	}
 }

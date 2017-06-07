@@ -2,20 +2,30 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug, Clone)]
-pub struct ConfigurationSetting<'a, T: ConfigurationValueConverter>
-where T: 'a
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum MemoryDomain
 {
-	key: &'a ConfigurationKey<T>,
-	value: T,
+	Wildcard,
+	
+	// Similar to, but not the same as, TransportLayerAliases for shared memory
+	sysv,
+	posix,
+	xpmem,
 }
 
-impl<'a, T: ConfigurationValueConverter> ConfigurationSetting<'a, T>
-where T: 'a
+impl MemoryDomain
 {
 	#[inline(always)]
-	pub fn set(&self, configuration: &Configuration)
+	fn asMemoryAllocatorPriorityString(&self) -> &'static str
 	{
-		configuration.modify(self.key.name(), &ConfigurationValueConverter::convert(&self.value))
+		use self::MemoryDomain::*;
+		
+		match *self
+		{
+			Wildcard => "md:*",
+			sysv => "md:sysv",
+			posix => "md:posix",
+			xpmem => "md:xpmem",
+		}
 	}
 }

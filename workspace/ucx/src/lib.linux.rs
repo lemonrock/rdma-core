@@ -7,6 +7,7 @@
 extern crate errno;
 extern crate libc;
 extern crate libc_extra;
+extern crate ordermap;
 #[macro_use] extern crate quick_error;
 extern crate rust_extra;
 extern crate ucx_sys;
