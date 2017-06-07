@@ -5,13 +5,8 @@
 quick_error!
 {
 	#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-	pub enum ConfigurationError
+	pub enum ApplicationContextInitialisationError
 	{
-		NoTransportDevicesExistThatAreSuitable
-		{
-			display("No transport devices exist that are suitable")
-		}
-		
 		FunctionalityNotImplementedOrSupported
 		{
 			display("Functionality not implemented or supported")

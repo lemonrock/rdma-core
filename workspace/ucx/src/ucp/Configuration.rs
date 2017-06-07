@@ -31,7 +31,7 @@ impl PrintInformation for Configuration
 impl Configuration
 {
 	#[inline(always)]
-	pub fn readFromEnvironmentVariables(environmentVariablePrefix: &str) -> Result<Self, ConfigurationError>
+	pub fn readFromEnvironmentVariables(environmentVariablePrefix: &str) -> Result<Self, ConfigurationReadError>
 	{
 		let mut config_p = unsafe { uninitialized() };
 		
@@ -59,7 +59,7 @@ impl Configuration
 		{
 			use self::UcpFailure::*;
 			use self::UcpPermanentFailureReason::*;
-			use self::ConfigurationError::*;
+			use self::ConfigurationReadError::*;
 			
 			let failure = UcpFailure::convertError(status);
 			
@@ -67,13 +67,14 @@ impl Configuration
 			{
 				Permanent(reason) => match reason
 				{
-					NoTransportDeviceExists => return Err(NoTransportDevicesExistThatAreSuitable),
-					ElementDoesNotExist => return Err(NoTransportDevicesExistThatAreSuitable),
-					UnimplementedFunctionality => return Err(FunctionalityNotImplementedOrSupported),
-					UnsupportedSubSetOfFunctionality => return Err(FunctionalityNotImplementedOrSupported),
-					_ => panic!("Permanent failure to read configuration from environment variables because '{:?}'", reason)
+					OutOfMemory => panic!("Out of memory"),
+					NoTransportDeviceExists => Err(NoTransportDevicesExistThatAreSuitable),
+					ElementDoesNotExist => Err(NoTransportDevicesExistThatAreSuitable),
+					UnimplementedFunctionality => Err(FunctionalityNotImplementedOrSupported),
+					UnsupportedSubSetOfFunctionality => Err(FunctionalityNotImplementedOrSupported),
+					_ => panic!("Permanent failure to read configuration from environment variables because '{:?}'", reason),
 				},
-				_ => panic!("Inappropriate failure for UCP API '{}'", failure)
+				_ => panic!("Inappropriate failure for UCP API '{}'", failure),
 			}
 		}
 	}
@@ -91,7 +92,7 @@ impl Configuration
 	/// tagSenderMask and estimatedNumberOfEndPoints are configuration / per-invocation choices
 	/// contextWillBeSharedByMultipleWorkersFromDifferentThreads should ideally be false
 	#[inline(always)]
-	pub fn initialiseApplicationContext(&self, applicationContextFeaturesIdeallySupported: &ApplicationContextFeaturesIdeallySupported, contextWillBeSharedByMultipleWorkersFromDifferentThreads: bool, tagSenderMask: u64, estimatedNumberOfEndPoints: usize) -> ApplicationContext
+	pub fn initialiseApplicationContext(&self, applicationContextFeaturesIdeallySupported: &ApplicationContextFeaturesIdeallySupported, contextWillBeSharedByMultipleWorkersFromDifferentThreads: bool, tagSenderMask: u64, estimatedNumberOfEndPoints: usize) -> Result<ApplicationContext, ApplicationContextInitialisationError>
 	{
 		use ucp_params_field::*;
 		
@@ -118,10 +119,38 @@ impl Configuration
 		};
 		
 		let mut context = unsafe { uninitialized() };
-		panic_on_error!(ucp_init_version, UCP_API_MAJOR, UCP_API_MINOR, &parameters, self.handle, &mut context);
-		ApplicationContext
+		
+		let status = unsafe { ucp_init_version(UCP_API_MAJOR, UCP_API_MINOR, &parameters, self.handle, &mut context) };
+		
+		if likely(status.isOk())
 		{
-			handle: context,
+			Ok
+			(
+				ApplicationContext
+				{
+					handle: context,
+				}
+			)
+		}
+		else
+		{
+			use self::UcpFailure::*;
+			use self::UcpPermanentFailureReason::*;
+			use self::ApplicationContextInitialisationError::*;
+			
+			let failure = UcpFailure::convertError(status);
+			
+			match failure
+			{
+				Permanent(reason) => match reason
+				{
+					OutOfMemory => panic!("Out of memory"),
+					UnimplementedFunctionality => Err(FunctionalityNotImplementedOrSupported),
+					UnsupportedSubSetOfFunctionality => Err(FunctionalityNotImplementedOrSupported),
+					_ => panic!("Permanent failure to initialise an application context because '{:?}'", reason)
+				},
+				_ => panic!("Inappropriate failure for UCP API '{}'", failure)
+			}
 		}
 	}
 }
