@@ -38,18 +38,6 @@ macro_rules! address_is_64_bit_aligned
 impl<'a, 'b, 'c, ErrorHandler: EndPointErrorHandler> RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler>
 where 'a: 'b, 'b: 'c, ErrorHandler: 'c
 {
-//	/// Sadly this isn't even implemented yet...
-//	/// Presumably we need to have received a message telling us the remoteAddress... perhaps at the same time we get the rkey
-//	#[inline(always)]
-//	pub fn localMemoryAddressThatCanBeUsedToDirectLoadsAndStoresInRemoteMemory(&self, remoteAddress: *mut c_void) -> *mut c_void
-//	{
-//		let mut localAddress = unsafe { uninitialized() };
-//		panic_on_error!(ucp_rmem_ptr, self.endPoint.handle, remoteAddress, self.handle, &mut localAddress);
-//		localAddress
-//	}
-	
-	
-	
 	// TODO: Review panic_on_error! - we could be getting a disconnection event!!!! UCS_INPROGRESS!!!!
 	
 	
