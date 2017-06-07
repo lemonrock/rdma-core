@@ -15,7 +15,7 @@ impl WorkerThreadMode
 	#[inline(always)]
 	pub fn as_ucs_thread_mode_t(self) -> ucs_thread_mode_t
 	{
-		use WorkerThreadMode::*;
+		use self::WorkerThreadMode::*;
 		use ucs_thread_mode_t::*;
 		
 		match self
