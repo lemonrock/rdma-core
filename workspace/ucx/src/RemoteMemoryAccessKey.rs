@@ -54,6 +54,22 @@ pub enum UcpTransientFailureReason
 	EndPointTimeOut = ucs_status_t_UCS_ERR_ENDPOINT_TIMEOUT,
 }
 
+/// NOTE: This means the application, NOT the application context
+#[repr(i8)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum UcpRecoverableIfApplicationRestartedFailureReason
+{
+	/// epoll operations failed, or a read on a pipe failed; not recoverable as ucx does not give us enough information
+	UnderlyingEPollOrLibcIoOperationFailed = ucs_status_t_UCS_ERR_IO_ERROR,
+	
+	/// Is used for open, truncate, read, write, close and delete; hides errors from calls like open() and shmat()
+	/// Whilst in theory some of these errors are probably transient or recoverable, in practice, since we don't have any knowledge from ucx about what it was doing, we can't
+	PosixOrSysVSharedMemoryError = ucs_status_t_UCS_ERR_SHMEM_SEGMENT,
+	
+	/// Aside from dealing with an InfiniBand verbs interface which has exceeded its usage of tags, should not occur
+	IsEmptyOrIsFull	= ucs_status_t_UCS_ERR_EXCEEDS_LIMIT,
+}
+
 #[repr(i8)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum UcpPermanentFailureReason
@@ -74,13 +90,6 @@ pub enum UcpPermanentFailureReason
 	/// Differs to UnimplementedFunctionality in that a particular function exists but a particular path of (reasonable from an user's perspective) logic through it is not supported
 	UnsupportedSubSetOfFunctionality = ucs_status_t_UCS_ERR_UNSUPPORTED,
 	
-	/// Is used for open, truncate, read, write, close and delete; hides errors from calls like open() and shmat()
-	/// Whilst in theory some of these errors are probably transient or recoverable, in practice, since we don't have any knowledge from ucx about what it was doing, we can't
-	PosixOrSysVSharedMemoryError = ucs_status_t_UCS_ERR_SHMEM_SEGMENT,
-	
-	/// Aside from dealing with an InfiniBand verbs interface which has exceeded its usage of tags, should not occur
-	IsEmptyOrIsFull	= ucs_status_t_UCS_ERR_EXCEEDS_LIMIT,
-	
 	/// Apart from configuration-time discovering that there are no devices (ucs_error), seems to indicate internal ucx programming failure
 	ElementDoesNotExist = ucs_status_t_UCS_ERR_NO_ELEM,
 	
@@ -89,6 +98,9 @@ pub enum UcpPermanentFailureReason
 	
 	/// Seems to indicate internal ucx programming failure; only used in stats code
 	IndexOutOfRangeOrNameTooLong = ucs_status_t_UCS_ERR_OUT_OF_RANGE,
+	
+	/// It is believed that this should not leak up to the UCP API; seems to indicate internal ucx programming failure
+	NoProgress = ucs_status_t_UCS_ERR_NO_PROGRESS,
 }
 
 /// Represents errors that just don't occur despite being defined in the API
@@ -113,9 +125,29 @@ quick_error!
 //			display("In progress")
 //		}
 
+		/// Only relevant for received (tagged) messages, and, even then, can probably be avoided by using probe
+		ReceivedTaggedMessageWasTruncated
+		{
+		}
+
+		/// Only relevant for Worker arm
+		CouldNotArmWorkerAsBusy
+		{
+		}
+		
+		/// Only relevant for non-blocking requests
+		NonBlockingRequestCancelled
+		{
+		}
+
 		Transient(transientFailureReason: UcpTransientFailureReason)
 		{
 			display("Transient failure '{:?}'", transientFailureReason)
+		}
+		
+		RecoverableIfApplicationRestarted(recoverableIfApplicationRestartedFailureReason: UcpRecoverableIfApplicationRestartedFailureReason)
+		{
+			display("Recoverable if application restarted failure '{:?}'", recoverableIfApplicationRestartedFailureReason)
 		}
 		
 		Permanent(permanentFailureReason: UcpPermanentFailureReason)
@@ -165,9 +197,13 @@ impl UcpFailure
 		
 		match *self
 		{
-			Transient(transientFailureReason) => transientFailureReason as i8,
-			Permanent(permanentFailureReason) => permanentFailureReason as i8,
-			Impossible(impossibleFailureReason) => impossibleFailureReason as i8,
+			ReceivedTaggedMessageWasTruncated => ucs_status_t_UCS_ERR_MESSAGE_TRUNCATED,
+			CouldNotArmWorkerAsBusy => ucs_status_t_UCS_ERR_BUSY,
+			NonBlockingRequestCancelled => ucs_status_t_UCS_ERR_CANCELED,
+			Transient(reason) => reason as i8,
+			RecoverableIfApplicationRestarted(reason) => reason as i8,
+			Permanent(reason) => reason as i8,
+			Impossible(reason) => reason as i8,
 			Future(offset) => Self::FirstFutureError - (offset as i8),
 			Link(offset) => ucs_status_t_UCS_ERR_FIRST_LINK_FAILURE - (offset as i8),
 			EndPoint(offset) => ucs_status_t_UCS_ERR_FIRST_ENDPOINT_FAILURE - (offset as i8),
@@ -180,6 +216,7 @@ impl UcpFailure
 	{
 		use UcpFailure::*;
 		use UcpTransientFailureReason::*;
+		use UcpRecoverableIfApplicationRestartedFailureReason::*;
 		use UcpPermanentFailureReason::*;
 		use UcpImpossibleFailureReason::*;
 		
@@ -189,32 +226,32 @@ impl UcpFailure
 		{
 			ucs_status_t_UCS_ERR_NO_MESSAGE => Transient(NoPendingMessage),
 			ucs_status_t_UCS_ERR_NO_RESOURCE => Transient(NoResource),
-//			ucs_status_t_UCS_ERR_IO_ERROR = -3,
+			ucs_status_t_UCS_ERR_IO_ERROR => RecoverableIfApplicationRestarted(UnderlyingEPollOrLibcIoOperationFailed),
 			ucs_status_t_UCS_ERR_NO_MEMORY => Permanent(OutOfMemory),
 			ucs_status_t_UCS_ERR_INVALID_PARAM => Permanent(InvalidParameter),
 			ucs_status_t_UCS_ERR_UNREACHABLE => Transient(DestinationAddressIsUnreachable),
 			ucs_status_t_UCS_ERR_INVALID_ADDR => Permanent(InvalidRemoteAddressOrTcpAddressIsNotIpV6OrCanNotPackIntoRemoteAddressBuffer),
 			ucs_status_t_UCS_ERR_NOT_IMPLEMENTED => Permanent(UnimplementedFunctionality),
-//			ucs_status_t_UCS_ERR_MESSAGE_TRUNCATED = -9,
-//			ucs_status_t_UCS_ERR_NO_PROGRESS = -10,
+			ucs_status_t_UCS_ERR_MESSAGE_TRUNCATED => ReceivedTaggedMessageWasTruncated,
+			ucs_status_t_UCS_ERR_NO_PROGRESS => Permanent(NoProgress),
 			ucs_status_t_UCS_ERR_BUFFER_TOO_SMALL => Impossible(BufferTooSmall),
 			ucs_status_t_UCS_ERR_NO_ELEM => Permanent(ElementDoesNotExist),
 			ucs_status_t_UCS_ERR_SOME_CONNECTS_FAILED => Impossible(FailedToConnectToSomeOfTheRequestedEndPoints),
 			ucs_status_t_UCS_ERR_NO_DEVICE => Permanent(NoTransportDeviceExists),
-//			ucs_status_t_UCS_ERR_BUSY = -15,
-//			ucs_status_t_UCS_ERR_CANCELED = -16,
-			ucs_status_t_UCS_ERR_SHMEM_SEGMENT => Permanent(PosixOrSysVSharedMemoryError),
+			ucs_status_t_UCS_ERR_BUSY => CouldNotArmWorkerAsBusy,
+			ucs_status_t_UCS_ERR_CANCELED => NonBlockingRequestCancelled,
+			ucs_status_t_UCS_ERR_SHMEM_SEGMENT => RecoverableIfApplicationRestarted(PosixOrSysVSharedMemoryError),
 			ucs_status_t_UCS_ERR_ALREADY_EXISTS => Permanent(ElementAlreadyExists),
 			ucs_status_t_UCS_ERR_OUT_OF_RANGE => Permanent(IndexOutOfRangeOrNameTooLong),
 			ucs_status_t_UCS_ERR_TIMED_OUT => Impossible(OperationTimedOut),
-			ucs_status_t_UCS_ERR_EXCEEDS_LIMIT => Permanent(IsEmptyOrIsFull),
+			ucs_status_t_UCS_ERR_EXCEEDS_LIMIT => RecoverableIfApplicationRestarted(IsEmptyOrIsFull),
 			ucs_status_t_UCS_ERR_UNSUPPORTED => Permanent(UnsupportedSubSetOfFunctionality),
 			Self::LastFutureError ... Self::FirstFutureError => Future(-(status - Self::FirstFutureError) as u8),
 			ucs_status_t_UCS_ERR_LAST_LINK_FAILURE ... ucs_status_t_UCS_ERR_FIRST_LINK_FAILURE => Link(-(status - ucs_status_t_UCS_ERR_FIRST_LINK_FAILURE) as u8),
 			ucs_status_t_UCS_ERR_LAST_ENDPOINT_FAILURE ... ucs_status_t_UCS_ERR_FIRST_ENDPOINT_FAILURE => EndPoint(-(status - ucs_status_t_UCS_ERR_FIRST_ENDPOINT_FAILURE) as u8),
 			ucs_status_t_UCS_ERR_ENDPOINT_TIMEOUT => Transient(EndPointTimeOut),
 			ucs_status_t_UCS_ERR_LAST ... Self::FirstUnknownError => Unknown(-(status - Self::FirstUnknownError) as u8),
-			_ => panic!("Unknown status '{}'", status),
+			_ => panic!("Unknown status, or non-error status '{}'", status),
 		}
 	}
 }

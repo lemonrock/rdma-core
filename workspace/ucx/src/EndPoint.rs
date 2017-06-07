@@ -20,7 +20,10 @@ where 'a: 'b
 	{
 		if unlikely(!self.handle.is_null())
 		{
-			NonBlockingRequest(unsafe { ucp_disconnect_nb(self.handle) });
+			// We do this as a callback can still be pending
+			let handle = self.handle;
+			self.handle = null_mut();
+			NonBlockingRequest(unsafe { ucp_disconnect_nb(handle) });
 		}
 	}
 }
@@ -37,6 +40,28 @@ impl<'a, 'b, ErrorHandler: EndPointErrorHandler> PrintInformation for EndPoint<'
 impl<'a, 'b, ErrorHandler: EndPointErrorHandler> EndPoint<'a, 'b, ErrorHandler>
 where 'a: 'b
 {
+	#[inline(always)]
+	pub fn flushAllOutstandingRemoteMemoryAccessAndAtomicOperations(&self)
+	{
+		panic_on_error!(ucp_ep_flush, self.handle);
+	}
+	
+	/// remoteMemoryAccessKeyBuffer should have been created by packing on a MappedMemory object on the remote side
+	/// We are the receiver
+	#[inline(always)]
+	pub fn unpackRemoteMemoryAccessKeyBuffer<'c>(&'c self, remoteMemoryAccessKeyBuffer: *mut c_void) -> RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler>
+	{
+		let mut handle = unsafe { uninitialized() };
+		panic_on_error!(ucp_ep_rkey_unpack, self.handle, remoteMemoryAccessKeyBuffer, &mut handle);
+		RemoteMemoryAccessKey
+		{
+			handle: handle,
+			endPoint: self,
+		}
+	}
+	
+	// TODO: arg HAS TO BE A WEAK REFERENCE
+	
 	unsafe extern "C" fn errorHandlerCallback(arg: *mut c_void, ep: ucp_ep_h, status: ucs_status_t)
 	{
 		debug_assert!(!ep.is_null(), "ep is null");
@@ -49,6 +74,14 @@ where 'a: 'b
 	#[inline(always)]
 	fn errorHandler(&mut self, status: ucs_status_t)
 	{
+		// Can occur when
+		// - between initial creation and assignment of handle (XXX)
+		// - after ucp_disconnect_nb() called? In which case, ucp_disconnect_nb() should not be called in drop()
+		if self.handle.is_null()
+		{
+			return;
+		}
+		
 		// It is believed that at this time the handle is invalid and has already become disconnected
 		// It is possible that this function is invoked immediately after EndPoint has been created and before self.handle has been set
 		// This is seen as unlikely: see (XXX)
@@ -75,25 +108,5 @@ where 'a: 'b
 		panic_on_error!(ucp_ep_create, self.worker.handle, &self.parameters, &mut handle);
 		// (XXX) At this juncture here, self.handle is null but self.errorHandler() could be called back by ucp_ep_create()
 		self.handle = handle;
-	}
-	
-	#[inline(always)]
-	pub fn flushAllOutstandingRemoteMemoryAccessAndAtomicOperations(&self)
-	{
-		panic_on_error!(ucp_ep_flush, self.handle);
-	}
-	
-	/// remoteMemoryAccessKeyBuffer should have been created by packing on a MappedMemory object on the remote side
-	/// We are the receiver
-	#[inline(always)]
-	pub fn unpackRemoteMemoryAccessKeyBuffer<'c>(&'c self, remoteMemoryAccessKeyBuffer: *mut c_void) -> RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler>
-	{
-		let mut handle = unsafe { uninitialized() };
-		panic_on_error!(ucp_ep_rkey_unpack, self.handle, remoteMemoryAccessKeyBuffer, &mut handle);
-		RemoteMemoryAccessKey
-		{
-			handle: handle,
-			endPoint: self,
-		}
 	}
 }
