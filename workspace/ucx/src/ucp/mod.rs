@@ -44,6 +44,7 @@ include!("ApplicationContextAttributes.rs");
 include!("ApplicationContextFeaturesIdeallySupported.rs");
 include!("ApplicationContextInitialisationError.rs");
 include!("Configuration.rs");
+include!("ConfigurationModifyError.rs");
 include!("ConfigurationReadError.rs");
 include!("EndPoint.rs");
 include!("EndPointErrorHandler.rs");

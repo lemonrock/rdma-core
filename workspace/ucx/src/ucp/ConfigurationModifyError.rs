@@ -2,20 +2,19 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug, Clone)]
-pub struct ConfigurationSetting<'a, T: ConfigurationValueConverter>
-where T: 'a
+quick_error!
 {
-	key: &'a ConfigurationKey<T>,
-	value: T,
-}
-
-impl<'a, T: ConfigurationValueConverter> ConfigurationSetting<'a, T>
-where T: 'a
-{
-	#[inline(always)]
-	pub fn set(&self, configuration: &Configuration)
+	#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+	pub enum ConfigurationModifyError
 	{
-		configuration.modify(self.key.name(), &ConfigurationValueConverter::convert(&self.value)).expect("We've got something very wrong");
+		NoSuchNamedKey(keyName: String, configurationValue: CString)
+		{
+			display("Configuration key named '{}' does not exist (and so we can't set value '{:?}'", keyName, configurationValue)
+		}
+		
+		InvalidParameter(keyName: String, configurationValue: CString)
+		{
+			display("Configuration value '{:?}' for key named '{}' is invalid", configurationValue, keyName)
+		}
 	}
 }

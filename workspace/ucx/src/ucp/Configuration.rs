@@ -86,26 +86,29 @@ impl Configuration
 		configurationSetting.set(self)
 	}
 	
-	/// See the static `ucp_config_table` in ucp_context.c for potential values of name and value
 	#[inline(always)]
-	fn modify(&self, name: &ConstCStr, value: &CStr)
+	fn modify(&self, name: &ConstCStr, value: &CStr) -> Result<(), ConfigurationModifyError>
 	{
-		panic_on_error!(ucp_config_modify, self.handle, name.as_ptr(), value.as_ptr());
+		let status = unsafe { ucp_config_modify(self.handle, name.as_ptr(), value.as_ptr()) };
 		
-		
-		
-		
-		
-			// better error handling
-			// create a list of key names
-		//xxxxx
-		
-		
-		
-		
-		
-		
-		
+		if unlikely(status != ucs_status_t_UCS_OK)
+		{
+			use self::ConfigurationModifyError::*;
+			
+			let keyName = name.rustValue.to_owned();
+			let configurationValue = value.to_owned();
+			
+			Err(match status
+			{
+				ucs_status_t_UCS_ERR_NO_ELEM => NoSuchNamedKey(keyName, configurationValue),
+				ucs_status_t_UCS_ERR_INVALID_PARAM => InvalidParameter(keyName, configurationValue),
+				_ => panic!("Unexpected status result '{}' from ucp_config_modify() for keyName '{}', configurationValue '{:?}'", UcpFailure::convertError(status), keyName, configurationValue)
+			})
+		}
+		else
+		{
+			Ok(())
+		}
 	}
 	
 	/// applicationContextFeaturesIdeallySupported and contextWillBeSharedByMultipleWorkersFromDifferentThreads are programmer choices; how the code will be designed
