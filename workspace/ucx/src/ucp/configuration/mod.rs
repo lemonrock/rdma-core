@@ -12,6 +12,8 @@ use ::ordermap::OrderMap;
 
 include!("AtomicOperationsSynchronizationMode.rs");
 include!("ConfigurationKey.rs");
+include!("ConfigurationModifyError.rs");
+include!("ConfigurationReadError.rs");
 include!("ConfigurationSetting.rs");
 include!("DeviceName.rs");
 include!("MemoryAllocatorPriority.rs");
