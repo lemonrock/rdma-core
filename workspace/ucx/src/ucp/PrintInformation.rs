@@ -12,4 +12,49 @@ pub trait PrintInformation
 	{
 		self.printInformationToStream(unsafe { stderr } as *mut FILE)
 	}
+	
+	#[inline(always)]
+	fn printInformationToStandardOut(&self)
+	{
+		self.printInformationToStream(unsafe { stdout } as *mut FILE)
+	}
+	
+	#[inline(always)]
+	fn printInformationToString(&self) -> Result<String, PrintInformationToStringError>
+	{
+		use self::PrintInformationToStringError::*;
+		
+		let mut buffer = unsafe { uninitialized() };
+		let mut size = unsafe { uninitialized() };
+		let filePointer = unsafe { open_memstream(&mut buffer, &mut size) };
+		if unlikely(filePointer.is_null())
+		{
+			return Err(CouldNotOpenMemoryStream(errno()));
+		}
+		
+		let result = unsafe { fflush(filePointer) };
+		debug_assert!(result == 0 || result == EOF, "result was not 0 or EOF but '{}'", result);
+		if unlikely(result == EOF)
+		{
+			unsafe { free(buffer as *mut c_void) };
+			return Err(CouldNotFlushMemoryStream(errno()))
+		}
+		
+		let result = unsafe { fclose(filePointer) };
+		debug_assert!(result == 0 || result == EOF, "result was not 0 or EOF but '{}'", result);
+		if unlikely(result == EOF)
+		{
+			unsafe { free(buffer as *mut c_void) };
+			return Err(CouldNotCloseMemoryStream(errno()))
+		}
+		
+		let result = match unsafe { CStr::from_ptr(buffer) }.to_str()
+		{
+			Err(error) => Err(CouldNotConvertInformation(error)),
+			Ok(string) => Ok(string.to_owned())
+		};
+		
+		unsafe { free(buffer as *mut c_void) };
+		result
+	}
 }

@@ -22,16 +22,12 @@ use ::std::mem::zeroed;
 use ::ucx_sys::*;
 
 
-// This horrible piece of logic exists because of the incomplete state of Rust's libc wrapper; at some point sched_getcpu() for musl will be added
+// This horrible piece of logic exists because of the incomplete state of Rust's libc wrapper
 cfg_if!
 {
     if #[cfg(target_env = "musl")]
     {
-		#[link(name = "c")]
-		extern
-		{
-			pub fn sched_getcpu() -> ::libc::c_int;
-		}
+		use ::libc_extra::android_linux::sched::sched_getcpu;
     }
     else
     {
