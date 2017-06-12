@@ -28,6 +28,3 @@
 [submodule "workspace/ucx-sys/lib/ucx"]
 	path = workspace/ucx-sys/lib/ucx
 	url = https://github.com/openucx/ucx.git
-[submodule "workspace/ucx-sys/lib/numactl"]
-	path = workspace/ucx-sys/lib/numactl
-	url = https://github.com/numactl/numactl.git
