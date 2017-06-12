@@ -2,15 +2,13 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-pub struct RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler: EndPointErrorHandler>
-where 'a: 'b, 'b: 'c, ErrorHandler: 'c
+pub struct RemoteMemoryAccessKey<ErrorHandler: EndPointErrorHandler>
 {
 	handle: ucp_rkey_h,
-	endPoint: &'c EndPoint<'a, 'b, ErrorHandler>
+	endPoint: EndPoint<ErrorHandler>
 }
 
-impl<'a, 'b, 'c, ErrorHandler: EndPointErrorHandler> Drop for RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler>
-where 'a: 'b, 'b: 'c, ErrorHandler: 'c
+impl<ErrorHandler: EndPointErrorHandler> Drop for RemoteMemoryAccessKey<ErrorHandler>
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -35,8 +33,7 @@ macro_rules! address_is_64_bit_aligned
 	}
 }
 
-impl<'a, 'b, 'c, ErrorHandler: EndPointErrorHandler> RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler>
-where 'a: 'b, 'b: 'c, ErrorHandler: 'c
+impl<ErrorHandler: EndPointErrorHandler> RemoteMemoryAccessKey<ErrorHandler>
 {
 	// TODO: Review panic_on_error! - we could be getting a disconnection event!!!! UCS_INPROGRESS!!!!
 	

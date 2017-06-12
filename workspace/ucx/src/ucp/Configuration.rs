@@ -149,10 +149,7 @@ impl Configuration
 		{
 			Ok
 			(
-				ApplicationContext
-				{
-					handle: context,
-				}
+				ApplicationContext::new(context)
 			)
 		}
 		else

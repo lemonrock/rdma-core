@@ -2,19 +2,11 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ApplicationContext
 {
 	handle: ucp_context_h,
-}
-
-impl Drop for ApplicationContext
-{
-	#[inline(always)]
-	fn drop(&mut self)
-	{
-		unsafe { ucp_cleanup(self.handle) };
-	}
+	dropWrapper: Rc<HandleDropWrapper<ucp_context_h>>
 }
 
 impl PrintInformation for ApplicationContext
@@ -45,7 +37,17 @@ impl QueryAttributes for ApplicationContext
 impl ApplicationContext
 {
 	#[inline(always)]
-	pub fn mapAndAllocateMemory<'a>(&'a self, length: usize) -> (MappedMemory<'a>, *mut c_void)
+	fn new(handle: ucp_context_h) -> Self
+	{
+		Self
+		{
+			handle: handle,
+			dropWrapper: HandleDropWrapper::new(handle)
+		}
+	}
+	
+	#[inline(always)]
+	pub fn mapAndAllocateMemory(&self, length: usize) -> (MappedMemory, *mut c_void)
 	{
 		debug_assert!(length != 0, "length is zero");
 		
@@ -64,13 +66,18 @@ impl ApplicationContext
 		let mappedMemory = MappedMemory
 		{
 			handle: memh,
-			applicationContext: self,
+			applicationContext: self.clone(),
+			dropWrapper: Rc::new(MappedMemoryDropWrapper
+			{
+				handle: memh,
+				applicationContext: self.clone(),
+			})
 		};
 		(mappedMemory, parameters.address)
 	}
 	
 	#[inline(always)]
-	pub fn mapMemory<'a>(&'a self, address: *mut c_void, length: usize) -> MappedMemory<'a>
+	pub fn mapMemory(&self, address: *mut c_void, length: usize) -> MappedMemory
 	{
 		debug_assert!(!address.is_null(), "address is null");
 		debug_assert!(length != 0, "length is zero");
@@ -90,12 +97,17 @@ impl ApplicationContext
 		MappedMemory
 		{
 			handle: memh,
-			applicationContext: self,
+			applicationContext: self.clone(),
+			dropWrapper: Rc::new(MappedMemoryDropWrapper
+			{
+				handle: memh,
+				applicationContext: self.clone(),
+			})
 		}
 	}
 	
 	#[inline(always)]
-	pub fn createWorker<'a>(&'a self, workerThreadMode: WorkerThreadMode) -> Worker<'a>
+	pub fn createWorker(self, workerThreadMode: WorkerThreadMode) -> Worker
 	{
 		use ucp_worker_params_field::*;
 		use ucp_wakeup_event_types::*;
@@ -113,7 +125,8 @@ impl ApplicationContext
 		Worker
 		{
 			handle: worker,
-			applicationContext: self,
+			dropWrapper: HandleDropWrapper::new(worker),
+			applicationContextDropWrapper: self.dropWrapper.clone(),
 		}
 	}
 }

@@ -30,10 +30,13 @@ use ::std::ffi::CStr;
 use ::std::ffi::CString;
 use ::std::hash::Hash;
 use ::std::hash::Hasher;
+use ::std::mem::forget;
 use ::std::mem::uninitialized;
 use ::std::os::unix::io::RawFd;
 use ::std::ptr::null;
 use ::std::ptr::null_mut;
+use ::std::rc::Rc;
+use ::std::rc::Weak;
 use ::std::str::Utf8Error;
 use ::ucx_sys::*;
 
@@ -43,6 +46,7 @@ include!("panic_on_error_with_clean_up.rs");
 
 
 pub mod configuration;
+pub mod discovery;
 pub mod failures;
 pub mod genericDataTypes;
 
@@ -54,8 +58,11 @@ include!("ApplicationContextInitialisationError.rs");
 include!("Configuration.rs");
 include!("EndPoint.rs");
 include!("EndPointErrorHandler.rs");
+include!("HandleDrop.rs");
+include!("HandleDropWrapper.rs");
 include!("MappedMemory.rs");
 include!("MappedMemoryAttributes.rs");
+include!("MappedMemoryDropWrapper.rs");
 include!("NonBlockingRequest.rs");
 include!("PrintInformation.rs");
 include!("PrintInformationToStringError.rs");

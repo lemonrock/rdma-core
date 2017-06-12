@@ -3,16 +3,14 @@
 
 
 #[derive(Debug)]
-pub struct WorkerAddressHandle<'a, 'b>
-where 'a: 'b
+pub struct WorkerAddressHandle
 {
 	handle: *mut ucp_address_t,
 	length: usize,
-	worker: &'b Worker<'a>,
+	worker: Worker,
 }
 
-impl<'a, 'b> Drop for WorkerAddressHandle<'a, 'b>
-where 'a: 'b
+impl Drop for WorkerAddressHandle
 {
 	#[inline(always)]
 	fn drop(&mut self)

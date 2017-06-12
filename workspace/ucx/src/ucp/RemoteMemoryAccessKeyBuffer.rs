@@ -3,16 +3,14 @@
 
 
 #[derive(Debug)]
-pub struct RemoteMemoryAccessKeyBuffer<'a, 'b>
-where 'a: 'b
+pub struct RemoteMemoryAccessKeyBuffer
 {
 	address: *mut c_void,
 	length: usize,
-	mappedMemory: &'b MappedMemory<'a>
+	mappedMemoryHandleDropWrapper: Rc<MappedMemoryDropWrapper>
 }
 
-impl<'a, 'b> Drop for RemoteMemoryAccessKeyBuffer<'a, 'b>
-where 'a: 'b
+impl Drop for RemoteMemoryAccessKeyBuffer
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -21,8 +19,7 @@ where 'a: 'b
 	}
 }
 
-impl<'a, 'b> RemoteMemoryAccessKeyBuffer<'a, 'b>
-where 'a: 'b
+impl RemoteMemoryAccessKeyBuffer
 {
 	#[inline(always)]
 	pub fn address(&self) -> *mut c_void

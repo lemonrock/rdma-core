@@ -2,18 +2,16 @@
 // Copyright © 2017 The developers of dpdk. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/dpdk/master/COPYRIGHT.
 
 
-#[derive(Debug)]
-pub struct EndPoint<'a, 'b, ErrorHandler: EndPointErrorHandler>
-where 'a: 'b
+#[derive(Debug, Clone)]
+pub struct EndPoint<ErrorHandler: EndPointErrorHandler>
 {
 	handle: ucp_ep_h,
-	worker: &'b Worker<'a>,
+	worker: Worker,
 	parameters: ucp_ep_params_t,
 	errorHandler: ErrorHandler,
 }
 
-impl<'a, 'b, ErrorHandler: EndPointErrorHandler> Drop for EndPoint<'a, 'b, ErrorHandler>
-where 'a: 'b
+impl<ErrorHandler: EndPointErrorHandler> Drop for EndPoint<ErrorHandler>
 {
 	#[inline(always)]
 	fn drop(&mut self)
@@ -28,7 +26,7 @@ where 'a: 'b
 	}
 }
 
-impl<'a, 'b, ErrorHandler: EndPointErrorHandler> PrintInformation for EndPoint<'a, 'b, ErrorHandler>
+impl<ErrorHandler: EndPointErrorHandler> PrintInformation for EndPoint<ErrorHandler>
 {
 	#[inline(always)]
 	fn printInformationToStream(&self, stream: *mut FILE)
@@ -37,38 +35,41 @@ impl<'a, 'b, ErrorHandler: EndPointErrorHandler> PrintInformation for EndPoint<'
 	}
 }
 
-impl<'a, 'b, ErrorHandler: EndPointErrorHandler> EndPoint<'a, 'b, ErrorHandler>
-where 'a: 'b
+impl<ErrorHandler: EndPointErrorHandler> EndPoint<ErrorHandler>
 {
+	/// remoteMemoryAccessKeyBuffer should have been created by packing on a MappedMemory object on the remote side
+	/// We are the receiver
+//	#[inline(always)]
+//	pub fn unpackRemoteMemoryAccessKeyBuffer(&self, remoteMemoryAccessKeyBuffer: *mut c_void) -> RemoteMemoryAccessKey<ErrorHandler>
+//	{
+//		let mut handle = unsafe { uninitialized() };
+//		panic_on_error!(ucp_ep_rkey_unpack, self.handle, remoteMemoryAccessKeyBuffer, &mut handle);
+//		RemoteMemoryAccessKey
+//		{
+//			handle: handle,
+//			endPoint: self,
+//		}
+//	}
+	
 	#[inline(always)]
 	pub fn flushAllOutstandingRemoteMemoryAccessAndAtomicOperations(&self)
 	{
 		panic_on_error!(ucp_ep_flush, self.handle);
 	}
 	
-	/// remoteMemoryAccessKeyBuffer should have been created by packing on a MappedMemory object on the remote side
-	/// We are the receiver
-	#[inline(always)]
-	pub fn unpackRemoteMemoryAccessKeyBuffer<'c>(&'c self, remoteMemoryAccessKeyBuffer: *mut c_void) -> RemoteMemoryAccessKey<'a, 'b, 'c, ErrorHandler>
-	{
-		let mut handle = unsafe { uninitialized() };
-		panic_on_error!(ucp_ep_rkey_unpack, self.handle, remoteMemoryAccessKeyBuffer, &mut handle);
-		RemoteMemoryAccessKey
-		{
-			handle: handle,
-			endPoint: self,
-		}
-	}
-	
-	// TODO: arg HAS TO BE A WEAK REFERENCE
-	
 	unsafe extern "C" fn errorHandlerCallback(arg: *mut c_void, ep: ucp_ep_h, status: ucs_status_t)
 	{
 		debug_assert!(!ep.is_null(), "ep is null");
 		debug_assert!(status != ucs_status_t_UCS_OK, "status is UCS_OK!");
 		
-		let mut endPoint = &mut *(arg as *mut Self);
-		endPoint.errorHandler(status);
+		let endPointWeakReference: Weak<Self> = &mut *(arg as *mut Weak<Self>);
+		match endPointWeakReference.upgrade()
+		{
+			None => return,
+			Some(endPoint) => endPoint.errorHandler(status)
+		}
+		
+		forget(endPointWeakReference);
 	}
 	
 	#[inline(always)]

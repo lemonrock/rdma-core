@@ -56,7 +56,7 @@ impl NonBlockingRequest
 	}
 	
 	#[inline(always)]
-	pub fn cancel<'a>(self, workerThatOriginallyIssuedTheNonBlockingRequest: &Worker<'a>)
+	pub fn cancel(self, workerThatOriginallyIssuedTheNonBlockingRequest: &Worker)
 	{
 		unsafe { ucp_request_cancel(workerThatOriginallyIssuedTheNonBlockingRequest.handle, self.0) }
 	}

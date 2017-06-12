@@ -4,22 +4,14 @@
 
 /// Mapped Memory is only needed for RMA and AMO (atomic operations)
 #[derive(Debug)]
-pub struct MappedMemory<'a>
+pub struct MappedMemory
 {
 	handle: ucp_mem_h,
-	applicationContext: &'a ApplicationContext,
+	applicationContext: ApplicationContext,
+	dropWrapper: Rc<MappedMemoryDropWrapper>,
 }
 
-impl<'a> Drop for MappedMemory<'a>
-{
-	#[inline(always)]
-	fn drop(&mut self)
-	{
-		panic_on_error!(ucp_mem_unmap, self.applicationContext.handle, self.handle);
-	}
-}
-
-impl<'a> QueryAttributes for MappedMemory<'a>
+impl QueryAttributes for MappedMemory
 {
 	type Attributes = MappedMemoryAttributes;
 	
@@ -36,7 +28,7 @@ impl<'a> QueryAttributes for MappedMemory<'a>
 	}
 }
 
-impl<'a> MappedMemory<'a>
+impl MappedMemory
 {
 	// Need to look at ucp_mem_advise_params_field
 	#[inline(always)]
@@ -46,7 +38,7 @@ impl<'a> MappedMemory<'a>
 	}
 	
 	#[inline(always)]
-	pub fn packRemoteMemoryAccessKey<'b>(&'b self) -> RemoteMemoryAccessKeyBuffer<'a, 'b>
+	pub fn packRemoteMemoryAccessKey(&self) -> RemoteMemoryAccessKeyBuffer
 	{
 		let mut buffer = unsafe { uninitialized() };
 		let mut size = unsafe { uninitialized() };
@@ -55,7 +47,7 @@ impl<'a> MappedMemory<'a>
 		{
 			address: buffer,
 			length: size,
-			mappedMemory: self,
+			mappedMemory: self.dropWrapper.clone(),
 		}
 	}
 }
