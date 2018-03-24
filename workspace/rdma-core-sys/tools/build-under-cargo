@@ -220,7 +220,7 @@ build_under_cargo_outputCargoKeyValuePairs()
 	printf 'cargo:rustc-link-search=native=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/lib
 	
 	# Not used by us, but useful for downstream potentially
-	printf 'cargo:root=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root
+	printf 'cargo:root=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root/DESTDIR
 	printf 'cargo:include=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/include
 	printf 'cargo:libdir=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/lib
 }
