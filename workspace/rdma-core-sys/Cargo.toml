@@ -12,12 +12,12 @@ categories = ["external-ffi-bindings"]
 homepage = "https://github.com/lemonrock/rdma-core"
 repository = "https://github.com/lemonrock/rdma-core.git"
 exclude = ["*"]
-include = ["README.md", "LICENSE", "COPYRIGHT", "src/**/*.rs", "Cargo.toml", "rustfmt.toml", "clippy.toml", "lib/**/*", "tools/**/*", "bindgen-wrapper.conf.d/**/*", "compile.conf.d/**/*"]
+include = ["README.md", "LICENSE", "COPYRIGHT", "src/**/*.rs", "src/**/*.c", "src/**/*.h", "Cargo.toml", "rustfmt.toml", "clippy.toml", "lib/**/*", "tools/**/*", "bindgen-wrapper.conf.d/**/*", "compile.conf.d/**/*"]
 build = "src/build.rs"
 links = "rdma-core"
 readme = "README.md"
 publish = true
-version = "0.1.4"
+version = "0.1.5"
 
 [dependencies]
 libc = "0.2"
