@@ -5,7 +5,7 @@
 #![allow(non_snake_case)]
 
 
-extern crate gcc;
+extern crate cc;
 
 
 use ::std::env;
@@ -65,7 +65,7 @@ fn compileEmbeddedCCode(absoluteHomeFolderPath: &str)
 	let files_path = format!("{}/bindgen-wrapper.conf.d/temporary/bindgen-wrapper-temporary/includes", absoluteHomeFolderPath.to_owned());
 	let include_path = format!("{}/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/include", absoluteHomeFolderPath.to_owned());
 	
-	gcc::Config::new()
+	cc::Build::new()
 	.file(format!("{}/infiniband-verbs-static-inline.c", files_path))
 	.file(format!("{}/rdma-cma-static-inline.c", files_path))
 	.file(format!("{}/rdma-verbs-static-inline.c", files_path))

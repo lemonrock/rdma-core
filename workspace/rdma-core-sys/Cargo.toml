@@ -17,10 +17,10 @@ build = "src/build.rs"
 # Relative to Cargo.toml
 readme = "README.md"
 publish = true
-version = "0.1.0"
+version = "0.1.1"
 
 [dependencies]
 libc = "0.2"
 
 [build-dependencies]
-gcc = "0.3"
+cc = "1.0"
