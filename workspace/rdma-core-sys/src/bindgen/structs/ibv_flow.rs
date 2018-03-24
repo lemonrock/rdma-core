@@ -3,21 +3,11 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_flow
 {
 	pub comp_mask: u32,
 	pub context: *mut ibv_context,
 	pub handle: u32,
-}
-
-impl Clone for ibv_flow
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_flow
@@ -26,5 +16,14 @@ impl Default for ibv_flow
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_flow
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_flow {{ context: {:?} }}", self.context)
 	}
 }

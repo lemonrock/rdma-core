@@ -3,9 +3,26 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_odp_caps
 {
 	pub general_caps: u64,
 	pub per_transport_caps: ibv_odp_caps__bindgen_ty_1,
+}
+
+impl Default for ibv_odp_caps
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_odp_caps
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_odp_caps {{ per_transport_caps: {:?} }}", self.per_transport_caps)
+	}
 }

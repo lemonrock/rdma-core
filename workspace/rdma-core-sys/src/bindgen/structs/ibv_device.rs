@@ -22,3 +22,82 @@ impl Default for ibv_device
 		unsafe { zeroed() }
 	}
 }
+
+impl Debug for ibv_device
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(
+			f,
+			"ibv_device {{ _ops: {:?}, node_type: {:?}, transport_type: {:?}, name: [{}], dev_name: [{}], dev_path: [{}], ibdev_path: [{}] }}",
+			self._ops,
+			self.node_type,
+			self.transport_type,
+			self.name
+				.iter()
+				.enumerate()
+				.map(|(i, v)| format!(
+					"{}{:?}",
+					if i > 0
+					{
+						", "
+					}
+					else
+					{
+						""
+					},
+					v
+				))
+				.collect::<String>(),
+			self.dev_name
+				.iter()
+				.enumerate()
+				.map(|(i, v)| format!(
+					"{}{:?}",
+					if i > 0
+					{
+						", "
+					}
+					else
+					{
+						""
+					},
+					v
+				))
+				.collect::<String>(),
+			self.dev_path
+				.iter()
+				.enumerate()
+				.map(|(i, v)| format!(
+					"{}{:?}",
+					if i > 0
+					{
+						", "
+					}
+					else
+					{
+						""
+					},
+					v
+				))
+				.collect::<String>(),
+			self.ibdev_path
+				.iter()
+				.enumerate()
+				.map(|(i, v)| format!(
+					"{}{:?}",
+					if i > 0
+					{
+						", "
+					}
+					else
+					{
+						""
+					},
+					v
+				))
+				.collect::<String>()
+		)
+	}
+}

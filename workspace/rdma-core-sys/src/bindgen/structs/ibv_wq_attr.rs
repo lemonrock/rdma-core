@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_wq_attr
 {
 	pub attr_mask: u32,
@@ -13,20 +12,20 @@ pub struct ibv_wq_attr
 	pub flags_mask: u32,
 }
 
-impl Clone for ibv_wq_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_wq_attr
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_wq_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_wq_attr {{ wq_state: {:?}, curr_wq_state: {:?} }}", self.wq_state, self.curr_wq_state)
 	}
 }

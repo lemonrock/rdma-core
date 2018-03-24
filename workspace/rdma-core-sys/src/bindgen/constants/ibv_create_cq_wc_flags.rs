@@ -4,6 +4,7 @@
 
 pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_BYTE_LEN: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(1);
 pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_COMPLETION_TIMESTAMP: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(128);
+pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_COMPLETION_TIMESTAMP_WALLCLOCK: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(2048);
 pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_CVLAN: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(256);
 pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_DLID_PATH_BITS: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(64);
 pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_FLOW_TAG: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(512);
@@ -12,3 +13,4 @@ pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_QP_NUM: ibv_create_cq_wc_flags =
 pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_SL: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(32);
 pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_SLID: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(16);
 pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_SRC_QP: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(8);
+pub const ibv_create_cq_wc_flags_IBV_WC_EX_WITH_TM_INFO: ibv_create_cq_wc_flags = ibv_create_cq_wc_flags(1024);

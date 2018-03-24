@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	pub fn ibv_wc_status_str(status: ibv_wc_status) -> *const c_char;
+	#[link_name = "\u{1}_ibv_wc_status_str"] pub fn ibv_wc_status_str(status: ibv_wc_status) -> *const c_char;
 }

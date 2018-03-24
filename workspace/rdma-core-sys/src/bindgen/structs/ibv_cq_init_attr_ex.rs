@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_cq_init_attr_ex
 {
 	pub cqe: u32,
@@ -15,20 +14,20 @@ pub struct ibv_cq_init_attr_ex
 	pub flags: u32,
 }
 
-impl Clone for ibv_cq_init_attr_ex
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_cq_init_attr_ex
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_cq_init_attr_ex
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_cq_init_attr_ex {{ cq_context: {:?}, channel: {:?} }}", self.cq_context, self.channel)
 	}
 }

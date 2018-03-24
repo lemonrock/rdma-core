@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_flow_attr
 {
 	pub comp_mask: u32,
@@ -15,20 +14,20 @@ pub struct ibv_flow_attr
 	pub flags: u32,
 }
 
-impl Clone for ibv_flow_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_flow_attr
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_flow_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_flow_attr {{ type: {:?} }}", self.type_)
 	}
 }

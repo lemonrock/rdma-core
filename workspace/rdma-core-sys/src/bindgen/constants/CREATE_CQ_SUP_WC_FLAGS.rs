@@ -2,4 +2,4 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const IBV_CREATE_CQ_SUP_WC_FLAGS: _bindgen_ty_4 = _bindgen_ty_4(1023);
+pub const IBV_CREATE_CQ_SUP_WC_FLAGS: _bindgen_ty_4 = _bindgen_ty_4(4095);

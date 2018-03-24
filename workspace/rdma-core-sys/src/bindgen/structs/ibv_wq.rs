@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_wq
 {
 	pub context: *mut ibv_context,
@@ -21,20 +20,20 @@ pub struct ibv_wq
 	pub comp_mask: u32,
 }
 
-impl Clone for ibv_wq
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_wq
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_wq
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_wq {{ context: {:?}, wq_context: {:?}, pd: {:?}, cq: {:?}, state: {:?}, wq_type: {:?}, post_recv: {:?} }}", self.context, self.wq_context, self.pd, self.cq, self.state, self.wq_type, self.post_recv)
 	}
 }

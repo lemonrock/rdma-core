@@ -3,43 +3,13 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Debug, Default, Copy, Clone, Hash)]
 pub union ib_addr__bindgen_ty_1
 {
-    pub uib_addr8: [__u8; 16usize],
-    pub uib_addr16: [__be16; 8usize],
-    pub uib_addr32: [__be32; 4usize],
-    pub uib_addr64: [__be64; 2usize],
-}
-
-impl Clone for ib_addr__bindgen_ty_1
-{
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Default for ib_addr__bindgen_ty_1
-{
-	fn default() -> Self
-	{
-		unsafe { zeroed() }
-	}
-}
-
-impl Clone for ib_addr
-{
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Default for ib_addr
-{
-	fn default() -> Self
-	{
-		unsafe { zeroed() }
-	}
+	pub uib_addr8: [__u8; 16usize],
+	pub uib_addr16: [__be16; 8usize],
+	pub uib_addr32: [__be32; 4usize],
+	pub uib_addr64: [__be64; 2usize],
+	_bindgen_union_align: [u64; 2usize],
+	pub _address: u8,
 }

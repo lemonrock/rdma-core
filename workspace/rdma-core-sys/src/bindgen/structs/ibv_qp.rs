@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_qp
 {
 	pub context: *mut ibv_context,
@@ -21,20 +20,20 @@ pub struct ibv_qp
 	pub events_completed: u32,
 }
 
-impl Clone for ibv_qp
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_qp
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_qp
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_qp {{ context: {:?}, qp_context: {:?}, pd: {:?}, send_cq: {:?}, recv_cq: {:?}, srq: {:?}, state: {:?}, qp_type: {:?} }}", self.context, self.qp_context, self.pd, self.send_cq, self.recv_cq, self.srq, self.state, self.qp_type)
 	}
 }

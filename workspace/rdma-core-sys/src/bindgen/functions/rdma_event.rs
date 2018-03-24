@@ -4,6 +4,6 @@
 
 extern "C"
 {
-	pub fn rdma_ack_cm_event(event: *mut rdma_cm_event) -> c_int;
-	pub fn rdma_event_str(event: rdma_cm_event_type) -> *const c_char;
+	#[link_name = "\u{1}_rdma_ack_cm_event"] pub fn rdma_ack_cm_event(event: *mut rdma_cm_event) -> c_int;
+	#[link_name = "\u{1}_rdma_event_str"] pub fn rdma_event_str(event: rdma_cm_event_type) -> *const c_char;
 }

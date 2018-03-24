@@ -3,20 +3,10 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_srq_init_attr
 {
 	pub srq_context: *mut c_void,
 	pub attr: ibv_srq_attr,
-}
-
-impl Clone for ibv_srq_init_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_srq_init_attr
@@ -25,5 +15,14 @@ impl Default for ibv_srq_init_attr
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_srq_init_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_srq_init_attr {{ srq_context: {:?}, attr: {:?} }}", self.srq_context, self.attr)
 	}
 }

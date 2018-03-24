@@ -7,9 +7,8 @@ bindingsName='rdma-core'
 rootIncludeFileName='rdma-core.h'
 macosXHomebrewPackageNames='clang-format'
 alpineLinuxPackageNames='rsync make gcc linux-headers libunwind-dev linux-grsec-dev'
-clangAdditionalArguments=''
-headersFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/DESTDIR/usr/include
-libFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/DESTDIR/usr/lib
+clangAdditionalArguments="-I $temporaryFolderPath/includes"
+headersFolderPath='DESTDIR/usr/include'
 link='cxgb3 cxgb4 hfi1verbs hns i40iw ibumad ibverbs ipathverbs mlx4 mlx5 mthca nes ocrdma qedr rdmacm rxe vmw_pvrdma'
 link_kind='static-nobundle'
 
@@ -18,7 +17,7 @@ bindgen_wrapper_generateStaticFunctions()
 {
 	local relativeHeaderFile="$1"
 	local outputFileBaseName="$2"
-
+	
 	mkdir -m 0700 -p "$temporaryFolderPath"/includes
 
 	clang-format -style="{BasedOnStyle: Chromium, IndentWidth: 4, ColumnLimit: 4000, BreakBeforeBraces: Allman}" "$headersFolderPath"/"$relativeHeaderFile" \
@@ -97,5 +96,6 @@ preprocess_before_headersFolderPath()
 
 final_chance_to_tweak()
 {
-	sed -i -e 's/#\[derive(Debug, Default, Copy)\]/#[derive(Copy)]/g' "$outputFolderPath"/structs/ibv_values_ex.rs
+	:
+	#sed -i -e 's/#\[derive(Debug, Default, Copy)\]/#[derive(Copy)]/g' "$outputFolderPath"/structs/ibv_values_ex.rs
 }

@@ -3,22 +3,12 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_mw_bind_info
 {
 	pub mr: *mut ibv_mr,
 	pub addr: u64,
 	pub length: u64,
-	pub mw_access_flags: c_int,
-}
-
-impl Clone for ibv_mw_bind_info
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
+	pub mw_access_flags: c_uint,
 }
 
 impl Default for ibv_mw_bind_info
@@ -27,5 +17,14 @@ impl Default for ibv_mw_bind_info
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_mw_bind_info
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_mw_bind_info {{ mr: {:?} }}", self.mr)
 	}
 }

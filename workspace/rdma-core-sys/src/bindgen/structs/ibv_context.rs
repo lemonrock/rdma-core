@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_context
 {
 	pub device: *mut ibv_device,
@@ -15,20 +14,20 @@ pub struct ibv_context
 	pub abi_compat: *mut c_void,
 }
 
-impl Clone for ibv_context
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_context
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_context
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_context {{ device: {:?}, ops: {:?}, abi_compat: {:?} }}", self.device, self.ops, self.abi_compat)
 	}
 }

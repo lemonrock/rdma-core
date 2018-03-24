@@ -3,7 +3,7 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ibv_context_ops
 {
 	pub query_device: Option<unsafe extern "C" fn(context: *mut ibv_context, device_attr: *mut ibv_device_attr) -> c_int>,
@@ -40,30 +40,11 @@ pub struct ibv_context_ops
 	pub async_event: Option<unsafe extern "C" fn(event: *mut ibv_async_event)>,
 }
 
-impl Clone for ibv_context_ops
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_context_ops
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
-	}
-}
-
-impl ::core::ops::BitOr<ibv_cq_init_attr_mask> for ibv_cq_init_attr_mask
-{
-	type Output = Self;
-	#[inline(always)]
-	fn bitor(self, other: Self) -> Self
-	{
-		ibv_cq_init_attr_mask(self.0 | other.0)
 	}
 }

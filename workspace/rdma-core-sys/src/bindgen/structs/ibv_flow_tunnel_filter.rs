@@ -3,17 +3,25 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_flow_tunnel_filter
 {
 	pub tunnel_id: u32,
 }
 
-impl Clone for ibv_flow_tunnel_filter
+impl Default for ibv_flow_tunnel_filter
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_flow_tunnel_filter
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_flow_tunnel_filter {{  }}")
 	}
 }

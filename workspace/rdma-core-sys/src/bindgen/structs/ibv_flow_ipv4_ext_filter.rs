@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_flow_ipv4_ext_filter
 {
 	pub src_ip: u32,
@@ -14,11 +13,20 @@ pub struct ibv_flow_ipv4_ext_filter
 	pub flags: u8,
 }
 
-impl Clone for ibv_flow_ipv4_ext_filter
+impl Default for ibv_flow_ipv4_ext_filter
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_flow_ipv4_ext_filter
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_flow_ipv4_ext_filter {{  }}")
 	}
 }

@@ -2,5 +2,5 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const EPOLL_CLOEXEC: c_uint = 524288;
-pub const EPOLL_NONBLOCK: c_uint = 2048;
+pub const EPOLL_CLOEXEC: u32 = 524288;
+pub const EPOLL_NONBLOCK: u32 = 2048;

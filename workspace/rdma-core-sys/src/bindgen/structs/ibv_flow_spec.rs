@@ -3,8 +3,25 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_flow_spec
 {
 	pub __bindgen_anon_1: ibv_flow_spec__bindgen_ty_1,
+}
+
+impl Default for ibv_flow_spec
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_flow_spec
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_flow_spec {{ __bindgen_anon_1: {:?} }}", self.__bindgen_anon_1)
+	}
 }

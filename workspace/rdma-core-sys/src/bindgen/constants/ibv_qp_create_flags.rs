@@ -4,4 +4,6 @@
 
 pub const ibv_qp_create_flags_IBV_QP_CREATE_BLOCK_SELF_MCAST_LB: ibv_qp_create_flags = ibv_qp_create_flags(2);
 pub const ibv_qp_create_flags_IBV_QP_CREATE_CVLAN_STRIPPING: ibv_qp_create_flags = ibv_qp_create_flags(512);
+pub const ibv_qp_create_flags_IBV_QP_CREATE_PCI_WRITE_END_PADDING: ibv_qp_create_flags = ibv_qp_create_flags(2048);
 pub const ibv_qp_create_flags_IBV_QP_CREATE_SCATTER_FCS: ibv_qp_create_flags = ibv_qp_create_flags(256);
+pub const ibv_qp_create_flags_IBV_QP_CREATE_SOURCE_QPN: ibv_qp_create_flags = ibv_qp_create_flags(1024);

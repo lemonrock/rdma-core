@@ -3,10 +3,25 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub union ibv_send_wr__bindgen_ty_1
 {
-    pub rdma: ibv_send_wr__bindgen_ty_1__bindgen_ty_1,
-    pub atomic: ibv_send_wr__bindgen_ty_1__bindgen_ty_2,
-    pub ud: ibv_send_wr__bindgen_ty_1__bindgen_ty_3,
+	pub imm_data: __be32,
+	pub invalidate_rkey: u32,
+	_bindgen_union_align: u32,
+}
+
+impl Default for ibv_send_wr__bindgen_ty_1
+{
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_send_wr__bindgen_ty_1
+{
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_send_wr__bindgen_ty_1 {{ union }}")
+	}
 }

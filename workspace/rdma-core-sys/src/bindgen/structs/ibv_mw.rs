@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_mw
 {
 	pub context: *mut ibv_context,
@@ -13,20 +12,20 @@ pub struct ibv_mw
 	pub type_: ibv_mw_type,
 }
 
-impl Clone for ibv_mw
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_mw
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_mw
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_mw {{ context: {:?}, pd: {:?}, type: {:?} }}", self.context, self.pd, self.type_)
 	}
 }

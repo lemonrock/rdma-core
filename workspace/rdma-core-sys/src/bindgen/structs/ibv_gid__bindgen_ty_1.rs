@@ -3,36 +3,26 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_gid__bindgen_ty_1
 {
 	pub subnet_prefix: __be64,
 	pub interface_id: __be64,
 }
 
-impl Clone for ibv_gid__bindgen_ty_1
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Clone for ibv_gid
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Default for ibv_gid
+impl Default for ibv_gid__bindgen_ty_1
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_gid__bindgen_ty_1
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_gid__bindgen_ty_1 {{  }}")
 	}
 }

@@ -4,7 +4,7 @@
 
 extern "C"
 {
-	pub fn epoll_create1(arg1: c_int) -> c_int;
-	pub fn epoll_ctl(arg1: c_int, arg2: c_int, arg3: c_int, arg4: *mut epoll_event) -> c_int;
-	pub fn epoll_wait(arg1: c_int, arg2: *mut epoll_event, arg3: c_int, arg4: c_int) -> c_int;
+	#[link_name = "\u{1}_epoll_create1"] pub fn epoll_create1(arg1: c_int) -> c_int;
+	#[link_name = "\u{1}_epoll_ctl"] pub fn epoll_ctl(arg1: c_int, arg2: c_int, arg3: c_int, arg4: *mut epoll_event) -> c_int;
+	#[link_name = "\u{1}_epoll_wait"] pub fn epoll_wait(arg1: c_int, arg2: *mut epoll_event, arg3: c_int, arg4: c_int) -> c_int;
 }

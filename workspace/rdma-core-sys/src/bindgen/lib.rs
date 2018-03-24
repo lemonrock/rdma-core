@@ -6,12 +6,27 @@
 extern crate libc;
 
 
-use ::core::mem::zeroed;
-use ::core::option::Option;
+use ::std::clone::Clone;
+use ::std::default::Default;
+use ::std::fmt::Debug;
+use ::std::fmt::Formatter;
+use ::std::fmt::Result;
+use ::std::marker::Copy;
+use ::std::marker::PhantomData;
+use ::std::mem::transmute;
+use ::std::mem::zeroed;
+use ::std::option::Option;
+use ::std::ops::BitOr;
+use ::std::ops::BitOrAssign;
+use ::std::ops::BitAnd;
+use ::std::ops::BitAndAssign;
+use ::std::hash::Hash;
+use ::std::hash::Hasher;
+use ::std::cmp::PartialEq;
+use ::std::cmp::Eq;
 use ::libc::c_char;
 use ::libc::c_int;
 use ::libc::c_uint;
-use ::libc::c_ulonglong;
 use ::libc::c_ushort;
 use ::libc::c_void;
 
@@ -53,10 +68,8 @@ extern "C"
 {
 }
 
-include!("bindgen/constants.rs");
-include!("bindgen/enums.rs");
-include!("bindgen/functions.rs");
-include!("bindgen/structs.rs");
-include!("bindgen/types.rs");
-include!("bindgen/unions.rs");
-include!("bindgen/opaques.rs");
+include!("constants.rs");
+include!("functions.rs");
+include!("structs.rs");
+include!("types.rs");
+include!("unions.rs");

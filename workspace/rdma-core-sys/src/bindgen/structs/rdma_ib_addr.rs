@@ -3,21 +3,11 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct rdma_ib_addr
 {
 	pub sgid: ibv_gid,
 	pub dgid: ibv_gid,
 	pub pkey: __be16,
-}
-
-impl Clone for rdma_ib_addr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for rdma_ib_addr
@@ -26,5 +16,14 @@ impl Default for rdma_ib_addr
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for rdma_ib_addr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_ib_addr {{ sgid: {:?}, dgid: {:?} }}", self.sgid, self.dgid)
 	}
 }

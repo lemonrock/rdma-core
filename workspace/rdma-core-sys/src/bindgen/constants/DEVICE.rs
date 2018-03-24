@@ -2,4 +2,5 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const IBV_DEVICE_RAW_SCATTER_FCS: c_ulonglong = 17179869184;
+pub const IBV_DEVICE_PCI_WRITE_END_PADDING: u64 = 68719476736;
+pub const IBV_DEVICE_RAW_SCATTER_FCS: u64 = 17179869184;

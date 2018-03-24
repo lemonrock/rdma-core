@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_packet_pacing_caps
 {
 	pub qp_rate_limit_min: u32,
@@ -11,11 +10,20 @@ pub struct ibv_packet_pacing_caps
 	pub supported_qpts: u32,
 }
 
-impl Clone for ibv_packet_pacing_caps
+impl Default for ibv_packet_pacing_caps
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_packet_pacing_caps
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_packet_pacing_caps {{  }}")
 	}
 }

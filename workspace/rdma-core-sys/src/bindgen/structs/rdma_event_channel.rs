@@ -3,17 +3,25 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct rdma_event_channel
 {
 	pub fd: c_int,
 }
 
-impl Clone for rdma_event_channel
+impl Default for rdma_event_channel
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for rdma_event_channel
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_event_channel {{  }}")
 	}
 }

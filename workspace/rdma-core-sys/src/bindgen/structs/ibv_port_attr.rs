@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_port_attr
 {
 	pub state: ibv_port_state,
@@ -29,20 +28,20 @@ pub struct ibv_port_attr
 	pub reserved: u8,
 }
 
-impl Clone for ibv_port_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_port_attr
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_port_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_port_attr {{ state: {:?}, max_mtu: {:?}, active_mtu: {:?} }}", self.state, self.max_mtu, self.active_mtu)
 	}
 }

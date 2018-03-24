@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_path_record
 {
 	pub service_id: __be64,
@@ -23,20 +22,20 @@ pub struct ibv_path_record
 	pub reserved: [u8; 6usize],
 }
 
-impl Clone for ibv_path_record
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_path_record
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_path_record
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_path_record {{ dgid: {:?}, sgid: {:?}, reserved: {:?} }}", self.dgid, self.sgid, self.reserved)
 	}
 }

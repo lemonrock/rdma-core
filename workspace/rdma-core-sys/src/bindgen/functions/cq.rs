@@ -4,7 +4,7 @@
 
 extern "C"
 {
-	pub fn ibv_ack_cq_events(cq: *mut ibv_cq, nevents: c_uint);
-	pub fn ibv_destroy_cq(cq: *mut ibv_cq) -> c_int;
-	pub fn ibv_resize_cq(cq: *mut ibv_cq, cqe: c_int) -> c_int;
+	#[link_name = "\u{1}_ibv_ack_cq_events"] pub fn ibv_ack_cq_events(cq: *mut ibv_cq, nevents: c_uint);
+	#[link_name = "\u{1}_ibv_destroy_cq"] pub fn ibv_destroy_cq(cq: *mut ibv_cq) -> c_int;
+	#[link_name = "\u{1}_ibv_resize_cq"] pub fn ibv_resize_cq(cq: *mut ibv_cq, cqe: c_int) -> c_int;
 }

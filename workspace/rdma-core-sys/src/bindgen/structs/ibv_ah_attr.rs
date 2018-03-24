@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_ah_attr
 {
 	pub grh: ibv_global_route,
@@ -15,20 +14,20 @@ pub struct ibv_ah_attr
 	pub port_num: u8,
 }
 
-impl Clone for ibv_ah_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_ah_attr
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_ah_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_ah_attr {{ grh: {:?} }}", self.grh)
 	}
 }

@@ -2,6 +2,6 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const EPOLL_CTL_ADD: c_uint = 1;
-pub const EPOLL_CTL_DEL: c_uint = 2;
-pub const EPOLL_CTL_MOD: c_uint = 3;
+pub const EPOLL_CTL_ADD: u32 = 1;
+pub const EPOLL_CTL_DEL: u32 = 2;
+pub const EPOLL_CTL_MOD: u32 = 3;

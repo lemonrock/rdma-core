@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	pub fn ibv_port_state_str(port_state: ibv_port_state) -> *const c_char;
+	#[link_name = "\u{1}_ibv_port_state_str"] pub fn ibv_port_state_str(port_state: ibv_port_state) -> *const c_char;
 }

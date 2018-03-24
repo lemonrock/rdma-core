@@ -3,17 +3,25 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_query_device_ex_input
 {
 	pub comp_mask: u32,
 }
 
-impl Clone for ibv_query_device_ex_input
+impl Default for ibv_query_device_ex_input
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_query_device_ex_input
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_query_device_ex_input {{  }}")
 	}
 }

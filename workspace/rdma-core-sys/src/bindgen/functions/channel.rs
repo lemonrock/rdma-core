@@ -4,6 +4,6 @@
 
 extern "C"
 {
-	pub fn ibv_destroy_comp_channel(channel: *mut ibv_comp_channel) -> c_int;
-	pub fn ibv_get_cq_event(channel: *mut ibv_comp_channel, cq: *mut *mut ibv_cq, cq_context: *mut *mut c_void) -> c_int;
+	#[link_name = "\u{1}_ibv_destroy_comp_channel"] pub fn ibv_destroy_comp_channel(channel: *mut ibv_comp_channel) -> c_int;
+	#[link_name = "\u{1}_ibv_get_cq_event"] pub fn ibv_get_cq_event(channel: *mut ibv_comp_channel, cq: *mut *mut ibv_cq, cq_context: *mut *mut c_void) -> c_int;
 }

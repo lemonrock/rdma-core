@@ -15,7 +15,7 @@ pub struct ibv_device_attr
 	pub hw_ver: u32,
 	pub max_qp: c_int,
 	pub max_qp_wr: c_int,
-	pub device_cap_flags: c_int,
+	pub device_cap_flags: c_uint,
 	pub max_sge: c_int,
 	pub max_sge_rd: c_int,
 	pub max_cq: c_int,
@@ -53,5 +53,34 @@ impl Default for ibv_device_attr
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_device_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(
+			f,
+			"ibv_device_attr {{ fw_ver: [{}], atomic_cap: {:?} }}",
+			self.fw_ver
+				.iter()
+				.enumerate()
+				.map(|(i, v)| format!(
+					"{}{:?}",
+					if i > 0
+					{
+						", "
+					}
+					else
+					{
+						""
+					},
+					v
+				))
+				.collect::<String>(),
+			self.atomic_cap
+		)
 	}
 }

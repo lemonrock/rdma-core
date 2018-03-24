@@ -2,4 +2,4 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub type _bindgen_ty_5 = c_uint;
+pub type _bindgen_ty_5 = u32;

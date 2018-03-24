@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_cq
 {
 	pub context: *mut ibv_context,
@@ -17,20 +16,20 @@ pub struct ibv_cq
 	pub async_events_completed: u32,
 }
 
-impl Clone for ibv_cq
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_cq
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_cq
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_cq {{ context: {:?}, channel: {:?}, cq_context: {:?} }}", self.context, self.channel, self.cq_context)
 	}
 }

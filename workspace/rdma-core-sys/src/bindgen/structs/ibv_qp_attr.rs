@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_qp_attr
 {
 	pub qp_state: ibv_qp_state,
@@ -14,7 +13,7 @@ pub struct ibv_qp_attr
 	pub rq_psn: u32,
 	pub sq_psn: u32,
 	pub dest_qp_num: u32,
-	pub qp_access_flags: c_int,
+	pub qp_access_flags: c_uint,
 	pub cap: ibv_qp_cap,
 	pub ah_attr: ibv_ah_attr,
 	pub alt_ah_attr: ibv_ah_attr,
@@ -34,20 +33,20 @@ pub struct ibv_qp_attr
 	pub rate_limit: u32,
 }
 
-impl Clone for ibv_qp_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_qp_attr
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_qp_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_qp_attr {{ qp_state: {:?}, cur_qp_state: {:?}, path_mtu: {:?}, path_mig_state: {:?}, cap: {:?}, ah_attr: {:?}, alt_ah_attr: {:?} }}", self.qp_state, self.cur_qp_state, self.path_mtu, self.path_mig_state, self.cap, self.ah_attr, self.alt_ah_attr)
 	}
 }

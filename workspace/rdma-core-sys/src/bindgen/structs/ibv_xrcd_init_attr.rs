@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_xrcd_init_attr
 {
 	pub comp_mask: u32,
@@ -11,11 +10,20 @@ pub struct ibv_xrcd_init_attr
 	pub oflags: c_int,
 }
 
-impl Clone for ibv_xrcd_init_attr
+impl Default for ibv_xrcd_init_attr
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_xrcd_init_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_xrcd_init_attr {{  }}")
 	}
 }

@@ -18,3 +18,12 @@ impl Default for rdma_route
 		unsafe { zeroed() }
 	}
 }
+
+impl Debug for rdma_route
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_route {{ addr: {:?}, path_rec: {:?} }}", self.addr, self.path_rec)
+	}
+}

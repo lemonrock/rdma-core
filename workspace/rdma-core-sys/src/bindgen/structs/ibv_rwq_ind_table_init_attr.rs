@@ -3,21 +3,11 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_rwq_ind_table_init_attr
 {
 	pub log_ind_tbl_size: u32,
 	pub ind_tbl: *mut *mut ibv_wq,
 	pub comp_mask: u32,
-}
-
-impl Clone for ibv_rwq_ind_table_init_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_rwq_ind_table_init_attr
@@ -26,5 +16,14 @@ impl Default for ibv_rwq_ind_table_init_attr
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_rwq_ind_table_init_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_rwq_ind_table_init_attr {{ ind_tbl: {:?} }}", self.ind_tbl)
 	}
 }

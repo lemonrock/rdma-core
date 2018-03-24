@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_flow_spec_ipv4
 {
 	pub type_: ibv_flow_spec_type,
@@ -12,20 +11,20 @@ pub struct ibv_flow_spec_ipv4
 	pub mask: ibv_flow_ipv4_filter,
 }
 
-impl Clone for ibv_flow_spec_ipv4
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_flow_spec_ipv4
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_flow_spec_ipv4
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_flow_spec_ipv4 {{ type: {:?}, val: {:?}, mask: {:?} }}", self.type_, self.val, self.mask)
 	}
 }

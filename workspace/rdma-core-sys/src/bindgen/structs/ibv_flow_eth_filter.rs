@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_flow_eth_filter
 {
 	pub dst_mac: [u8; 6usize],
@@ -12,11 +11,20 @@ pub struct ibv_flow_eth_filter
 	pub vlan_tag: u16,
 }
 
-impl Clone for ibv_flow_eth_filter
+impl Default for ibv_flow_eth_filter
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_flow_eth_filter
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_flow_eth_filter {{ dst_mac: {:?}, src_mac: {:?} }}", self.dst_mac, self.src_mac)
 	}
 }

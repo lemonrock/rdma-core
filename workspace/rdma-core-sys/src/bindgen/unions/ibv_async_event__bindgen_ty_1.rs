@@ -3,22 +3,14 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub union ibv_async_event__bindgen_ty_1
 {
-    pub cq: *mut ibv_cq,
-    pub qp: *mut ibv_qp,
-    pub srq: *mut ibv_srq,
-    pub wq: *mut ibv_wq,
-    pub port_num: c_int,
-}
-
-impl Clone for ibv_async_event__bindgen_ty_1
-{
-	fn clone(&self) -> Self
-	{
-		*self
-	}
+	pub cq: *mut ibv_cq,
+	pub qp: *mut ibv_qp,
+	pub srq: *mut ibv_srq,
+	pub wq: *mut ibv_wq,
+	pub port_num: c_int,
+	_bindgen_union_align: u64,
 }
 
 impl Default for ibv_async_event__bindgen_ty_1
@@ -29,18 +21,10 @@ impl Default for ibv_async_event__bindgen_ty_1
 	}
 }
 
-impl Clone for ibv_async_event
+impl Debug for ibv_async_event__bindgen_ty_1
 {
-	fn clone(&self) -> Self
+	fn fmt(&self, f: &mut Formatter) -> Result
 	{
-		*self
-	}
-}
-
-impl Default for ibv_async_event
-{
-	fn default() -> Self
-	{
-		unsafe { zeroed() }
+		write!(f, "ibv_async_event__bindgen_ty_1 {{ union }}")
 	}
 }

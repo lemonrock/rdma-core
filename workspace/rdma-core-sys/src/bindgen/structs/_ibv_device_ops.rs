@@ -3,20 +3,11 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct _ibv_device_ops
 {
 	pub _dummy1: Option<unsafe extern "C" fn(device: *mut ibv_device, cmd_fd: c_int) -> *mut ibv_context>,
 	pub _dummy2: Option<unsafe extern "C" fn(context: *mut ibv_context)>,
-}
-
-impl Clone for _ibv_device_ops
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for _ibv_device_ops

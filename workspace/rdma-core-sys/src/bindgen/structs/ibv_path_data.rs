@@ -3,21 +3,11 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_path_data
 {
 	pub flags: u32,
 	pub reserved: u32,
 	pub path: ibv_path_record,
-}
-
-impl Clone for ibv_path_data
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_path_data
@@ -26,5 +16,14 @@ impl Default for ibv_path_data
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_path_data
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_path_data {{ path: {:?} }}", self.path)
 	}
 }

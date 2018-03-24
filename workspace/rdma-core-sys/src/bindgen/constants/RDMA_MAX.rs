@@ -2,5 +2,5 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const RDMA_MAX_INIT_DEPTH: _bindgen_ty_6 = _bindgen_ty_6::RDMA_MAX_RESP_RES;
-pub const RDMA_MAX_RESP_RES: _bindgen_ty_6 = _bindgen_ty_6::RDMA_MAX_RESP_RES;
+pub const RDMA_MAX_INIT_DEPTH: _bindgen_ty_6 = 255;
+pub const RDMA_MAX_RESP_RES: _bindgen_ty_6 = 255;

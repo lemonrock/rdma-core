@@ -3,19 +3,11 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub union ibv_wc__bindgen_ty_1
 {
-    pub imm_data: __be32,
-    pub invalidated_rkey: u32,
-}
-
-impl Clone for ibv_wc__bindgen_ty_1
-{
-	fn clone(&self) -> Self
-	{
-		*self
-	}
+	pub imm_data: __be32,
+	pub invalidated_rkey: u32,
+	_bindgen_union_align: u32,
 }
 
 impl Default for ibv_wc__bindgen_ty_1
@@ -26,27 +18,10 @@ impl Default for ibv_wc__bindgen_ty_1
 	}
 }
 
-impl Clone for ibv_wc
+impl Debug for ibv_wc__bindgen_ty_1
 {
-	fn clone(&self) -> Self
+	fn fmt(&self, f: &mut Formatter) -> Result
 	{
-		*self
-	}
-}
-
-impl Default for ibv_wc
-{
-	fn default() -> Self
-	{
-		unsafe { zeroed() }
-	}
-}
-
-impl ::core::ops::BitOr<ibv_access_flags> for ibv_access_flags
-{
-	type Output = Self;
-	fn bitor(self, other: Self) -> Self
-	{
-		ibv_access_flags(self.0 | other.0)
+		write!(f, "ibv_wc__bindgen_ty_1 {{ union }}")
 	}
 }

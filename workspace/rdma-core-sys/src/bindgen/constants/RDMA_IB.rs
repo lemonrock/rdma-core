@@ -2,8 +2,8 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const RDMA_IB_IP_PORT_MASK: c_uint = 65535;
-pub const RDMA_IB_IP_PS_MASK: c_int = -65536;
-pub const RDMA_IB_IP_PS_TCP: c_uint = 17170432;
-pub const RDMA_IB_IP_PS_UDP: c_uint = 17891328;
-pub const RDMA_IB_PS_IB: c_uint = 20905984;
+pub const RDMA_IB_IP_PORT_MASK: u32 = 65535;
+pub const RDMA_IB_IP_PS_MASK: i32 = -65536;
+pub const RDMA_IB_IP_PS_TCP: u32 = 17170432;
+pub const RDMA_IB_IP_PS_UDP: u32 = 17891328;
+pub const RDMA_IB_PS_IB: u32 = 20905984;

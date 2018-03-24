@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	pub fn rust_rdma_seterrno(ret: c_int) -> c_int;
+	#[link_name = "\u{1}_rust_rdma_seterrno"] pub fn rust_rdma_seterrno(ret: c_int) -> c_int;
 }

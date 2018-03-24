@@ -3,19 +3,10 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ibv_xrcd
 {
 	pub context: *mut ibv_context,
-}
-
-impl Clone for ibv_xrcd
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_xrcd

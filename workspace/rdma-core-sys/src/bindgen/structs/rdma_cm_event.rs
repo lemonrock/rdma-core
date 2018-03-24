@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct rdma_cm_event
 {
 	pub id: *mut rdma_cm_id,
@@ -11,4 +10,22 @@ pub struct rdma_cm_event
 	pub event: rdma_cm_event_type,
 	pub status: c_int,
 	pub param: rdma_cm_event__bindgen_ty_1,
+}
+
+impl Default for rdma_cm_event
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for rdma_cm_event
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_cm_event {{ id: {:?}, listen_id: {:?}, event: {:?}, param: {:?} }}", self.id, self.listen_id, self.event, self.param)
+	}
 }

@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_qp_init_attr_ex
 {
 	pub qp_context: *mut c_void,
@@ -20,15 +19,7 @@ pub struct ibv_qp_init_attr_ex
 	pub max_tso_header: u16,
 	pub rwq_ind_tbl: *mut ibv_rwq_ind_table,
 	pub rx_hash_conf: ibv_rx_hash_conf,
-}
-
-impl Clone for ibv_qp_init_attr_ex
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
+	pub source_qpn: u32,
 }
 
 impl Default for ibv_qp_init_attr_ex
@@ -40,12 +31,11 @@ impl Default for ibv_qp_init_attr_ex
 	}
 }
 
-impl ::core::ops::BitOr<ibv_qp_open_attr_mask> for ibv_qp_open_attr_mask
+impl Debug for ibv_qp_init_attr_ex
 {
-	type Output = Self;
 	#[inline(always)]
-	fn bitor(self, other: Self) -> Self
+	fn fmt(&self, f: &mut Formatter) -> Result
 	{
-		ibv_qp_open_attr_mask(self.0 | other.0)
+		write!(f, "ibv_qp_init_attr_ex {{ qp_context: {:?}, send_cq: {:?}, recv_cq: {:?}, srq: {:?}, cap: {:?}, qp_type: {:?}, pd: {:?}, xrcd: {:?}, rwq_ind_tbl: {:?}, rx_hash_conf: {:?} }}", self.qp_context, self.send_cq, self.recv_cq, self.srq, self.cap, self.qp_type, self.pd, self.xrcd, self.rwq_ind_tbl, self.rx_hash_conf)
 	}
 }

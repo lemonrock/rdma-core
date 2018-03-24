@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_wq_init_attr
 {
 	pub wq_context: *mut c_void,
@@ -16,20 +15,20 @@ pub struct ibv_wq_init_attr
 	pub create_flags: u32,
 }
 
-impl Clone for ibv_wq_init_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_wq_init_attr
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_wq_init_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_wq_init_attr {{ wq_context: {:?}, wq_type: {:?}, pd: {:?}, cq: {:?} }}", self.wq_context, self.wq_type, self.pd, self.cq)
 	}
 }

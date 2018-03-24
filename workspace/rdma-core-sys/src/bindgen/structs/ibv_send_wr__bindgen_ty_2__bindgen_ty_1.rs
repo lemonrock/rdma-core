@@ -3,35 +3,26 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_send_wr__bindgen_ty_2__bindgen_ty_1
 {
-	pub remote_srqn: u32,
+	pub remote_addr: u64,
+	pub rkey: u32,
 }
 
-impl Clone for ibv_send_wr__bindgen_ty_2__bindgen_ty_1
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Clone for ibv_send_wr__bindgen_ty_2
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Default for ibv_send_wr__bindgen_ty_2
+impl Default for ibv_send_wr__bindgen_ty_2__bindgen_ty_1
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_send_wr__bindgen_ty_2__bindgen_ty_1
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_send_wr__bindgen_ty_2__bindgen_ty_1 {{  }}")
 	}
 }

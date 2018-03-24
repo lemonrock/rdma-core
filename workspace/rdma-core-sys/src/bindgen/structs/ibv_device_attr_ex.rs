@@ -16,6 +16,8 @@ pub struct ibv_device_attr_ex
 	pub max_wq_type_rq: u32,
 	pub packet_pacing_caps: ibv_packet_pacing_caps,
 	pub raw_packet_caps: u32,
+	pub tm_caps: ibv_tm_caps,
+	pub cq_mod_caps: ibv_cq_moderation_caps,
 }
 
 impl Default for ibv_device_attr_ex
@@ -24,5 +26,14 @@ impl Default for ibv_device_attr_ex
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_device_attr_ex
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_device_attr_ex {{ orig_attr: {:?}, odp_caps: {:?}, tso_caps: {:?}, rss_caps: {:?}, packet_pacing_caps: {:?}, tm_caps: {:?}, cq_mod_caps: {:?} }}", self.orig_attr, self.odp_caps, self.tso_caps, self.rss_caps, self.packet_pacing_caps, self.tm_caps, self.cq_mod_caps)
 	}
 }

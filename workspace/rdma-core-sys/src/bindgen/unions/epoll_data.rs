@@ -3,21 +3,13 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub union epoll_data
 {
-    pub ptr: *mut c_void,
-    pub fd: c_int,
-    pub u32: u32,
-    pub u64: u64,
-}
-
-impl Clone for epoll_data
-{
-	fn clone(&self) -> Self
-	{
-		*self
-	}
+	pub ptr: *mut c_void,
+	pub fd: c_int,
+	pub u32: u32,
+	pub u64: u64,
+	_bindgen_union_align: u64,
 }
 
 impl Default for epoll_data
@@ -25,5 +17,13 @@ impl Default for epoll_data
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for epoll_data
+{
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "epoll_data {{ union }}")
 	}
 }

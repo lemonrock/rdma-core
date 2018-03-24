@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_odp_caps__bindgen_ty_1
 {
 	pub rc_odp_caps: u32,
@@ -11,20 +10,20 @@ pub struct ibv_odp_caps__bindgen_ty_1
 	pub ud_odp_caps: u32,
 }
 
-impl Clone for ibv_odp_caps__bindgen_ty_1
+impl Default for ibv_odp_caps__bindgen_ty_1
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
 	}
 }
 
-impl Clone for ibv_odp_caps
+impl Debug for ibv_odp_caps__bindgen_ty_1
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn fmt(&self, f: &mut Formatter) -> Result
 	{
-		*self
+		write!(f, "ibv_odp_caps__bindgen_ty_1 {{  }}")
 	}
 }

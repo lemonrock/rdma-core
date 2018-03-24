@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_wc
 {
 	pub wr_id: u64,
@@ -14,9 +13,27 @@ pub struct ibv_wc
 	pub __bindgen_anon_1: ibv_wc__bindgen_ty_1,
 	pub qp_num: u32,
 	pub src_qp: u32,
-	pub wc_flags: c_int,
+	pub wc_flags: c_uint,
 	pub pkey_index: u16,
 	pub slid: u16,
 	pub sl: u8,
 	pub dlid_path_bits: u8,
+}
+
+impl Default for ibv_wc
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_wc
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_wc {{ status: {:?}, opcode: {:?}, __bindgen_anon_1: {:?} }}", self.status, self.opcode, self.__bindgen_anon_1)
+	}
 }

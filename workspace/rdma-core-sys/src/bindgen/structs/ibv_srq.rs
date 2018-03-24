@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_srq
 {
 	pub context: *mut ibv_context,
@@ -15,20 +14,20 @@ pub struct ibv_srq
 	pub events_completed: u32,
 }
 
-impl Clone for ibv_srq
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_srq
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_srq
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_srq {{ context: {:?}, srq_context: {:?}, pd: {:?} }}", self.context, self.srq_context, self.pd)
 	}
 }

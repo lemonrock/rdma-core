@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_qp_init_attr
 {
 	pub qp_context: *mut c_void,
@@ -15,15 +14,6 @@ pub struct ibv_qp_init_attr
 	pub sq_sig_all: c_int,
 }
 
-impl Clone for ibv_qp_init_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_qp_init_attr
 {
 	#[inline(always)]
@@ -33,12 +23,11 @@ impl Default for ibv_qp_init_attr
 	}
 }
 
-impl ::core::ops::BitOr<ibv_qp_init_attr_mask> for ibv_qp_init_attr_mask
+impl Debug for ibv_qp_init_attr
 {
-	type Output = Self;
 	#[inline(always)]
-	fn bitor(self, other: Self) -> Self
+	fn fmt(&self, f: &mut Formatter) -> Result
 	{
-		ibv_qp_init_attr_mask(self.0 | other.0)
+		write!(f, "ibv_qp_init_attr {{ qp_context: {:?}, send_cq: {:?}, recv_cq: {:?}, srq: {:?}, cap: {:?}, qp_type: {:?} }}", self.qp_context, self.send_cq, self.recv_cq, self.srq, self.cap, self.qp_type)
 	}
 }

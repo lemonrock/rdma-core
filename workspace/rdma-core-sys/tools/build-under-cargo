@@ -138,46 +138,65 @@ build_under_cargo_reRunIfAnyChanged()
 	cd - 1>/dev/null 2>/dev/null
 }
 
-build_under_cargo_determineRdmaCoreRootFolderPath()
+build_under_cargo_compile()
 {
-	rdmacoreRootFolderPath="$homeFolder"/compile-rdma-core.conf.d/temporary/DESTDIR
-		
-	if [ ! -d "$rdmacoreRootFolderPath" ]; then
-		needsCompilation='true'
-	fi
+	"$CARGO_MANIFEST_DIR"/tools/compile
 }
 
-build_under_cargo_compileIfRequired()
+build_under_cargo_generatingRustBindings()
 {
-	if $needsCompilation; then
-		"$homeFolder"/tools/compile-rdma-core 1>&2
-	fi
+	"$CARGO_MANIFEST_DIR"/tools/bindgen-wrapper/bindgen-wrapper
 }
 
-# This is extremely brittle, mostly because of bindgen being brittle
-build_under_cargo_generatingRustBindingsToRdmaCoreIfRequired()
-{
-	local rebuildBindings='false'
-	
-	if [ ! -d "$rustBindingsFolderPath" ]; then
-		rebuildBindings='true'
-	fi
-	
-	if $rebuildBindings; then
-		rm -rf "$rustBindingsFolderPath"
-		"$homeFolder"/tools/bindgen-wrapper/bindgen-wrapper
-	fi
-}
-
-build_under_cargo_copyHeadersToKnownLocationForEmbeddedCCodeInRust()
-{
-	rm -rf "$copyHeadersToKnownLocationForEmbeddedCCodeInRustIncludeFolderPath"
-	mkdir -m 0700 -p "$copyHeadersToKnownLocationForEmbeddedCCodeInRustIncludeFolderPath"
-	rsync --quiet --archive "$homeFolder"/tools/bindgen-wrapper/temporary/includes/ "$copyHeadersToKnownLocationForEmbeddedCCodeInRustIncludeFolderPath"/
-}
-# temporaryIncludeFolder
 build_under_cargo_outputCargoKeyValuePairs()
 {
+	_build_under_cargo_outputCargoKeyValuePairs_rerun_if_changed_recurse()
+	{
+		local relativeRoot="$1"
+
+		set +f
+		local file
+		for file in "$relativeRoot"/*
+		do
+			set -f
+
+			if [ ! -e "$file" ]; then
+				continue
+			fi
+
+			case "$file" in
+
+				"$relativeRoot"/.gitignore|"$relativeRoot"/temporary)
+					continue
+				;;
+
+			esac
+
+			if [ -L "$file" ]; then
+				printf 'cargo:rerun-if-changed=%s\n' "$file"
+			elif [ -f "$file" ]; then
+				printf 'cargo:rerun-if-changed=%s\n' "$file"
+			elif [ -d "$file" ]; then
+				printf 'cargo:rerun-if-changed=%s\n' "$file"
+				_build_under_cargo_outputCargoKeyValuePairs_rerun_if_changed_recurse "$file"
+			fi
+		done
+		set -f
+	}
+
+	cd "$CARGO_MANIFEST_DIR" 1>/dev/null 2>/dev/null
+
+		_build_under_cargo_outputCargoKeyValuePairs_rerun_if_changed_recurse 'bindgen-wrapper.conf.d'
+		_build_under_cargo_outputCargoKeyValuePairs_rerun_if_changed_recurse 'compile.conf.d'
+
+	cd - 1>/dev/null 2>/dev/null
+
+	printf 'cargo:rerun-if-changed=%s\n' 'tools/build-under-cargo'
+	printf 'cargo:rerun-if-changed=%s\n' 'tools/compile'
+	printf 'cargo:rerun-if-changed=%s\n' 'tools/bindgen-wrapper'
+	printf 'cargo:rerun-if-changed=%s\n' 'tools/bindgen-wrapper/bindgen-wrapper'
+	printf 'cargo:rerun-if-changed=%s\n' 'tools/bindgen-wrapper/rustfmt.toml'
+
 	printf 'cargo:rustc-link-lib=static-nobundle=cxgb3\n'
 	printf 'cargo:rustc-link-lib=static-nobundle=cxgb4\n'
 	printf 'cargo:rustc-link-lib=static-nobundle=hfi1verbs\n'
@@ -198,31 +217,23 @@ build_under_cargo_outputCargoKeyValuePairs()
 	printf 'cargo:rustc-link-lib=static-nobundle=vmw_pvrdma\n'
 	
 	# Search path
-	printf 'cargo:rustc-link-search=native=%s\n' "$rdmacoreLibFolderPath"
+	printf 'cargo:rustc-link-search=native=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/lib
 	
 	# Not used by us, but useful for downstream potentially
-	printf 'cargo:root=%s\n' "$rdmacoreRootFolderPath"
-	printf 'cargo:include=%s\n' "$rdmacoreIncludeFolderPath"
-	printf 'cargo:libdir=%s\n' "$rdmacoreLibFolderPath"
+	printf 'cargo:root=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root
+	printf 'cargo:include=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/include
+	printf 'cargo:libdir=%s\n' "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/lib
 }
 
 build_under_cargo_steps()
-{	
-	local rdmacoreRootFolderPath
-	local needsCompilation='false'
-	build_under_cargo_determineRdmaCoreRootFolderPath
-	
-	local rdmacoreLibFolderPath="$rdmacoreRootFolderPath"/usr/lib
-	local rdmacoreIncludeFolderPath="$rdmacoreRootFolderPath"/usr/include
-	local srcFolderPath="$homeFolder"/src
-	local rustBindingsFolderPath="$srcFolderPath"/bindgen
-	local copyHeadersToKnownLocationForEmbeddedCCodeInRustIncludeFolderPath="$srcFolderPath"/include
-	
-	build_under_cargo_compileIfRequired
-	
-	build_under_cargo_generatingRustBindingsToRdmaCoreIfRequired
-	
-	build_under_cargo_copyHeadersToKnownLocationForEmbeddedCCodeInRust
+{
+	if [ ! -d "$CARGO_MANIFEST_DIR"/bindgen-wrapper.conf.d/temporary/root ]; then
+		build_under_cargo_compile
+	fi
+
+	if [ ! -e "$CARGO_MANIFEST_DIR"/src/bindgen/lib.rs ]; then
+		build_under_cargo_generatingRustBindings
+	fi
 
 	build_under_cargo_outputCargoKeyValuePairs
 }
@@ -230,45 +241,52 @@ build_under_cargo_steps()
 build_under_cargo_main()
 {
 	case "$#" in
-		
+
 		0)
 			:
 		;;
-		
+
 		1)
 			case "$1" in
-				
+
 				-h|--help)
 					printf './build\n'
 					printf './build -h|--help\n'
 					exit 0
 				;;
-				
+
 				*)
 					build_under_cargo_fail "Does not take any arguments"
 				;;
-				
+
 			esac
 		;;
-		
+
 		*)
 			build_under_cargo_fail "Does not take any arguments"
 		;;
-		
+
 	esac
-	
+
 	local programPath="$(_program_path_find)"
 	cd "$programPath"/.. 1>/dev/null 2>/dev/null
 		local homeFolder="$(pwd)"
 	cd - 1>/dev/null 2>/dev/null
-	
-	if [ -z "{CARGO_MANIFEST_DIR+defined}" ]; then
-		:
-	else
+
+	if [ -z "${CARGO_MANIFEST_DIR+is_unset}" ]; then
 		export CARGO_MANIFEST_DIR="$homeFolder"
-		printf 'build-under-cargo:%s\n' "Whilst this script is designed to be run under cargo, it can run independently. We're setting CARGO_MANIFEST_DIR to '$CARGO_MANIFEST_DIR'" 1>&2
+		printf 'build-under-cargo:%s\n' "Whilst this script (build-under-cargo) is designed to be run under cargo, it can run independently. We're setting CARGO_MANIFEST_DIR to '$CARGO_MANIFEST_DIR'" 1>&2
+	else
+		:
 	fi
-	
+
+	if [ -z "${OUT_DIR+is_unset}" ]; then
+		export OUT_DIR="$homeFolder"/bindgen-wrapper.conf.d/temporary
+		printf 'build-under-cargo:%s\n' "Whilst this script (build-under-cargo) is designed to be run under cargo, it can run independently. We're setting OUT_DIR to '$OUT_DIR'" 1>&2
+	else
+		:
+	fi
+
 	build_under_cargo_steps
 }
 

@@ -4,4 +4,46 @@
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct ibv_access_flags(pub c_uint);
+pub struct ibv_access_flags(pub u32);
+
+impl BitOr<ibv_access_flags> for ibv_access_flags
+{
+	type Output = Self;
+	
+	#[inline(always)]
+	fn bitor(self, other: Self) -> Self
+	{
+		ibv_access_flags(self.0 | other.0)
+	}
+}
+
+impl BitOrAssign for ibv_access_flags
+{
+	
+	#[inline(always)]
+	fn bitor_assign(&mut self, rhs: ibv_access_flags)
+	{
+		self.0 |= rhs.0;
+	}
+}
+
+impl BitAnd<ibv_access_flags> for ibv_access_flags
+{
+	type Output = Self;
+	
+	#[inline(always)]
+	fn bitand(self, other: Self) -> Self
+	{
+		ibv_access_flags(self.0 & other.0)
+	}
+}
+
+impl BitAndAssign for ibv_access_flags
+{
+	
+	#[inline(always)]
+	fn bitand_assign(&mut self, rhs: ibv_access_flags)
+	{
+		self.0 &= rhs.0;
+	}
+}

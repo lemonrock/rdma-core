@@ -3,21 +3,11 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_comp_channel
 {
 	pub context: *mut ibv_context,
 	pub fd: c_int,
 	pub refcnt: c_int,
-}
-
-impl Clone for ibv_comp_channel
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_comp_channel
@@ -26,5 +16,14 @@ impl Default for ibv_comp_channel
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_comp_channel
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_comp_channel {{ context: {:?} }}", self.context)
 	}
 }

@@ -25,3 +25,37 @@ impl Default for ibv_sa_service_rec
 		unsafe { zeroed() }
 	}
 }
+
+impl Debug for ibv_sa_service_rec
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(
+			f,
+			"ibv_sa_service_rec {{ gid: {:?}, key: {:?}, name: [{}], data8: {:?}, data16: {:?}, data32: {:?}, data64: {:?} }}",
+			self.gid,
+			self.key,
+			self.name
+				.iter()
+				.enumerate()
+				.map(|(i, v)| format!(
+					"{}{:?}",
+					if i > 0
+					{
+						", "
+					}
+					else
+					{
+						""
+					},
+					v
+				))
+				.collect::<String>(),
+			self.data8,
+			self.data16,
+			self.data32,
+			self.data64
+		)
+	}
+}

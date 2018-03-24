@@ -3,18 +3,26 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_tso_caps
 {
 	pub max_tso: u32,
 	pub supported_qpts: u32,
 }
 
-impl Clone for ibv_tso_caps
+impl Default for ibv_tso_caps
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_tso_caps
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_tso_caps {{  }}")
 	}
 }

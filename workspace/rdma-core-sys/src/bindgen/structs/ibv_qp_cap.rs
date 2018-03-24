@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_qp_cap
 {
 	pub max_send_wr: u32,
@@ -13,11 +12,20 @@ pub struct ibv_qp_cap
 	pub max_inline_data: u32,
 }
 
-impl Clone for ibv_qp_cap
+impl Default for ibv_qp_cap
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_qp_cap
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_qp_cap {{  }}")
 	}
 }

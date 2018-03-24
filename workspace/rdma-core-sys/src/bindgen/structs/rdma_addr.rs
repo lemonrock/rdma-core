@@ -9,3 +9,21 @@ pub struct rdma_addr
 	pub __bindgen_anon_2: rdma_addr__bindgen_ty_2,
 	pub addr: rdma_addr__bindgen_ty_3,
 }
+
+impl Default for rdma_addr
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for rdma_addr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_addr {{ __bindgen_anon_1: {:?}, __bindgen_anon_2: {:?}, addr: {:?} }}", self.__bindgen_anon_1, self.__bindgen_anon_2, self.addr)
+	}
+}

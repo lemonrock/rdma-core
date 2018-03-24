@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_srq_init_attr_ex
 {
 	pub srq_context: *mut c_void,
@@ -13,15 +12,7 @@ pub struct ibv_srq_init_attr_ex
 	pub pd: *mut ibv_pd,
 	pub xrcd: *mut ibv_xrcd,
 	pub cq: *mut ibv_cq,
-}
-
-impl Clone for ibv_srq_init_attr_ex
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
+	pub tm_cap: ibv_tm_cap,
 }
 
 impl Default for ibv_srq_init_attr_ex
@@ -30,5 +21,14 @@ impl Default for ibv_srq_init_attr_ex
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_srq_init_attr_ex
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_srq_init_attr_ex {{ srq_context: {:?}, attr: {:?}, srq_type: {:?}, pd: {:?}, xrcd: {:?}, cq: {:?}, tm_cap: {:?} }}", self.srq_context, self.attr, self.srq_type, self.pd, self.xrcd, self.cq, self.tm_cap)
 	}
 }

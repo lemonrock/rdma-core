@@ -3,9 +3,26 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_async_event
 {
 	pub element: ibv_async_event__bindgen_ty_1,
 	pub event_type: ibv_event_type,
+}
+
+impl Default for ibv_async_event
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_async_event
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_async_event {{ element: {:?}, event_type: {:?} }}", self.element, self.event_type)
+	}
 }

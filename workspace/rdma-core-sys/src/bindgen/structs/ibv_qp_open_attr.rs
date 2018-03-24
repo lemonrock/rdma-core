@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_qp_open_attr
 {
 	pub comp_mask: u32,
@@ -11,15 +10,6 @@ pub struct ibv_qp_open_attr
 	pub xrcd: *mut ibv_xrcd,
 	pub qp_context: *mut c_void,
 	pub qp_type: ibv_qp_type,
-}
-
-impl Clone for ibv_qp_open_attr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_qp_open_attr
@@ -31,12 +21,11 @@ impl Default for ibv_qp_open_attr
 	}
 }
 
-impl ::core::ops::BitOr<ibv_qp_attr_mask> for ibv_qp_attr_mask
+impl Debug for ibv_qp_open_attr
 {
-	type Output = Self;
 	#[inline(always)]
-	fn bitor(self, other: Self) -> Self
+	fn fmt(&self, f: &mut Formatter) -> Result
 	{
-		ibv_qp_attr_mask(self.0 | other.0)
+		write!(f, "ibv_qp_open_attr {{ xrcd: {:?}, qp_context: {:?}, qp_type: {:?} }}", self.xrcd, self.qp_context, self.qp_type)
 	}
 }

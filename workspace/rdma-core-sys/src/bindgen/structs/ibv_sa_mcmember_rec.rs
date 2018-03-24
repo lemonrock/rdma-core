@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_sa_mcmember_rec
 {
 	pub mgid: ibv_gid,
@@ -26,20 +25,20 @@ pub struct ibv_sa_mcmember_rec
 	pub proxy_join: c_int,
 }
 
-impl Clone for ibv_sa_mcmember_rec
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_sa_mcmember_rec
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_sa_mcmember_rec
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_sa_mcmember_rec {{ mgid: {:?}, port_gid: {:?} }}", self.mgid, self.port_gid)
 	}
 }

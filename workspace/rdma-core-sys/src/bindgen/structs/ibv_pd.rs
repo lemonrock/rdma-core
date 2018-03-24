@@ -3,20 +3,10 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_pd
 {
 	pub context: *mut ibv_context,
 	pub handle: u32,
-}
-
-impl Clone for ibv_pd
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_pd
@@ -28,12 +18,11 @@ impl Default for ibv_pd
 	}
 }
 
-impl ::core::ops::BitOr<ibv_xrcd_init_attr_mask> for ibv_xrcd_init_attr_mask
+impl Debug for ibv_pd
 {
-	type Output = Self;
 	#[inline(always)]
-	fn bitor(self, other: Self) -> Self
+	fn fmt(&self, f: &mut Formatter) -> Result
 	{
-		ibv_xrcd_init_attr_mask(self.0 | other.0)
+		write!(f, "ibv_pd {{ context: {:?} }}", self.context)
 	}
 }

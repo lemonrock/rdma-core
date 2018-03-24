@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct rdma_addrinfo
 {
 	pub ai_flags: c_int,
@@ -23,20 +22,20 @@ pub struct rdma_addrinfo
 	pub ai_next: *mut rdma_addrinfo,
 }
 
-impl Clone for rdma_addrinfo
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for rdma_addrinfo
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for rdma_addrinfo
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_addrinfo {{ ai_src_addr: {:?}, ai_dst_addr: {:?}, ai_src_canonname: {:?}, ai_dst_canonname: {:?}, ai_route: {:?}, ai_connect: {:?}, ai_next: {:?} }}", self.ai_src_addr, self.ai_dst_addr, self.ai_src_canonname, self.ai_dst_canonname, self.ai_route, self.ai_connect, self.ai_next)
 	}
 }

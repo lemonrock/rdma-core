@@ -4,7 +4,7 @@
 
 extern "C"
 {
-	pub fn ibv_destroy_srq(srq: *mut ibv_srq) -> c_int;
-	pub fn ibv_modify_srq(srq: *mut ibv_srq, srq_attr: *mut ibv_srq_attr, srq_attr_mask: c_int) -> c_int;
-	pub fn ibv_query_srq(srq: *mut ibv_srq, srq_attr: *mut ibv_srq_attr) -> c_int;
+	#[link_name = "\u{1}_ibv_destroy_srq"] pub fn ibv_destroy_srq(srq: *mut ibv_srq) -> c_int;
+	#[link_name = "\u{1}_ibv_modify_srq"] pub fn ibv_modify_srq(srq: *mut ibv_srq, srq_attr: *mut ibv_srq_attr, srq_attr_mask: c_int) -> c_int;
+	#[link_name = "\u{1}_ibv_query_srq"] pub fn ibv_query_srq(srq: *mut ibv_srq, srq_attr: *mut ibv_srq_attr) -> c_int;
 }

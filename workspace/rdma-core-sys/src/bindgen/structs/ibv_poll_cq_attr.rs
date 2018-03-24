@@ -3,17 +3,25 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_poll_cq_attr
 {
 	pub comp_mask: u32,
 }
 
-impl Clone for ibv_poll_cq_attr
+impl Default for ibv_poll_cq_attr
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_poll_cq_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_poll_cq_attr {{  }}")
 	}
 }

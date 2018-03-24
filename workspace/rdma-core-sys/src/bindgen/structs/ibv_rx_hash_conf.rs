@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_rx_hash_conf
 {
 	pub rx_hash_function: u8,
@@ -12,20 +11,20 @@ pub struct ibv_rx_hash_conf
 	pub rx_hash_fields_mask: u64,
 }
 
-impl Clone for ibv_rx_hash_conf
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_rx_hash_conf
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_rx_hash_conf
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_rx_hash_conf {{ rx_hash_key: {:?} }}", self.rx_hash_key)
 	}
 }

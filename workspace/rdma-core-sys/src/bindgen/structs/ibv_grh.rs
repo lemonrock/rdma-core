@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_grh
 {
 	pub version_tclass_flow: __be32,
@@ -14,20 +13,20 @@ pub struct ibv_grh
 	pub dgid: ibv_gid,
 }
 
-impl Clone for ibv_grh
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_grh
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_grh
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_grh {{ sgid: {:?}, dgid: {:?} }}", self.sgid, self.dgid)
 	}
 }

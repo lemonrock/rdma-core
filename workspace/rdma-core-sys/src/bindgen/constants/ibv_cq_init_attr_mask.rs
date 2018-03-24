@@ -3,4 +3,3 @@
 
 
 pub const ibv_cq_init_attr_mask_IBV_CQ_INIT_ATTR_MASK_FLAGS: ibv_cq_init_attr_mask = ibv_cq_init_attr_mask(1);
-pub const ibv_cq_init_attr_mask_IBV_CQ_INIT_ATTR_MASK_RESERVED: ibv_cq_init_attr_mask = ibv_cq_init_attr_mask(2);

@@ -3,5 +3,7 @@
 
 
 pub const ibv_wq_flags_IBV_WQ_FLAGS_CVLAN_STRIPPING: ibv_wq_flags = ibv_wq_flags(1);
-pub const ibv_wq_flags_IBV_WQ_FLAGS_RESERVED: ibv_wq_flags = ibv_wq_flags(4);
+pub const ibv_wq_flags_IBV_WQ_FLAGS_DELAY_DROP: ibv_wq_flags = ibv_wq_flags(4);
+pub const ibv_wq_flags_IBV_WQ_FLAGS_PCI_WRITE_END_PADDING: ibv_wq_flags = ibv_wq_flags(8);
+pub const ibv_wq_flags_IBV_WQ_FLAGS_RESERVED: ibv_wq_flags = ibv_wq_flags(16);
 pub const ibv_wq_flags_IBV_WQ_FLAGS_SCATTER_FCS: ibv_wq_flags = ibv_wq_flags(2);

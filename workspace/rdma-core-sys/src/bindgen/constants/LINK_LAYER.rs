@@ -2,6 +2,6 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const IBV_LINK_LAYER_ETHERNET: _bindgen_ty_1 = _bindgen_ty_1::IBV_LINK_LAYER_ETHERNET;
-pub const IBV_LINK_LAYER_INFINIBAND: _bindgen_ty_1 = _bindgen_ty_1::IBV_LINK_LAYER_INFINIBAND;
-pub const IBV_LINK_LAYER_UNSPECIFIED: _bindgen_ty_1 = _bindgen_ty_1::IBV_LINK_LAYER_UNSPECIFIED;
+pub const IBV_LINK_LAYER_ETHERNET: _bindgen_ty_1 = 2;
+pub const IBV_LINK_LAYER_INFINIBAND: _bindgen_ty_1 = 1;
+pub const IBV_LINK_LAYER_UNSPECIFIED: _bindgen_ty_1 = 0;

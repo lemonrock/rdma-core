@@ -3,20 +3,10 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_flow_spec__bindgen_ty_1__bindgen_ty_1
 {
 	pub type_: ibv_flow_spec_type,
 	pub size: u16,
-}
-
-impl Clone for ibv_flow_spec__bindgen_ty_1__bindgen_ty_1
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_flow_spec__bindgen_ty_1__bindgen_ty_1
@@ -28,38 +18,11 @@ impl Default for ibv_flow_spec__bindgen_ty_1__bindgen_ty_1
 	}
 }
 
-impl Clone for ibv_flow_spec__bindgen_ty_1
+impl Debug for ibv_flow_spec__bindgen_ty_1__bindgen_ty_1
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn fmt(&self, f: &mut Formatter) -> Result
 	{
-		*self
-	}
-}
-
-impl Default for ibv_flow_spec__bindgen_ty_1
-{
-	#[inline(always)]
-	fn default() -> Self
-	{
-		unsafe { zeroed() }
-	}
-}
-
-impl Clone for ibv_flow_spec
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
-impl Default for ibv_flow_spec
-{
-	#[inline(always)]
-	fn default() -> Self
-	{
-		unsafe { zeroed() }
+		write!(f, "ibv_flow_spec__bindgen_ty_1__bindgen_ty_1 {{ type: {:?} }}", self.type_)
 	}
 }

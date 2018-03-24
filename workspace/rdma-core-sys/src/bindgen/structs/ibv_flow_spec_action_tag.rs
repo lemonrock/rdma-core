@@ -3,21 +3,11 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_flow_spec_action_tag
 {
 	pub type_: ibv_flow_spec_type,
 	pub size: u16,
 	pub tag_id: u32,
-}
-
-impl Clone for ibv_flow_spec_action_tag
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for ibv_flow_spec_action_tag
@@ -26,5 +16,14 @@ impl Default for ibv_flow_spec_action_tag
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_flow_spec_action_tag
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_flow_spec_action_tag {{ type: {:?} }}", self.type_)
 	}
 }

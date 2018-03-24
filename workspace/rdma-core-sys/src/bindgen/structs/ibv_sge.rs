@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_sge
 {
 	pub addr: u64,
@@ -11,11 +10,20 @@ pub struct ibv_sge
 	pub lkey: u32,
 }
 
-impl Clone for ibv_sge
+impl Default for ibv_sge
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_sge
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_sge {{  }}")
 	}
 }

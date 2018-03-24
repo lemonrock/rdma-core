@@ -4,14 +4,46 @@
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct _bindgen_ty_4(pub c_uint);
+pub struct _bindgen_ty_4(pub u32);
 
-impl ::core::ops::BitOr<ibv_wc_flags> for ibv_wc_flags
+impl BitOr<_bindgen_ty_4> for _bindgen_ty_4
 {
 	type Output = Self;
+	
 	#[inline(always)]
 	fn bitor(self, other: Self) -> Self
 	{
-		ibv_wc_flags(self.0 | other.0)
+		_bindgen_ty_4(self.0 | other.0)
+	}
+}
+
+impl BitOrAssign for _bindgen_ty_4
+{
+	
+	#[inline(always)]
+	fn bitor_assign(&mut self, rhs: _bindgen_ty_4)
+	{
+		self.0 |= rhs.0;
+	}
+}
+
+impl BitAnd<_bindgen_ty_4> for _bindgen_ty_4
+{
+	type Output = Self;
+	
+	#[inline(always)]
+	fn bitand(self, other: Self) -> Self
+	{
+		_bindgen_ty_4(self.0 & other.0)
+	}
+}
+
+impl BitAndAssign for _bindgen_ty_4
+{
+	
+	#[inline(always)]
+	fn bitand_assign(&mut self, rhs: _bindgen_ty_4)
+	{
+		self.0 &= rhs.0;
 	}
 }

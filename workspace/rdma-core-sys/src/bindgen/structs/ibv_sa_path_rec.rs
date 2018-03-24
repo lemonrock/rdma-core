@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_sa_path_rec
 {
 	pub dgid: ibv_gid,
@@ -27,20 +26,20 @@ pub struct ibv_sa_path_rec
 	pub preference: u8,
 }
 
-impl Clone for ibv_sa_path_rec
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_sa_path_rec
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_sa_path_rec
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_sa_path_rec {{ dgid: {:?}, sgid: {:?} }}", self.dgid, self.sgid)
 	}
 }

@@ -3,8 +3,25 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ib_addr
 {
 	pub ib_u: ib_addr__bindgen_ty_1,
+}
+
+impl Default for ib_addr
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ib_addr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ib_addr {{  }}")
+	}
 }

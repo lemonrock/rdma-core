@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_global_route
 {
 	pub dgid: ibv_gid,
@@ -13,20 +12,20 @@ pub struct ibv_global_route
 	pub traffic_class: u8,
 }
 
-impl Clone for ibv_global_route
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_global_route
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_global_route
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_global_route {{ dgid: {:?} }}", self.dgid)
 	}
 }

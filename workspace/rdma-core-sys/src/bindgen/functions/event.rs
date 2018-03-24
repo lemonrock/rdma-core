@@ -4,6 +4,6 @@
 
 extern "C"
 {
-	pub fn ibv_ack_async_event(event: *mut ibv_async_event);
-	pub fn ibv_event_type_str(event: ibv_event_type) -> *const c_char;
+	#[link_name = "\u{1}_ibv_ack_async_event"] pub fn ibv_ack_async_event(event: *mut ibv_async_event);
+	#[link_name = "\u{1}_ibv_event_type_str"] pub fn ibv_event_type_str(event: ibv_event_type) -> *const c_char;
 }

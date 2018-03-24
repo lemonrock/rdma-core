@@ -30,3 +30,12 @@ impl Default for rdma_cm_id
 		unsafe { zeroed() }
 	}
 }
+
+impl Debug for rdma_cm_id
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_cm_id {{ verbs: {:?}, channel: {:?}, context: {:?}, qp: {:?}, route: {:?}, ps: {:?}, event: {:?}, send_cq_channel: {:?}, send_cq: {:?}, recv_cq_channel: {:?}, recv_cq: {:?}, srq: {:?}, pd: {:?}, qp_type: {:?} }}", self.verbs, self.channel, self.context, self.qp, self.route, self.ps, self.event, self.send_cq_channel, self.send_cq, self.recv_cq_channel, self.recv_cq, self.srq, self.pd, self.qp_type)
+	}
+}

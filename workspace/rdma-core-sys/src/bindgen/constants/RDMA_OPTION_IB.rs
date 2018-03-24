@@ -2,5 +2,5 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const RDMA_OPTION_IB: _bindgen_ty_7 = _bindgen_ty_7::RDMA_OPTION_IB;
-pub const RDMA_OPTION_IB_PATH: _bindgen_ty_8 = _bindgen_ty_8::RDMA_OPTION_ID_REUSEADDR;
+pub const RDMA_OPTION_IB: _bindgen_ty_7 = 1;
+pub const RDMA_OPTION_IB_PATH: _bindgen_ty_8 = 1;

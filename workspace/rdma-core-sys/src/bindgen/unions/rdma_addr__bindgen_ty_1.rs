@@ -5,10 +5,11 @@
 #[repr(C)]
 pub union rdma_addr__bindgen_ty_1
 {
-    pub src_addr: sockaddr,
-    pub src_sin: sockaddr_in,
-    pub src_sin6: sockaddr_in6,
-    pub src_storage: sockaddr_storage,
+	pub src_addr: sockaddr,
+	pub src_sin: sockaddr_in,
+	pub src_sin6: sockaddr_in6,
+	pub src_storage: sockaddr_storage,
+	_bindgen_union_align: [u64; 16usize],
 }
 
 impl Default for rdma_addr__bindgen_ty_1
@@ -16,5 +17,13 @@ impl Default for rdma_addr__bindgen_ty_1
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for rdma_addr__bindgen_ty_1
+{
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_addr__bindgen_ty_1 {{ union }}")
 	}
 }

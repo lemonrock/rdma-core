@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_rwq_ind_table
 {
 	pub context: *mut ibv_context,
@@ -12,20 +11,20 @@ pub struct ibv_rwq_ind_table
 	pub comp_mask: u32,
 }
 
-impl Clone for ibv_rwq_ind_table
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_rwq_ind_table
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_rwq_ind_table
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_rwq_ind_table {{ context: {:?} }}", self.context)
 	}
 }

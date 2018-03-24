@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct ibv_recv_wr
 {
 	pub wr_id: u64,
@@ -12,20 +11,20 @@ pub struct ibv_recv_wr
 	pub num_sge: c_int,
 }
 
-impl Clone for ibv_recv_wr
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for ibv_recv_wr
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_recv_wr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_recv_wr {{ next: {:?}, sg_list: {:?} }}", self.next, self.sg_list)
 	}
 }

@@ -3,18 +3,26 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_values_ex
 {
 	pub comp_mask: u32,
 	pub raw_clock: timespec,
 }
 
-impl Clone for ibv_values_ex
+impl Default for ibv_values_ex
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_values_ex
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_values_ex {{  }}")
 	}
 }

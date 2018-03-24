@@ -2,4 +2,4 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const RDMA_UDP_QKEY: c_uint = 19088743;
+pub const RDMA_UDP_QKEY: u32 = 19088743;

@@ -3,20 +3,10 @@
 
 
 #[repr(C, packed)]
-#[derive(Copy)]
 pub struct epoll_event
 {
 	pub events: u32,
 	pub data: epoll_data_t,
-}
-
-impl Clone for epoll_event
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
 }
 
 impl Default for epoll_event
@@ -25,5 +15,14 @@ impl Default for epoll_event
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for epoll_event
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "epoll_event {{ data: {:?} }}", self.data)
 	}
 }

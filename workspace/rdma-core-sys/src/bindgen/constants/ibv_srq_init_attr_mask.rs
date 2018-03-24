@@ -4,6 +4,7 @@
 
 pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_CQ: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(8);
 pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_PD: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(2);
-pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_RESERVED: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(16);
+pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_RESERVED: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(32);
+pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_TM: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(16);
 pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_TYPE: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(1);
 pub const ibv_srq_init_attr_mask_IBV_SRQ_INIT_ATTR_XRCD: ibv_srq_init_attr_mask = ibv_srq_init_attr_mask(4);

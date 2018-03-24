@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ibv_send_wr
 {
 	pub wr_id: u64,
@@ -11,9 +10,27 @@ pub struct ibv_send_wr
 	pub sg_list: *mut ibv_sge,
 	pub num_sge: c_int,
 	pub opcode: ibv_wr_opcode,
-	pub send_flags: c_int,
-	pub imm_data: __be32,
-	pub wr: ibv_send_wr__bindgen_ty_1,
-	pub qp_type: ibv_send_wr__bindgen_ty_2,
-	pub __bindgen_anon_1: ibv_send_wr__bindgen_ty_3,
+	pub send_flags: c_uint,
+	pub __bindgen_anon_1: ibv_send_wr__bindgen_ty_1,
+	pub wr: ibv_send_wr__bindgen_ty_2,
+	pub qp_type: ibv_send_wr__bindgen_ty_3,
+	pub __bindgen_anon_2: ibv_send_wr__bindgen_ty_4,
+}
+
+impl Default for ibv_send_wr
+{
+	#[inline(always)]
+	fn default() -> Self
+	{
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_send_wr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_send_wr {{ next: {:?}, sg_list: {:?}, opcode: {:?}, __bindgen_anon_1: {:?}, wr: {:?}, qp_type: {:?}, __bindgen_anon_2: {:?} }}", self.next, self.sg_list, self.opcode, self.__bindgen_anon_1, self.wr, self.qp_type, self.__bindgen_anon_2)
+	}
 }

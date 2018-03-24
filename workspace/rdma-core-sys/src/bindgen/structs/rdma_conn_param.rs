@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Copy)]
 pub struct rdma_conn_param
 {
 	pub private_data: *const c_void,
@@ -17,20 +16,20 @@ pub struct rdma_conn_param
 	pub qp_num: u32,
 }
 
-impl Clone for rdma_conn_param
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for rdma_conn_param
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for rdma_conn_param
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "rdma_conn_param {{ private_data: {:?} }}", self.private_data)
 	}
 }

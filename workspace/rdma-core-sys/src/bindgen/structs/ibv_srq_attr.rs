@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Debug, Default, Copy)]
 pub struct ibv_srq_attr
 {
 	pub max_wr: u32,
@@ -11,11 +10,20 @@ pub struct ibv_srq_attr
 	pub srq_limit: u32,
 }
 
-impl Clone for ibv_srq_attr
+impl Default for ibv_srq_attr
 {
 	#[inline(always)]
-	fn clone(&self) -> Self
+	fn default() -> Self
 	{
-		*self
+		unsafe { zeroed() }
+	}
+}
+
+impl Debug for ibv_srq_attr
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "ibv_srq_attr {{  }}")
 	}
 }

@@ -3,7 +3,6 @@
 
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct sockaddr_ib
 {
 	pub sib_family: c_ushort,
@@ -15,20 +14,20 @@ pub struct sockaddr_ib
 	pub sib_scope_id: __u64,
 }
 
-impl Clone for sockaddr_ib
-{
-	#[inline(always)]
-	fn clone(&self) -> Self
-	{
-		*self
-	}
-}
-
 impl Default for sockaddr_ib
 {
 	#[inline(always)]
 	fn default() -> Self
 	{
 		unsafe { zeroed() }
+	}
+}
+
+impl Debug for sockaddr_ib
+{
+	#[inline(always)]
+	fn fmt(&self, f: &mut Formatter) -> Result
+	{
+		write!(f, "sockaddr_ib {{ sib_addr: {:?} }}", self.sib_addr)
 	}
 }

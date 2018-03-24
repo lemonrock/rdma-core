@@ -2,5 +2,4 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-pub const ibv_create_cq_attr_flags_IBV_CREATE_CQ_ATTR_RESERVED: ibv_create_cq_attr_flags = ibv_create_cq_attr_flags(2);
 pub const ibv_create_cq_attr_flags_IBV_CREATE_CQ_ATTR_SINGLE_THREADED: ibv_create_cq_attr_flags = ibv_create_cq_attr_flags(1);
