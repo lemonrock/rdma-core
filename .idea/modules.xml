@@ -7,8 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/workspace/openshmem-reference-sys/openshmem-reference-sys.iml" filepath="$PROJECT_DIR$/workspace/openshmem-reference-sys/openshmem-reference-sys.iml" />
       <module fileurl="file://$PROJECT_DIR$/workspace/rdma-core/rdma-core.iml" filepath="$PROJECT_DIR$/workspace/rdma-core/rdma-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/workspace/rdma-core-sys/rdma-core-sys.iml" filepath="$PROJECT_DIR$/workspace/rdma-core-sys/rdma-core-sys.iml" />
-      <module fileurl="file://$PROJECT_DIR$/workspace/ucx/ucx.iml" filepath="$PROJECT_DIR$/workspace/ucx/ucx.iml" />
-      <module fileurl="file://$PROJECT_DIR$/workspace/ucx-sys/ucx-sys.iml" filepath="$PROJECT_DIR$/workspace/ucx-sys/ucx-sys.iml" />
     </modules>
   </component>
 </project>
