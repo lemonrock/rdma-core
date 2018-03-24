@@ -14,10 +14,10 @@ repository = "https://github.com/lemonrock/rdma-core.git"
 exclude = ["*"]
 include = ["README.md", "LICENSE", "COPYRIGHT", "src/**/*.rs", "Cargo.toml", "rustfmt.toml", "clippy.toml", "lib/**/*", "tools/**/*", "bindgen-wrapper.conf.d/**/*", "compile.conf.d/**/*"]
 build = "src/build.rs"
-# Relative to Cargo.toml
+links = "rdma-core"
 readme = "README.md"
 publish = true
-version = "0.1.2"
+version = "0.1.3"
 
 [dependencies]
 libc = "0.2"
