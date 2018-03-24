@@ -69,7 +69,9 @@ extern "C"
 }
 
 include!("constants.rs");
+include!("enums.rs");
 include!("functions.rs");
 include!("structs.rs");
 include!("types.rs");
 include!("unions.rs");
+include!("opaques.rs");

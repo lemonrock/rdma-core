@@ -2,14 +2,13 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(C)]
-
-pub union ib_addr__bindgen_ty_1
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum ibv_rereg_mr_err_code
 {
-	pub uib_addr8: [__u8; 16usize],
-	pub uib_addr16: [__be16; 8usize],
-	pub uib_addr32: [__be32; 4usize],
-	pub uib_addr64: [__be64; 2usize],
-	_bindgen_union_align: [u64; 2usize],
-	pub _address: u8,
+	IBV_REREG_MR_ERR_INPUT = -1,
+	IBV_REREG_MR_ERR_DONT_FORK_NEW = -2,
+	IBV_REREG_MR_ERR_DO_FORK_OLD = -3,
+	IBV_REREG_MR_ERR_CMD = -4,
+	IBV_REREG_MR_ERR_CMD_AND_DO_FORK_NEW = -5,
 }

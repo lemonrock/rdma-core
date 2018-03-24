@@ -96,6 +96,5 @@ preprocess_before_headersFolderPath()
 
 final_chance_to_tweak()
 {
-	:
-	#sed -i -e 's/#\[derive(Debug, Default, Copy)\]/#[derive(Copy)]/g' "$outputFolderPath"/structs/ibv_values_ex.rs
+	sed -i -e 's/#\[derive(Debug, Default, Copy, Clone, Hash)\]//g' "$outputFolderPath"/unions/ib_addr__bindgen_ty_1.rs
 }

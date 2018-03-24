@@ -2,14 +2,19 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(C)]
-
-pub union ib_addr__bindgen_ty_1
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum ibv_wr_opcode
 {
-	pub uib_addr8: [__u8; 16usize],
-	pub uib_addr16: [__be16; 8usize],
-	pub uib_addr32: [__be32; 4usize],
-	pub uib_addr64: [__be64; 2usize],
-	_bindgen_union_align: [u64; 2usize],
-	pub _address: u8,
+	IBV_WR_RDMA_WRITE = 0,
+	IBV_WR_RDMA_WRITE_WITH_IMM = 1,
+	IBV_WR_SEND = 2,
+	IBV_WR_SEND_WITH_IMM = 3,
+	IBV_WR_RDMA_READ = 4,
+	IBV_WR_ATOMIC_CMP_AND_SWP = 5,
+	IBV_WR_ATOMIC_FETCH_AND_ADD = 6,
+	IBV_WR_LOCAL_INV = 7,
+	IBV_WR_BIND_MW = 8,
+	IBV_WR_SEND_WITH_INV = 9,
+	IBV_WR_TSO = 10,
 }

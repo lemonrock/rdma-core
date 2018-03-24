@@ -2,14 +2,13 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(C)]
-
-pub union ib_addr__bindgen_ty_1
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum ibv_odp_transport_cap_bits
 {
-	pub uib_addr8: [__u8; 16usize],
-	pub uib_addr16: [__be16; 8usize],
-	pub uib_addr32: [__be32; 4usize],
-	pub uib_addr64: [__be64; 2usize],
-	_bindgen_union_align: [u64; 2usize],
-	pub _address: u8,
+	IBV_ODP_SUPPORT_SEND = 1,
+	IBV_ODP_SUPPORT_RECV = 2,
+	IBV_ODP_SUPPORT_WRITE = 4,
+	IBV_ODP_SUPPORT_READ = 8,
+	IBV_ODP_SUPPORT_ATOMIC = 16,
 }

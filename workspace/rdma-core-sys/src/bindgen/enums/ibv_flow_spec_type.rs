@@ -2,14 +2,18 @@
 // Copyright © 2016 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#[repr(C)]
-
-pub union ib_addr__bindgen_ty_1
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum ibv_flow_spec_type
 {
-	pub uib_addr8: [__u8; 16usize],
-	pub uib_addr16: [__be16; 8usize],
-	pub uib_addr32: [__be32; 4usize],
-	pub uib_addr64: [__be64; 2usize],
-	_bindgen_union_align: [u64; 2usize],
-	pub _address: u8,
+	IBV_FLOW_SPEC_ETH = 32,
+	IBV_FLOW_SPEC_IPV4 = 48,
+	IBV_FLOW_SPEC_IPV6 = 49,
+	IBV_FLOW_SPEC_IPV4_EXT = 50,
+	IBV_FLOW_SPEC_TCP = 64,
+	IBV_FLOW_SPEC_UDP = 65,
+	IBV_FLOW_SPEC_VXLAN_TUNNEL = 80,
+	IBV_FLOW_SPEC_INNER = 256,
+	IBV_FLOW_SPEC_ACTION_TAG = 4096,
+	IBV_FLOW_SPEC_ACTION_DROP = 4097,
 }

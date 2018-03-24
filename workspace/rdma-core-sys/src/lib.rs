@@ -2,17 +2,12 @@
 // Copyright © 2017 The developers of rdma-core. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/rdma-core/master/COPYRIGHT.
 
 
-#![no_std]
 #![feature(static_nobundle)]
 #![feature(untagged_unions)]
 
-#![allow(missing_copy_implementations)]
-#![allow(missing_debug_implementations)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
-#![warn(trivial_casts)]
-#![warn(unused_import_braces)]
 
 
 include!("bindgen/lib.rs");
