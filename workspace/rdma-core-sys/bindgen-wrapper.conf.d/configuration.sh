@@ -7,7 +7,7 @@ bindingsName='rdma-core'
 rootIncludeFileName='rdma-core.h'
 macosXHomebrewPackageNames='clang-format'
 alpineLinuxPackageNames='rsync make gcc linux-headers libunwind-dev linux-grsec-dev'
-clangAdditionalArguments="-I $temporaryFolderPath/includes"
+clangAdditionalArguments="-I $temporaryFolderPath/includes -I $outputFolderPath/c"
 headersFolderPath='DESTDIR/usr/include'
 link='cxgb3 cxgb4 hfi1verbs hns i40iw ibumad ibverbs ipathverbs mlx4 mlx5 mthca nes ocrdma qedr rdmacm rxe vmw_pvrdma'
 link_kind='static-nobundle'
@@ -18,8 +18,13 @@ bindgen_wrapper_generateStaticFunctions()
 	local relativeHeaderFile="$1"
 	local outputFileBaseName="$2"
 	
-	mkdir -m 0700 -p "$temporaryFolderPath"/includes
-
+	local ourOutputFolderPath="$outputFolderPath"/c
+	
+	mkdir -m 0700 -p "$ourOutputFolderPath"
+	
+	local headerFilePath="$ourOutputFolderPath"/$outputFileBaseName.h
+	local sourceFilePath="$ourOutputFolderPath"/$outputFileBaseName.c
+	
 	clang-format -style="{BasedOnStyle: Chromium, IndentWidth: 4, ColumnLimit: 4000, BreakBeforeBraces: Allman}" "$headersFolderPath"/"$relativeHeaderFile" \
 	| grep '^static inline ' \
 	| sed \
@@ -31,7 +36,7 @@ bindgen_wrapper_generateStaticFunctions()
 		-e 's/(/,/g' >"$temporaryFolderPath"/$outputFileBaseName.functions
 
 	{
-		printf '#include <%s>\n' "$relativeHeaderFile" >"$temporaryFolderPath"/includes/$outputFileBaseName.h
+		printf '#include <%s>\n' "$relativeHeaderFile" >"$headerFilePath"
 
 		cat <<-EOF
 			#include <${relativeHeaderFile}>
@@ -79,12 +84,12 @@ bindgen_wrapper_generateStaticFunctions()
 			definitionOfFunction="${definitionOfFunction})"
 			bodyOfFunction="${bodyOfFunction});"
 
-			printf '\n%s;\n' "$definitionOfFunction" >>"$temporaryFolderPath"/includes/$outputFileBaseName.h
+			printf '\n%s;\n' "$definitionOfFunction" >>"$headerFilePath"
 
 			printf '\n%s\n{\n\t%s\n}\n' "$definitionOfFunction" "$bodyOfFunction"
 
 		done <"$temporaryFolderPath"/$outputFileBaseName.functions
-	} >"$temporaryFolderPath"/includes/$outputFileBaseName.c
+	} >"$sourceFilePath"
 }
 
 preprocess_before_headersFolderPath()

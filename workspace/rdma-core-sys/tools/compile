@@ -256,23 +256,6 @@ compile_patch()
 	cd - 1>/dev/null 2>/dev/null
 }
 
-# compile_fixMlx5CMakeListsToCreateAStaticProvider()
-# {
-# 	sed -i \
-# 		-e 's/rdma_shared_provider(/rdma_provider(/g' \
-# 		-e '/PACKAGE_VERSION/d' \
-# 		"$temporaryFolderPath"/providers/mlx5/CMakeLists.txt
-# }
-#
-# compile_fixRdmacmToWorkWithMusl()
-# {
-# 	#NOTE: warning: no previous prototype for '__fxstat' [-Wmissing-prototypes] is true but __fxstat is available in musl; it just isn't in the public headers
-# 	sed -i \
-# 		-e 's;#include <unistd\.h>;#include <unistd.h>\n#include <sys/uio.h>\n#define __fstat(fd, buf) __fxstat (_STAT_VER, fd, buf);g' \
-# 		-e 's;__S_IFSOCK;S_IFSOCK;g' \
-# 		"$temporaryFolderPath"/librdmacm/preload.c
-# }
-
 compile_prepareCMakeToolChainFile()
 {
 	CMAKE_TOOLCHAIN_FILE="$temporaryFolderPath"/toolchain.cmake
@@ -335,12 +318,6 @@ compile_build()
 
 compile_now()
 {
-	# compile_fixMlx5CMakeListsToCreateAStaticProvider
-	
-	# compile_fixQedrProviderToWorkWithMusl
-	
-	# compile_fixRdmacmToWorkWithMusl
-	
 	local CMAKE_TOOLCHAIN_FILE
 	compile_prepareCMakeToolChainFile
 	

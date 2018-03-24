@@ -62,8 +62,9 @@ fn compileEmbeddedCCode(absoluteHomeFolderPath: &str)
 		}
 	};
 	
-	let files_path = format!("{}/bindgen-wrapper.conf.d/temporary/bindgen-wrapper-temporary/includes", absoluteHomeFolderPath.to_owned());
-	let include_path = format!("{}/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/include", absoluteHomeFolderPath.to_owned());
+	let files_path = format!("{}/src/bindgen/c", absoluteHomeFolderPath.to_owned());
+	let include_path = format!("{}/src/bindgen/c", absoluteHomeFolderPath.to_owned());
+	let headers_path = format!("{}/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/include", absoluteHomeFolderPath.to_owned());
 	
 	cc::Build::new()
 	.file(format!("{}/infiniband-verbs-static-inline.c", files_path))
@@ -71,7 +72,8 @@ fn compileEmbeddedCCode(absoluteHomeFolderPath: &str)
 	.file(format!("{}/rdma-verbs-static-inline.c", files_path))
 	.flag("-Werror")
 	.flag(&format!("-isystem{}", include_path)) // can't use .include() as warnings then occur in system headers
+	.flag(&format!("-isystem{}", headers_path)) // can't use .include() as warnings then occur in system headers
 	.define("_GNU_SOURCE", None)
 	.define("_BSD_SOURCE", None)
-	.compile("libfabric_sys_c.a");
+	.compile("rdma_core_sys_c.a");
 }
