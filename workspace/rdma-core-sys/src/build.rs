@@ -8,31 +8,61 @@
 extern crate cc;
 
 
+use ::cc::Build;
 use ::std::env;
 use ::std::process::Command;
 
 
 fn main()
 {
-	let absoluteHomeFolderPath = env::var("CARGO_MANIFEST_DIR").unwrap();
+	let cargo_manifest_folder_path = variable("CARGO_MANIFEST_DIR");
+	let cargo_build_folder_path = variable("OUT_DIR");
 	
 	// We deliberately run as much as possible outside of cargo as it makes it far easier to debug a long, complex build which has little to do with Rust.
 	// Of course, this script, being shell, won't run under Windows.
-	tool(&absoluteHomeFolderPath, "build-under-cargo");
-	compileEmbeddedCCode(&absoluteHomeFolderPath);
+	tool(&cargo_manifest_folder_path, "bindgen-wrapper/build-under-cargo");
+	compile_embedded_c_code(&cargo_manifest_folder_path, &cargo_build_folder_path);
 }
 
-fn tool(absoluteHomeFolderPath: &str, programName: &'static str) -> String
+fn compile_embedded_c_code(cargo_manifest_folder_path: &str, cargo_build_folder_path: &str)
 {
-	let fullPath = format!("{}/tools/{}", absoluteHomeFolderPath.to_owned(), programName.to_owned());
-	panicIfProcessNotSuccessful(programName, absoluteHomeFolderPath, Command::new(fullPath))
+	if env::var("CROSS_COMPILE").is_err()
+	{
+		panic!("Please specify CROSS_COMPILE=x86_64-linux-musl- cargo build --target=x86_64-unknown-linux-musl as the 'cc' crate incorrectly looks for musl-gcc")
+	}
+	
+	let files_path = format!("{}/src/bindgen/c", cargo_manifest_folder_path.to_owned());
+	let headers_path = format!("{}/root/DESTDIR/usr/include", cargo_build_folder_path.to_owned());
+	
+	// We use .flag(-isystem) rather than .include() to stop warnings that occur in system headers.
+	Build::new()
+	.file(format!("{}/infiniband-verbs-static-inline.c", files_path))
+	.file(format!("{}/rdma-cma-static-inline.c", files_path))
+	.file(format!("{}/rdma-verbs-static-inline.c", files_path))
+	.flag("-Werror")
+	.flag(&format!("-isystem{}", headers_path))
+	.include(files_path)
+	.define("_GNU_SOURCE", None)
+	.define("_BSD_SOURCE", None)
+	.compile("rdma_core_sys_c.a");
 }
 
-fn panicIfProcessNotSuccessful(programName: &'static str, absoluteHomeFolderPath: &str, mut command: Command) -> String
+fn variable(environment_variable_name: &str) -> String
+{
+	env::var(environment_variable_name).unwrap()
+}
+
+fn tool(cargo_manifest_folder_path: &str, program_name: &'static str) -> String
+{
+	let full_path = format!("{}/tools/{}", cargo_manifest_folder_path.to_owned(), program_name.to_owned());
+	panic_if_process_not_successful(program_name, cargo_manifest_folder_path, Command::new(full_path))
+}
+
+fn panic_if_process_not_successful(program_name: &'static str, cargo_manifest_folder_path: &str, mut command: Command) -> String
 {
 	let output = command.output().unwrap_or_else(|error|
 	{
-		panic!("Failed to execute '{}' in '{}' error was '{}'", programName, absoluteHomeFolderPath, error);
+		panic!("Failed to execute '{}' in '{}' error was '{}'", program_name, cargo_manifest_folder_path, error);
 	});
 	
 	let code = output.status.code().unwrap_or_else(||
@@ -40,40 +70,12 @@ fn panicIfProcessNotSuccessful(programName: &'static str, absoluteHomeFolderPath
 		panic!("Failed to retrieve exit status from command - was it killed by a signal?");
 	});
 
-	let standardOut = String::from_utf8_lossy(&output.stdout);
+	let standard_out = String::from_utf8_lossy(&output.stdout);
 	if code == 0
 	{
-		return standardOut.into_owned();
+		return standard_out.into_owned();
 	}
 	
-	let standardError = String::from_utf8_lossy(&output.stderr);
-	panic!("Command '{}' failed with exit code '{}' (standard out was '{}'; standard error was '{}')", programName, code, standardOut.into_owned(), standardError.into_owned());
-}
-
-fn compileEmbeddedCCode(absoluteHomeFolderPath: &str)
-{
-	match env::var("CROSS_COMPILE")
-	{
-		Ok(_) => (),
-		Err(_) =>
-		{
-			println!("cargo:warning=Please specify CROSS_COMPILE=x86_64-linux-musl- cargo build --target=x86_64-unknown-linux-musl as the gcc crate incorrectly looks for musl-gcc");
-			return;
-		}
-	};
-	
-	let files_path = format!("{}/src/bindgen/c", absoluteHomeFolderPath.to_owned());
-	let include_path = format!("{}/src/bindgen/c", absoluteHomeFolderPath.to_owned());
-	let headers_path = format!("{}/bindgen-wrapper.conf.d/temporary/root/DESTDIR/usr/include", absoluteHomeFolderPath.to_owned());
-	
-	cc::Build::new()
-	.file(format!("{}/infiniband-verbs-static-inline.c", files_path))
-	.file(format!("{}/rdma-cma-static-inline.c", files_path))
-	.file(format!("{}/rdma-verbs-static-inline.c", files_path))
-	.flag("-Werror")
-	.flag(&format!("-isystem{}", include_path)) // can't use .include() as warnings then occur in system headers
-	.flag(&format!("-isystem{}", headers_path)) // can't use .include() as warnings then occur in system headers
-	.define("_GNU_SOURCE", None)
-	.define("_BSD_SOURCE", None)
-	.compile("rdma_core_sys_c.a");
+	let standard_error = String::from_utf8_lossy(&output.stderr);
+	panic!("Command '{}' failed with exit code '{}' (standard out was '{}'; standard error was '{}')", program_name, code, standard_out.into_owned(), standard_error.into_owned());
 }

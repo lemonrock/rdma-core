@@ -4,6 +4,6 @@
 
 extern "C"
 {
-	#[link_name = "\u{1}_rdma_freeaddrinfo"] pub fn rdma_freeaddrinfo(res: *mut rdma_addrinfo);
-	#[link_name = "\u{1}_rdma_getaddrinfo"] pub fn rdma_getaddrinfo(node: *const c_char, service: *const c_char, hints: *const rdma_addrinfo, res: *mut *mut rdma_addrinfo) -> c_int;
+	pub fn rdma_freeaddrinfo(res: *mut rdma_addrinfo);
+	pub fn rdma_getaddrinfo(node: *const c_char, service: *const c_char, hints: *const rdma_addrinfo, res: *mut *mut rdma_addrinfo) -> c_int;
 }

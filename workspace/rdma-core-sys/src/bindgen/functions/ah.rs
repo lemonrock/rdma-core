@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	#[link_name = "\u{1}_ibv_destroy_ah"] pub fn ibv_destroy_ah(ah: *mut ibv_ah) -> c_int;
+	pub fn ibv_destroy_ah(ah: *mut ibv_ah) -> c_int;
 }

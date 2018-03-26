@@ -4,6 +4,6 @@
 
 extern "C"
 {
-	#[link_name = "\u{1}_ibv_dereg_mr"] pub fn ibv_dereg_mr(mr: *mut ibv_mr) -> c_int;
-	#[link_name = "\u{1}_ibv_rereg_mr"] pub fn ibv_rereg_mr(mr: *mut ibv_mr, flags: c_int, pd: *mut ibv_pd, addr: *mut c_void, length: usize, access: c_int) -> c_int;
+	pub fn ibv_dereg_mr(mr: *mut ibv_mr) -> c_int;
+	pub fn ibv_rereg_mr(mr: *mut ibv_mr, flags: c_int, pd: *mut ibv_pd, addr: *mut c_void, length: usize, access: c_int) -> c_int;
 }

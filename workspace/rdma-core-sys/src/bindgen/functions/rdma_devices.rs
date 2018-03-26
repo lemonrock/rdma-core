@@ -4,6 +4,6 @@
 
 extern "C"
 {
-	#[link_name = "\u{1}_rdma_free_devices"] pub fn rdma_free_devices(list: *mut *mut ibv_context);
-	#[link_name = "\u{1}_rdma_get_devices"] pub fn rdma_get_devices(num_devices: *mut c_int) -> *mut *mut ibv_context;
+	pub fn rdma_free_devices(list: *mut *mut ibv_context);
+	pub fn rdma_get_devices(num_devices: *mut c_int) -> *mut *mut ibv_context;
 }

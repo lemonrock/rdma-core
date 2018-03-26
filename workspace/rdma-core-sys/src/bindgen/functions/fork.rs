@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	#[link_name = "\u{1}_ibv_fork_init"] pub fn ibv_fork_init() -> c_int;
+	pub fn ibv_fork_init() -> c_int;
 }

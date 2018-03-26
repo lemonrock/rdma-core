@@ -4,6 +4,6 @@
 
 extern "C"
 {
-	#[link_name = "\u{1}_ibv_rate_to_mbps"] pub fn ibv_rate_to_mbps(rate: ibv_rate) -> c_int;
-	#[link_name = "\u{1}_ibv_rate_to_mult"] pub fn ibv_rate_to_mult(rate: ibv_rate) -> c_int;
+	pub fn ibv_rate_to_mbps(rate: ibv_rate) -> c_int;
+	pub fn ibv_rate_to_mult(rate: ibv_rate) -> c_int;
 }

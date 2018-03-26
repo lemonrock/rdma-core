@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	#[link_name = "\u{1}_ibv_node_type_str"] pub fn ibv_node_type_str(node_type: ibv_node_type) -> *const c_char;
+	pub fn ibv_node_type_str(node_type: ibv_node_type) -> *const c_char;
 }

@@ -18,12 +18,12 @@ bindgen_wrapper_generateStaticFunctions()
 	local relativeHeaderFile="$1"
 	local outputFileBaseName="$2"
 	
-	local ourOutputFolderPath="$outputFolderPath"/c
+	local srcBindgenCFolderPath="$outputFolderPath"/c
 	
-	mkdir -m 0700 -p "$ourOutputFolderPath"
+	mkdir -m 0700 -p "$srcBindgenCFolderPath"
 	
-	local headerFilePath="$ourOutputFolderPath"/$outputFileBaseName.h
-	local sourceFilePath="$ourOutputFolderPath"/$outputFileBaseName.c
+	local headerFilePath="$srcBindgenCFolderPath"/$outputFileBaseName.h
+	local sourceFilePath="$srcBindgenCFolderPath"/$outputFileBaseName.c
 	
 	clang-format -style="{BasedOnStyle: Chromium, IndentWidth: 4, ColumnLimit: 4000, BreakBeforeBraces: Allman}" "$headersFolderPath"/"$relativeHeaderFile" \
 	| grep '^static inline ' \

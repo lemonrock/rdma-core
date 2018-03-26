@@ -4,5 +4,5 @@
 
 extern "C"
 {
-	#[link_name = "\u{1}_rust_rdma_dereg_mr"] pub fn rust_rdma_dereg_mr(mr: *mut ibv_mr) -> c_int;
+	pub fn rust_rdma_dereg_mr(mr: *mut ibv_mr) -> c_int;
 }
