@@ -73,12 +73,7 @@ compile_library()
 
 cargo_key_value_pairs()
 {
-	# compile.conf.d, bindgen-wrapper.conf.d and lib/$compile_library_name are automatically added.
-	cargo_key_value_pairs_rerun_if_changed 'tools/build-under-cargo'
-	cargo_key_value_pairs_rerun_if_changed 'tools/compile'
-	cargo_key_value_pairs_rerun_if_changed 'tools/bindgen-wrapper'
-	cargo_key_value_pairs_rerun_if_changed 'tools/bindgen-wrapper/bindgen-wrapper'
-	cargo_key_value_pairs_rerun_if_changed 'tools/bindgen-wrapper/rustfmt.toml'
+	# compile.conf.d, bindgen-wrapper.conf.d, tools/bindgen-wrapper and lib/$compile_library_name are automatically added.
 	
 	cargo_key_value_pairs_link_lib 'static-nobundle' 'cxgb3'
 	cargo_key_value_pairs_link_lib 'static-nobundle' 'cxgb4'
