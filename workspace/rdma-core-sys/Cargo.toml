@@ -17,7 +17,7 @@ build = "src/build.rs"
 links = "rdma-core"
 readme = "README.md"
 publish = true
-version = "0.1.9"
+version = "0.1.10"
 
 [dependencies]
 libc = "0.2"
